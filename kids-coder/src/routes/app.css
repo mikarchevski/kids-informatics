@@ -1,0 +1,155 @@
+/* === Базовые стили === */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f8f9fa;
+  color: #212529;
+}
+
+/* === Layout приложения === */
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  padding: 1rem 2rem;
+  background: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #212529;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* === Панель Blockly (60%) === */
+.blockly-area {
+  width: 60%;
+  border-right: 2px solid #e9ecef;
+  display: flex; /* Гарантирует, что внутренний div займёт всё пространство */
+}
+
+.blockly-div {
+  width: 100%;
+  height: 100%;
+}
+
+/* === Панель экрана (40%) === */
+.screen-area {
+  width: 40%;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto; /* На случай, если экран станет слишком маленьким */
+}
+
+/* === Панель управления === */
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.score {
+  padding: 0.5rem 1rem;
+  background: #fff3cd;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #856404;
+}
+
+/* === Кнопки === */
+.btn {
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #4C97FF;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #3d85e8;
+}
+
+.btn-secondary {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.btn-secondary:hover {
+  background: #dee2e6;
+}
+
+.btn-fuel {
+  background: #28a745;
+  color: white;
+}
+
+.btn-fuel:hover {
+  background: #218838;
+}
+
+/* Кастомная корзина для Blockly */
+.blockly-area {
+  position: relative; /* Для позиционирования корзины */
+}
+
+.custom-trashcan {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background: white;
+  border: 2px solid #dee2e6;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  color: #6c757d;
+}
+
+.custom-trashcan:hover {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.custom-trashcan:active {
+  transform: scale(0.95);
+}
+
+.custom-trashcan svg {
+  width: 28px;
+  height: 28px;
+}
