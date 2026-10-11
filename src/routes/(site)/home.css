@@ -119,6 +119,15 @@
 .sidebar {
   width: 260px;
   flex-shrink: 0;
+  
+  /* Делаем панель липкой */
+  position: sticky;
+  top: 100px; /* Отступ сверху, чтобы не наезжать на хедер (высота хедера ~70px + запас) */
+  align-self: flex-start; /* Критически важно для sticky внутри flex-контейнера! */
+  
+  /* На случай, если меню станет очень длинным на маленьких экранах */
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
 }
 
 .menu {
