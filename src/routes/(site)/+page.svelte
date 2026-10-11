@@ -40,17 +40,7 @@
 
 <div class="home">
   <!-- Шапка сайта -->
-  <header class="site-header">
-    <div class="header-inner">
-      <a href="/" class="logo">
-        <span class="logo-icon">🚗</span>
-        <span class="logo-text">Kids Informatics</span>
-      </a>
-      <nav class="header-nav">
-        <a href="/car-play" class="btn-hero">Начать играть →</a>
-      </nav>
-    </div>
-  </header>
+  
 
   <!-- Главный баннер -->
   <section class="hero">
@@ -98,14 +88,4 @@
     </main>
   </div>
 
-  <!-- Подвал -->
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <p>© 2026 Kids Informatics. Все права защищены.</p>
-      <div class="footer-links">
-        <a href="/legal">Правовая информация</a>
-        <a href="/parents">Родителям</a>
-      </div>
-    </div>
-  </footer>
 </div>
