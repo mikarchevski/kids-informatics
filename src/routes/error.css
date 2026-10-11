@@ -1,0 +1,71 @@
+/* src/routes/error.css */
+
+.error-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f7fa;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  padding: 2rem;
+}
+
+.error-content {
+  text-align: center;
+  max-width: 500px;
+}
+
+.error-icon {
+  font-size: 5rem;
+  margin-bottom: 1rem;
+  animation: shake 2s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(-5px) rotate(-5deg); }
+  75% { transform: translateX(5px) rotate(5deg); }
+}
+
+.error-title {
+  font-size: 6rem;
+  font-weight: 800;
+  color: #4C97FF;
+  margin: 0;
+  line-height: 1;
+}
+
+.error-subtitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #212529;
+  margin: 0.5rem 0 1rem 0;
+}
+
+.error-text {
+  font-size: 1.1rem;
+  color: #6c757d;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.8rem;
+  background: #4C97FF;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(76, 151, 255, 0.3);
+}
+
+.btn-home:hover {
+  background: #3d85e8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(76, 151, 255, 0.4);
+}

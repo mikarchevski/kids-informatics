@@ -153,3 +153,22 @@ body {
   width: 28px;
   height: 28px;
 }
+
+/* Ссылка "На главную" в игре */
+.home-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #495057;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-right: 1.5rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.home-link:hover {
+  background: #e9ecef;
+  color: #212529;
+}

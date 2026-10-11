@@ -1,142 +1,111 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import * as Blockly from 'blockly';
-  import { defineCustomBlocks } from '#lib/blocks';
-  import { Interpreter } from '#lib/interpreter';
-  import Screen from '#lib/Screen.svelte';
+  import './home.css';
 
-  const GRID_SIZE = 10;
+  const menuItems = [
+    { icon: '📚', label: 'Познавательные статьи', href: '/articles' },
+    { icon: '🚗', label: 'Машинка-программист', href: '/car-play' },
+    { icon: '👨‍👩‍👧', label: 'Родителям', href: '/parents' },
+    { icon: '⚖️', label: 'Правовая информация', href: '/legal' }
+  ];
 
-  let workspace: Blockly.WorkspaceSvg | null = $state(null);
-  let blocklyDiv: HTMLDivElement = $state() as HTMLDivElement;
-  let robotPosition = $state({ x: 0, y: 5, direction: 'right' });
-  let interpreter: Interpreter = $state() as Interpreter;
-  let batteries = $state<{ x: number; y: number }[]>([]);
-  let score = $state(0);
-
-  function handleKeyDown(event: KeyboardEvent) {
-    if (!workspace) return;
-    
-    if (event.key === 'Delete' || event.key === 'Backspace') {
-      const selected = Blockly.getSelected();
-      if (selected && selected instanceof Blockly.Block) {
-        selected.dispose(false, true);
-        event.preventDefault();
-      }
+  const news = [
+    {
+      id: 1,
+      date: '12 октября 2026',
+      title: 'Запуск платформы Kids Informatics',
+      excerpt: 'Мы рады представить нашу платформу для изучения основ программирования через игру. Начните с "Машинки-программиста" — первого интерактивного урока!',
+      tag: 'Новость'
+    },
+    {
+      id: 2,
+      date: '15 октября 2026',
+      title: 'Скоро: новые уровни и задачи',
+      excerpt: 'В ближайшее время мы добавим режим головоломок с готовыми заданиями, системой достижений и таблицей лидеров.',
+      tag: 'Анонс'
+    },
+    {
+      id: 3,
+      date: '20 октября 2026',
+      title: 'Статья: "Зачем детям программирование?"',
+      excerpt: 'Разбираем, как базовые навыки алгоритмического мышления помогают в школе и развивают логику.',
+      tag: 'Статья'
     }
-  }
-
-  function addBattery() {
-    const freeCells: { x: number; y: number }[] = [];
-    
-    for (let x = 0; x < GRID_SIZE; x++) {
-      for (let y = 0; y < GRID_SIZE; y++) {
-        if (x === robotPosition.x && y === robotPosition.y) continue;
-        if (batteries.some(b => b.x === x && b.y === y)) continue;
-        freeCells.push({ x, y });
-      }
-    }
-    
-    if (freeCells.length === 0) {
-      alert('На поле нет свободных клеток!');
-      return;
-    }
-    
-    const randomCell = freeCells[Math.floor(Math.random() * freeCells.length)];
-    batteries = [...batteries, randomCell];
-  }
-
-  function checkBatteryPickup(x: number, y: number) {
-    const batteryIndex = batteries.findIndex(b => b.x === x && b.y === y);
-    if (batteryIndex !== -1) {
-      batteries = batteries.filter((_, i) => i !== batteryIndex);
-      score += 1;
-    }
-  }
-
-  onMount(() => {
-    defineCustomBlocks();
-    
-    workspace = Blockly.inject(blocklyDiv, {
-      toolbox: {
-        kind: 'flyoutToolbox',
-        contents: [
-          { kind: 'block', type: 'move_forward' },
-          { kind: 'block', type: 'move_backward' },
-          { kind: 'block', type: 'turn_left' },
-          { kind: 'block', type: 'turn_right' }
-        ]
-      },
-      scrollbars: true,
-      sounds: false,
-      move: {
-        scrollbars: true,
-        drag: true,
-        wheel: false
-      }
-    });
-    
-    interpreter = new Interpreter(workspace, (pos) => {
-      robotPosition = { ...pos };
-      checkBatteryPickup(pos.x, pos.y);
-    });
-    
-    window.addEventListener('keydown', handleKeyDown);
-  });
-
-  onDestroy(() => {
-    window.removeEventListener('keydown', handleKeyDown);
-  });
-
-  function runCode() {
-    if (interpreter) {
-      interpreter.execute();
-    }
-  }
-
-  function resetRobot() {
-    robotPosition = { x: 5, y: 5, direction: 'right' };
-    batteries = [];
-    score = 0;
-    if (interpreter) {
-      interpreter.reset();
-    }
-  }
-  function clearWorkspace() {
-  if (workspace) {
-    workspace.clear();
-  }
-}
+  ];
 </script>
 
-<div class="app">
-  <header class="app-header">
-    <h1>🚗 Машинка-программист</h1>
-    <div class="controls">
-      <button onclick={runCode} class="btn btn-primary">▶ Запустить</button>
-      <button onclick={resetRobot} class="btn btn-secondary">↺ Сброс</button>
+<svelte:head>
+  <title>Kids Informatics — Программирование для детей</title>
+  <meta name="description" content="Интерактивная платформа для изучения основ программирования через игру" />
+</svelte:head>
+
+<div class="home">
+  <!-- Шапка сайта -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">🚗</span>
+        <span class="logo-text">Kids Informatics</span>
+      </a>
+      <nav class="header-nav">
+        <a href="/car-play" class="btn-hero">Начать играть →</a>
+      </nav>
     </div>
   </header>
-  
-  <div class="app-main">
-    <div class="blockly-area">
-      <div bind:this={blocklyDiv} class="blockly-div"></div>
-       <!--  Кастомная корзина в правом нижнем углу -->
-    <button class="custom-trashcan" onclick={clearWorkspace} title="Очистить все блоки">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="3 6 5 6 21 6"></polyline>
-        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-        <line x1="10" y1="11" x2="10" y2="17"></line>
-        <line x1="14" y1="11" x2="14" y2="17"></line>
-      </svg>
-    </button>
-    </div>
 
-    
-    
-    <div class="screen-area">
-        <Screen position={robotPosition} {batteries} {score} onAddBattery={addBattery} />
-
+  <!-- Главный баннер -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-title">Учим программировать через игру</h1>
+      <p class="hero-subtitle">
+        Интерактивная платформа, где дети от 6 лет осваивают основы алгоритмов, 
+        логики и последовательного мышления — без скучных лекций.
+      </p>
+      <a href="/car-play" class="btn-hero">Начать играть →</a>
     </div>
+  </section>
+
+  <!-- Основной контент: сайдбар + новости -->
+  <div class="content-wrapper">
+    <!-- Левое меню -->
+    <aside class="sidebar">
+      <nav class="menu">
+        {#each menuItems as item}
+          <a href={item.href} class="menu-item">
+            <span class="menu-icon">{item.icon}</span>
+            <span class="menu-label">{item.label}</span>
+          </a>
+        {/each}
+      </nav>
+    </aside>
+
+    <!-- Центральная часть с новостями -->
+    <main class="main-content">
+      <h2 class="section-title">Новости и обновления</h2>
+      
+      <div class="news-list">
+        {#each news as item}
+          <article class="news-card">
+            <div class="news-header">
+              <span class="news-tag">{item.tag}</span>
+              <time class="news-date">{item.date}</time>
+            </div>
+            <h3 class="news-title">{item.title}</h3>
+            <p class="news-excerpt">{item.excerpt}</p>
+            <a href="#" class="news-link">Читать далее →</a>
+          </article>
+        {/each}
+      </div>
+    </main>
   </div>
+
+  <!-- Подвал -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>© 2026 Kids Informatics. Все права защищены.</p>
+      <div class="footer-links">
+        <a href="/legal">Правовая информация</a>
+        <a href="/parents">Родителям</a>
+      </div>
+    </div>
+  </footer>
 </div>
