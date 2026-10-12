@@ -1,82 +1,66 @@
 <script lang="ts">
-  import './Screen.css';
+	import Car from '#lib/avatars/Car.svelte';
 
-   let { 
-    position,
-    batteries = [],
-    score = 0, // 🆕 Принимаем счёт
-    onAddBattery = () => {}
-  }: { 
-    position: { x: number; y: number; direction: string };
-    batteries?: { x: number; y: number }[];
-    score?: number; // 🆕 Типизация
-    onAddBattery?: () => void;
-  } = $props();
-  
-  const gridSize = 10;
-  const indices = Array.from({ length: gridSize }, (_, i) => i);
-  
-  const rotation = $derived.by(() => {
-    switch (position.direction) {
-      case 'right': return 0;
-      case 'down': return 90;
-      case 'left': return 180;
-      case 'up': return -90;
-      default: return 0;
-    }
-  });
-  
-  function getBatteryAt(x: number, y: number): boolean {
-    return batteries?.some(b => b.x === x && b.y === y) ?? false;
-  }
+	let {
+		position,
+		batteries = [],
+		score = 0,
+		onAddBattery = () => {},
+		avatarComponent = Car
+	}: {
+		position: { x: number; y: number; direction: string };
+		batteries?: { x: number; y: number }[];
+		score?: number;
+		onAddBattery?: () => void;
+		avatarComponent?: any;
+	} = $props();
+
+	const GRID_SIZE = 10;
+
+	function getBatteryAt(x: number, y: number) {
+		return batteries.some((b) => b.x === x && b.y === y);
+	}
+
+	const rotation = $derived(
+		position.direction === 'right'
+			? 0
+			: position.direction === 'down'
+				? 90
+				: position.direction === 'left'
+					? 180
+					: 270
+	);
 </script>
 
 <div class="screen">
-  <!-- Кнопка добавления канистры над полем -->
-  <div class="screen-toolbar">
-    <button class="add-battery-btn" onclick={onAddBattery}>
-      ⛽ Добавить канистру
-    </button>
-    <div class="score-badge">
-      ⛽ Счёт: {score}
-    </div>
-  </div>
-  
-  <div class="grid-container">
-    <div class="corner">X/Y</div>
+	<div class="grid">
+		<!-- Заголовок "X/Y" и заголовки столбцов -->
+		<div class="cell header">X/Y</div>
+		{#each Array(GRID_SIZE) as _, col}
+			<div class="cell header">{col + 1}</div>
+		{/each}
 
-    {#each indices as i}
-      <div class="header-x">{i}</div>
-    {/each}
+		<!-- Строки с заголовками и ячейками -->
+		{#each Array(GRID_SIZE) as _, row}
+			<div class="cell header">{row + 1}</div>
+			{#each Array(GRID_SIZE) as _, col}
+				<div class="cell" class:robot={position.x === col && position.y === row}>
+					{#if position.x === col && position.y === row}
+						<svelte:component
+							this={avatarComponent}
+							class="robot-svg"
+							style="transform: rotate({rotation}deg);"
+						/>
+					{:else if getBatteryAt(col, row)}
+						<span class="fuel-icon">🌟</span>
+					{/if}
+				</div>
+			{/each}
+		{/each}
+	</div>
 
-    {#each indices as row}
-      <div class="header-y">{row}</div>
-
-      {#each indices as col}
-        <div 
-          class="cell" 
-          class:robot={position.x === col && position.y === row}
-          class:fuel={getBatteryAt(col, row)}
-        >
-          {#if position.x === col && position.y === row}
-            <span class="robot-svg" style="transform: rotate({rotation}deg);">
-              <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-                <path d="M766.976 508.736c80.576 0 152.448 32.128 199.232 82.176" fill="#AEBCC3"></path>
-                <path d="M64.704 684.992c10.816 19.2 32.064 32.192 56.576 32.192h784.64c35.84 0 64.832-27.648 64.832-61.76v-17.408h-36.608a15.744 15.744 0 0 1-16.064-15.296V550.912a277.568 277.568 0 0 0-150.144-44.16h1.6l-55.04-0.256c-53.632-115.2-210.752-294.208-210.752-136.512 0-251.008 89.728-282.176 210.688h-16.832c-35.456 0-56.128 27.392-56.128 61.184" fill="#E8447A"></path>
-                <path d="M64.704 654.464h13.76a39.168 39.168 0 0 0 40.064-38.272v-17.6c0-21.12-17.92-38.208-40.064-38.208h-13.376" fill="#F5BB1D"></path>
-                <path d="M160 684.992a101.632 96.832 0 1 0 203.264 0 101.632 96.832 0 1 0-203.264 0Z" fill="#455963"></path>
-                <path d="M218.88 684.992a42.752 40.768 0 1 0 85.504 0 42.752 40.768 0 1 0-85.504 0Z" fill="#AEBCC3"></path>
-                <path d="M652.032 684.992a101.568 96.832 0 1 0 203.136 0 101.568 96.832 0 1 0-203.136 0Z" fill="#455963"></path>
-                <path d="M710.912 684.992a42.752 40.768 0 1 0 85.504 0 42.752 40.768 0 1 0-85.504 0Z" fill="#AEBCC3"></path>
-                <path d="M966.272 591.104v-0.192a257.92 257.92 0 0 0-48.192-40V622.72c0 8.448 7.232 15.296 16.064 15.296h36.608v-42.304l-4.48-4.608z" fill="#F5BB1D"></path>
-                <path d="M405.568 335.616c-104.896 6.336-191.296 76.8-216.64 170.816h216.64V335.616zM445.696 506.432h216.64c-41.216-86.848-117.12-159.616-216.64-170.048v170.048z" fill="#631536"></path>
-              </svg>
-            </span>
-          {:else if getBatteryAt(col, row)}
-            <span class="fuel-emoji">⛽</span>
-          {/if}
-        </div>
-      {/each}
-    {/each}
-  </div>
+	<div class="controls">
+		<button class="btn btn-success" onclick={onAddBattery}> 🌟 Добавить звезду </button>
+		<div class="score">🌟 Счёт: {score}</div>
+	</div>
 </div>
