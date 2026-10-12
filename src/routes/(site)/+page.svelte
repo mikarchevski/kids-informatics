@@ -62,16 +62,6 @@
 	<!-- Основной контент: сайдбар + новости -->
 	<div class="content-wrapper">
 		<!-- Левое меню -->
-		<aside class="sidebar">
-			<nav class="menu">
-				{#each menuItems as item}
-					<a href={item.href} class="menu-item">
-						<span class="menu-icon">{item.icon}</span>
-						<span class="menu-label">{item.label}</span>
-					</a>
-				{/each}
-			</nav>
-		</aside>
 
 		<!-- Центральная часть с новостями -->
 		<main class="main-content">
