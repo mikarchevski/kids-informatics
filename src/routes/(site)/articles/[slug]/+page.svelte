@@ -1,51 +1,50 @@
 <script lang="ts">
-	import { getArticleBySlug, articles } from '#lib/articles';
-	import './slug.css';
-	// В Svelte 5 параметры динамического маршрута (slug) приходят через $props()
-	let { params }: { params: { slug: string } } = $props();
+	import type { PageData } from './$types';
+	import { marked } from 'marked';
+	import './articles.css';
+	let { data }: { data: PageData } = $props();
 
-	const article = $derived(getArticleBySlug(params.slug));
+	// Безопасный рендеринг HTML из базы
+	const htmlContent = $derived(data.article ? marked(data.article.content) : '');
 
-	// Находим предыдущую и следующую статьи для навигации
-	const currentIndex = $derived(articles.findIndex((a) => a.slug === params.slug));
-	const prevArticle = $derived(currentIndex > 0 ? articles[currentIndex - 1] : null);
+	// Навигация по массиву всех статей из load()
+	const currentIndex = $derived(data.allArticles.findIndex((a) => a.slug === data.article?.slug));
+	const prevArticle = $derived(currentIndex > 0 ? data.allArticles[currentIndex - 1] : null);
 	const nextArticle = $derived(
-		currentIndex < articles.length - 1 ? articles[currentIndex + 1] : null
+		currentIndex < data.allArticles.length - 1 ? data.allArticles[currentIndex + 1] : null
 	);
 </script>
 
 <svelte:head>
-	<title>{article?.title || 'Статья'} — Kids Informatics</title>
+	<title>{data.article?.title || 'Статья'} — Kids Informatics</title>
 </svelte:head>
 
-{#if article}
-	<article class="detail-aritcle-full">
+{#if data.article}
+	<article class="detail-article-full">
 		<a href="/articles" class="back-link">← Все статьи</a>
 
-		<header class="detail-aritcle-header">
+		<header class="detail-article-header">
 			<span
-				class="detail-aritcle-tag"
-				style="background: {article.tagColor}20; color: {article.tagColor};"
+				class="detail-article-tag"
+				style="background: {data.article.tagColor}20; color: {data.article.tagColor};"
 			>
-				{article.tag}
+				{data.article.tag}
 			</span>
-			<span class="detail-aritcle-time">⏱️ {article.readTime}</span>
-			<h1 class="detail-aritcle-title">{article.title}</h1>
-			<h2 class="detail-aritcle-subtitle">{article.subtitle}</h2>
+			<span class="detail-article-time">⏱️ {data.article.readTime}</span>
+			<h1 class="detail-article-title">{data.article.title}</h1>
+			<h2 class="detail-article-subtitle">{data.article.subtitle}</h2>
 		</header>
 
-		<div class="detail-aritcle-content">
-			{@html article.content}
+		<div class="detail-article-content">
+			{@html htmlContent}
 		</div>
 
-		<nav class="detail-aritcle-nav">
+		<nav class="detail-article-nav">
 			{#if prevArticle}
 				<a href="/articles/{prevArticle.slug}" class="nav-link prev">
 					<span class="nav-label">← Предыдущая</span>
 					<span class="nav-title">{prevArticle.title}</span>
 				</a>
-			{:else}
-				<div></div>
 			{/if}
 
 			{#if nextArticle}
@@ -53,16 +52,14 @@
 					<span class="nav-label">Следующая →</span>
 					<span class="nav-title">{nextArticle.title}</span>
 				</a>
-			{:else}
-				<div></div>
 			{/if}
 		</nav>
 	</article>
 {:else}
 	<div class="not-found">
 		<h1>🤖 Статья не найдена</h1>
-		<p>Возможно, она была удалена или перемещена.</p>
-		<a href="/articles" class="back-button">← Вернуться к списку статей</a>
+		<p>Проверьте URL или вернитесь к списку.</p>
+		<a href="/articles" class="back-button">← К статьям</a>
 	</div>
 {/if}
 

@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { articles } from '#lib/articles';
+	import type { PageData } from './$types';
 	import './articles.css';
+	let { data }: { data: PageData } = $props();
 </script>
 
 <svelte:head>
@@ -13,7 +14,7 @@
 </p>
 
 <div class="articles-grid">
-	{#each articles as article}
+	{#each data.articles as article}
 		<a href="/articles/{article.slug}" class="article-card">
 			<div class="article-header">
 				<span
@@ -33,4 +34,5 @@
 </div>
 
 <style>
+	/* Ваши стили остаются здесь */
 </style>
