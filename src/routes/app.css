@@ -349,6 +349,16 @@ body {
 	border: 2px solid #ffc107;
 }
 
+/* Обертка поворачивается, чтобы стиль не зависел от передачи style через Svelte-компонент. */
+.robot-orientation {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	transition: transform 0.3s ease;
+}
+
 /* SVG аватара на поле */
 .robot-svg {
 	width: 40px;
