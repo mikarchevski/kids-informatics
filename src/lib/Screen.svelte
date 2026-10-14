@@ -16,6 +16,7 @@
 	} = $props();
 
 	const GRID_SIZE = 10;
+	const Avatar = $derived(avatarComponent);
 
 	function getBatteryAt(x: number, y: number) {
 		return batteries.some((b) => b.x === x && b.y === y);
@@ -46,11 +47,9 @@
 			{#each Array(GRID_SIZE) as _, col}
 				<div class="cell" class:robot={position.x === col && position.y === row}>
 					{#if position.x === col && position.y === row}
-						<svelte:component
-							this={avatarComponent}
-							class="robot-svg"
-							style="transform: rotate({rotation}deg);"
-						/>
+						<div class="robot-orientation" style="transform: rotate({rotation}deg);">
+							<Avatar class="robot-svg" />
+						</div>
 					{:else if getBatteryAt(col, row)}
 						<span class="fuel-icon">🌟</span>
 					{/if}
