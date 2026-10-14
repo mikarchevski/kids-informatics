@@ -1,19 +1,73 @@
 <script lang="ts">
-	let { class: className = '' } = $props();
+	let { direction = 'right', isMoving = false } = $props();
 </script>
 
-<svg class={className} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-	<!-- Корпус ракеты -->
-	<path d="M32 4 L32 44 L24 52 L40 52 Z" fill="#ECF0F1" />
-	<!-- Нос ракеты -->
-	<path d="M32 4 L32 20 L24 28 L40 28 Z" fill="#E74C3C" />
-	<!-- Иллюминатор -->
-	<circle cx="32" cy="32" r="6" fill="#3498DB" />
-	<circle cx="32" cy="32" r="4" fill="#AED6F1" />
-	<!-- Крылья -->
-	<path d="M24 44 L16 52 L24 52 Z" fill="#E74C3C" />
-	<path d="M40 44 L48 52 L40 52 Z" fill="#E74C3C" />
-	<!-- Огонь -->
-	<path d="M28 52 L32 62 L36 52 Z" fill="#F39C12" />
-	<path d="M30 52 L32 58 L34 52 Z" fill="#F1C40F" />
-</svg>
+<div class="avatar-wrapper" class:flipped={direction === 'left'} class:moving={isMoving}>
+	<!-- Внутренний контейнер для поворота на 90° -->
+	<div class="rocket-body">
+		<svg
+			viewBox="0 0 1024 1024"
+			xmlns="http://www.w3.org/2000/svg"
+			preserveAspectRatio="xMidYMid meet"
+		>
+			<path
+				d="M662.72 462.784l136.448 169.408v173.248l-136.448-48.32zM342.72 457.344L206.272 626.816v173.248l136.448-48.384z"
+				fill="#3A7EB9"
+			/>
+			<path
+				d="M570.688 418.688l-142.848 1.152a266.496 266.496 0 0 1-20.288-0.576l3.712 448.64c0.256 28.928 94.272 130.048 94.272 130.048s93.888-102.656 93.632-131.584l-3.712-448.96a344.64 344.64 0 0 1-24.768 1.28z"
+				fill="#D48171"
+			/>
+			<path
+				d="M531.456 599.296l-63.04 0.576c-3.008 0-5.952-0.064-8.96-0.384l2.176 257.792c0.128 16.64 41.728 74.816 41.728 74.816s41.344-58.944 41.28-75.52l-2.176-257.92c-3.648 0.384-7.296 0.64-11.008 0.64z"
+				fill="#E9DF92"
+			/>
+			<path
+				d="M554.304 93.568a324.352 324.352 0 0 0-110.592 1.728L342.72 240.768v584.512c13.824-0.96 27.968-1.536 42.368-1.536h245.248c11.84 0 23.36 0.384 34.816 1.024V253.312L554.304 93.568z"
+				fill="#B5D5EB"
+			/>
+			<path
+				d="M541.44 94.144L500.416 35.008l-45.696 59.136v29.504h89.024v-29.504zM459.456 288.64h88.96v88.896h-88.96zM459.456 467.456h88.96v88.96h-88.96zM459.456 634.176h88.96v88.896h-88.96zM364.928 788.736h277.76v44.352h-277.76z"
+				fill="#3A7EB9"
+			/>
+		</svg>
+	</div>
+</div>
+
+<style>
+	/* Внешняя обёртка: отвечает ТОЛЬКО за отражение направления */
+	.avatar-wrapper {
+		width: 100%;
+		height: 100%;
+		display: block;
+		transform-origin: center center;
+		transition: transform 0.2s ease-out;
+		will-change: transform;
+	}
+
+	.avatar-wrapper.flipped {
+		transform: scaleX(-1);
+	}
+
+	/* Внутренний контейнер: отвечает ТОЛЬКО за поворот на 90° */
+	.rocket-body {
+		width: 100%;
+		height: 100%;
+		transform: rotate(90deg);
+		transform-origin: center center;
+	}
+
+	/* Анимация покачивания при движении */
+	.avatar-wrapper.moving .rocket-body {
+		animation: hover 0.6s ease-in-out infinite alternate;
+	}
+
+	@keyframes hover {
+		from {
+			transform: rotate(90deg) translateY(0);
+		}
+		to {
+			transform: rotate(90deg) translateY(-15px);
+		}
+	}
+</style>
