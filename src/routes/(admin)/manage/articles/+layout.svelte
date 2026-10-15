@@ -7,12 +7,12 @@
 <div class="admin-dashboard">
 	<!-- Основная область -->
 	<main class="main-content">
-		<header class="top-bar">
+		<!-- <header class="top-bar">
 			<div class="user-info">
 				<span class="username">Привет, {data.user?.username}!</span>
 				<a href="/logout" class="btn-logout">Выйти</a>
 			</div>
-		</header>
+		</header> -->
 
 		<div class="page-content">
 			{@render children()}
