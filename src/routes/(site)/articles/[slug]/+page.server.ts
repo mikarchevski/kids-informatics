@@ -1,5 +1,5 @@
 import { db } from '#lib/db';
-import { articles } from '#lib/db/schema';
+import { articleTags, articles, tags } from '#lib/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 
@@ -11,6 +11,11 @@ export async function load({ params }) {
 	if (!article || !article.isPublished) {
 		error(404, 'Статья не найдена');
 	}
+	const articleTagList = await db
+		.select({ id: tags.id, name: tags.name, color: tags.color })
+		.from(articleTags)
+		.innerJoin(tags, eq(articleTags.tagId, tags.id))
+		.where(eq(articleTags.articleId, article.id));
 
 	// Загружаем ВСЕ опубликованные статьи для навигации
 	const allArticles = await db.query.articles.findMany({
@@ -19,5 +24,5 @@ export async function load({ params }) {
 		columns: { id: true, slug: true, title: true }
 	});
 
-	return { article, allArticles };
+	return { article: { ...article, tags: articleTagList }, allArticles };
 }

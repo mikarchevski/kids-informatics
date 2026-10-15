@@ -6,7 +6,8 @@ import {
 	timestamp,
 	text,
 	boolean,
-	integer
+	integer,
+	primaryKey
 } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
@@ -40,8 +41,6 @@ export const articles = pgTable('articles', {
 	content: text('content').notNull(), // Markdown-текст
 
 	// Метаданные
-	tag: varchar('tag', { length: 50 }), // "Для детей", "Родителям"
-	tagColor: varchar('tag_color', { length: 7 }), // HEX (#4C97FF)
 	readTime: varchar('read_time', { length: 20 }), // "3 мин"
 
 	// Управление
@@ -55,6 +54,25 @@ export const articles = pgTable('articles', {
 	createdAt: timestamp('created_at').defaultNow().notNull(),
 	updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
+
+export const tags = pgTable('tags', {
+	id: uuid('id').defaultRandom().primaryKey(),
+	name: varchar('name', { length: 50 }).unique().notNull(),
+	color: varchar('color', { length: 7 }).default('#999999').notNull()
+});
+
+export const articleTags = pgTable(
+	'article_tags',
+	{
+		articleId: uuid('article_id')
+			.references(() => articles.id, { onDelete: 'cascade' })
+			.notNull(),
+		tagId: uuid('tag_id')
+			.references(() => tags.id, { onDelete: 'cascade' })
+			.notNull()
+	},
+	(table) => [primaryKey({ columns: [table.articleId, table.tagId] })]
+);
 
 export const sessions = pgTable('sessions', {
 	id: varchar('id', { length: 36 }).primaryKey(), // UUID как строка

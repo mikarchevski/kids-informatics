@@ -17,12 +17,11 @@
 	{#each data.articles as article}
 		<a href="/articles/{article.slug}" class="article-card">
 			<div class="article-header">
-				<span
-					class="article-tag"
-					style="background: {article.tagColor}20; color: {article.tagColor};"
-				>
-					{article.tag}
-				</span>
+				{#each article.tags as tag (tag.id)}
+					<span class="article-tag" style="background: {tag.color}20; color: {tag.color};">
+						{tag.name}
+					</span>
+				{/each}
 				<span class="article-time">⏱️ {article.readTime}</span>
 			</div>
 			<h2 class="article-title">{article.title}</h2>

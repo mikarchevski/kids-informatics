@@ -38,9 +38,11 @@
 							</a>
 						</td>
 						<td>
-							<span class="tag-badge" style="background: {article.tagColor}">
-								{article.tag}
-							</span>
+							{#each article.tags as tag (tag.id)}
+								<span class="tag-badge" style="background: {tag.color}">{tag.name}</span>
+							{:else}
+								<span class="tag-badge">Без тега</span>
+							{/each}
 						</td>
 						<td>{article.sortOrder}</td>
 						<td>

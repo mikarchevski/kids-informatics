@@ -46,6 +46,75 @@ label {
 	font-family: inherit;
 	font-size: 1rem;
 }
+.tag-picker {
+	position: relative;
+}
+.selected-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+.selected-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.35rem 0.6rem;
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--tag-color) 14%, white);
+	color: var(--tag-color);
+	font-size: 0.9rem;
+}
+.remove-tag {
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	font-size: 1.1rem;
+	line-height: 1;
+	cursor: pointer;
+}
+.tag-options {
+	position: absolute;
+	z-index: 2;
+	top: 100%;
+	right: 0;
+	left: 0;
+	max-height: 220px;
+	overflow-y: auto;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	background: white;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+.tag-option {
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+	padding: 0.65rem 0.75rem;
+	border: 0;
+	background: white;
+	color: #495057;
+	text-align: left;
+	cursor: pointer;
+}
+.tag-option:hover,
+.tag-option:focus-visible {
+	background: #f1f5f9;
+}
+.tag-option span {
+	color: #6c757d;
+	font-size: 0.8rem;
+}
+.create-tag-option {
+	border-top: 1px solid #eee;
+	color: #2563eb;
+}
+.tag-error {
+	margin-top: 0.4rem;
+	color: #721c24;
+	font-size: 0.9rem;
+}
 .form-textarea {
 	resize: vertical;
 	min-height: 300px;

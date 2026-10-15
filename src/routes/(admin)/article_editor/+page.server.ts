@@ -26,8 +26,6 @@ export const actions: Actions = {
 			content: '', // Обязательно! Поле notNull()
 			isPublished: false,
 			sortOrder: 100,
-			tag: 'Без тега',
-			tagColor: '#999999',
 			readTime: '1 мин'
 		});
 
