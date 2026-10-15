@@ -4,6 +4,7 @@
 	import './home.css';
 
 	let { children } = $props();
+	let isMenuOpen = $state(false);
 
 	const menuItems = [
 		{ icon: '🏠', label: 'Главная', href: '/' },
@@ -28,21 +29,51 @@
 				<span class="logo-text">Kids Informatics</span>
 			</a>
 			<nav class="header-nav">
-				<a href="/car-play" class="btn-play">▶ Играть</a>
+				<a href="/car-play" class="btn-play desktop-play">▶ Играть</a>
+				<button
+					class="menu-toggle"
+					type="button"
+					aria-label={isMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
+					aria-expanded={isMenuOpen}
+					aria-controls="site-menu"
+					onclick={() => (isMenuOpen = !isMenuOpen)}
+				>
+					<span></span>
+					<span></span>
+					<span></span>
+				</button>
 			</nav>
 		</div>
 	</header>
 
+	{#if isMenuOpen}
+		<button
+			class="menu-backdrop"
+			type="button"
+			aria-label="Закрыть меню"
+			onclick={() => (isMenuOpen = false)}
+		></button>
+	{/if}
+
 	<!-- Обёртка с сайдбаром и основным контентом -->
 	<div class="content-wrapper">
-		<aside class="sidebar">
+		<aside id="site-menu" class={`sidebar${isMenuOpen ? ' open' : ''}`}>
 			<nav class="menu">
 				{#each menuItems as item}
-					<a href={item.href} class="menu-item" class:active={isActive(item.href)}>
+					<a
+						href={item.href}
+						class="menu-item"
+						class:active={isActive(item.href)}
+						onclick={() => (isMenuOpen = false)}
+					>
 						<span class="menu-icon">{item.icon}</span>
 						<span class="menu-label">{item.label}</span>
 					</a>
 				{/each}
+				<a href="/car-play" class="menu-item mobile-menu-play" onclick={() => (isMenuOpen = false)}>
+					<span class="menu-icon">▶️</span>
+					<span class="menu-label">Играть</span>
+				</a>
 			</nav>
 		</aside>
 
