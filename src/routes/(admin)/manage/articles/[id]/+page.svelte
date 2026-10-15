@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import './page.css';
-	import './layout.css';
 	let { data, form }: { data: PageData; form?: any } = $props();
 </script>
 
