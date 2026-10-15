@@ -24,12 +24,11 @@
 		<a href="/articles" class="back-link">← Все статьи</a>
 
 		<header class="detail-article-header">
-			<span
-				class="detail-article-tag"
-				style="background: {data.article.tagColor}20; color: {data.article.tagColor};"
-			>
-				{data.article.tag}
-			</span>
+			{#each data.article.tags as tag (tag.id)}
+				<span class="detail-article-tag" style="background: {tag.color}20; color: {tag.color};">
+					{tag.name}
+				</span>
+			{/each}
 			<span class="detail-article-time">⏱️ {data.article.readTime}</span>
 			<h1 class="detail-article-title">{data.article.title}</h1>
 			<h2 class="detail-article-subtitle">{data.article.subtitle}</h2>

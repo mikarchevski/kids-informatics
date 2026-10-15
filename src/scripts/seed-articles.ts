@@ -1,5 +1,5 @@
 import { db } from '#lib/db';
-import { articles } from '#lib/db/schema';
+import { articleTags, articles, tags } from '#lib/db/schema';
 
 // Ваши текущие статьи из articles.ts
 const articlesToSeed = [
@@ -146,7 +146,17 @@ async function seed() {
 	console.log('🌱 Начинаем сид статей...');
 
 	for (const article of articlesToSeed) {
-		await db.insert(articles).values(article);
+		const { tag, tagColor, ...articleData } = article;
+		const [createdArticle] = await db
+			.insert(articles)
+			.values(articleData)
+			.returning({ id: articles.id });
+		const [articleTag] = await db
+			.insert(tags)
+			.values({ name: tag, color: tagColor })
+			.onConflictDoUpdate({ target: tags.name, set: { color: tagColor } })
+			.returning({ id: tags.id });
+		await db.insert(articleTags).values({ articleId: createdArticle.id, tagId: articleTag.id });
 		console.log(`✅ Добавлена статья: ${article.title}`);
 	}
 
