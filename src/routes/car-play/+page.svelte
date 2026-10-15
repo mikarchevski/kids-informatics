@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import * as Blockly from 'blockly';
 	import { defineCustomBlocks } from '#lib/blocks';
 	import { Interpreter } from '#lib/interpreter';
@@ -11,7 +11,11 @@
 	import Rocket from '#lib/avatars/Rocket.svelte';
 	import Dino from '#lib/avatars/Dino.svelte';
 
-	const GRID_SIZE = 10;
+	type CommandType = 'move_forward' | 'move_backward' | 'turn_left' | 'turn_right';
+	type ProgramCommand = { id: string; type: CommandType };
+
+	const DESKTOP_GRID_SIZE = 10;
+	const MOBILE_GRID_SIZE = 8;
 
 	const avatars = [
 		{ id: 'car', name: 'Машинка', component: Car },
@@ -21,256 +25,785 @@
 		{ id: 'dino', name: 'Динозаврик', component: Dino }
 	];
 
-	let workspace: Blockly.WorkspaceSvg | null = $state(null);
-	let blocklyDiv: HTMLDivElement = $state() as HTMLDivElement;
-	let robotPosition = $state({ x: 0, y: 5, direction: 'right' });
-	let interpreter: Interpreter = $state() as Interpreter;
+	const commands: Record<CommandType, { icon: string; label: string }> = {
+		move_forward: { icon: '⬆️', label: 'Вперёд' },
+		move_backward: { icon: '⬇️', label: 'Назад' },
+		turn_left: { icon: '↶', label: 'Влево' },
+		turn_right: { icon: '↷', label: 'Вправо' }
+	};
+	const commandList: { type: CommandType; icon: string; label: string }[] = [
+		{ type: 'move_forward', ...commands.move_forward },
+		{ type: 'move_backward', ...commands.move_backward },
+		{ type: 'turn_left', ...commands.turn_left },
+		{ type: 'turn_right', ...commands.turn_right }
+	];
+
+	let workspace: Blockly.WorkspaceSvg | null = null;
+	let blocklyDiv: HTMLDivElement;
+	let robotPosition = $state({ x: 0, y: 4, direction: 'right' });
+	let interpreter: Interpreter | null = null;
 	let batteries = $state<{ x: number; y: number }[]>([]);
 	let score = $state(0);
 	let isMobileLayout = $state(false);
-	let flyoutSwipe: { pointerId: number; startX: number; startScroll: number } | null = null;
+	let gridSize = $state(DESKTOP_GRID_SIZE);
+	let program = $state<ProgramCommand[]>([]);
+	let activeCommandId = $state<string | null>(null);
+	let isMenuOpen = $state(false);
+	let selectedAvatarId = $state('car');
+	let hasLoadedAvatar = $state(false);
 
-	// Инициализируем из localStorage или берем 'car' по умолчанию
-	let selectedAvatarId = $state(localStorage.getItem('kids-coder-avatar') || 'car');
+	const currentAvatar = $derived(
+		avatars.find((avatar) => avatar.id === selectedAvatarId) ?? avatars[0]
+	);
 
-	// В Svelte 5 $derived принимает выражение, а не функцию.
-	// Он автоматически отслеживает изменения selectedAvatarId.
-	const currentAvatar = $derived(avatars.find((a) => a.id === selectedAvatarId) || avatars[0]);
-
-	// Сохраняем выбор при каждом изменении selectedAvatarId
 	$effect(() => {
-		localStorage.setItem('kids-coder-avatar', selectedAvatarId);
+		if (hasLoadedAvatar) localStorage.setItem('kids-coder-avatar', selectedAvatarId);
 	});
 
-	function handleKeyDown(event: KeyboardEvent) {
-		if (!workspace) return;
-		if (event.key === 'Delete' || event.key === 'Backspace') {
-			const selected = Blockly.getSelected();
-			if (selected && selected instanceof Blockly.Block) {
-				selected.dispose(false);
-				event.preventDefault();
-			}
-		}
-	}
-
-	function addBattery() {
-		const freeCells: { x: number; y: number }[] = [];
-		for (let x = 0; x < GRID_SIZE; x++) {
-			for (let y = 0; y < GRID_SIZE; y++) {
-				if (x === robotPosition.x && y === robotPosition.y) continue;
-				if (batteries.some((b) => b.x === x && b.y === y)) continue;
-				freeCells.push({ x, y });
-			}
-		}
-		if (freeCells.length === 0) {
-			alert('На поле нет свободных клеток!');
-			return;
-		}
-		const randomCell = freeCells[Math.floor(Math.random() * freeCells.length)];
-		batteries = [...batteries, randomCell];
-	}
-
-	function checkBatteryPickup(x: number, y: number) {
-		const batteryIndex = batteries.findIndex((b) => b.x === x && b.y === y);
+	function updateRobotPosition(position: { x: number; y: number; direction: string }) {
+		robotPosition = { ...position };
+		const batteryIndex = batteries.findIndex(
+			(battery) => battery.x === position.x && battery.y === position.y
+		);
 		if (batteryIndex !== -1) {
-			batteries = batteries.filter((_, i) => i !== batteryIndex);
+			batteries = batteries.filter((_, index) => index !== batteryIndex);
 			score += 1;
 		}
 	}
 
-	function createWorkspace(savedState?: ReturnType<typeof Blockly.serialization.workspaces.save>) {
-		workspace?.dispose();
-		workspace = Blockly.inject(blocklyDiv, {
-			toolbox: {
-				kind: 'flyoutToolbox',
-				contents: [
-					{ kind: 'block', type: 'move_forward' },
-					{ kind: 'block', type: 'move_backward' },
-					{ kind: 'block', type: 'turn_left' },
-					{ kind: 'block', type: 'turn_right' }
-				]
-			},
-			...(isMobileLayout
-				? {
-						horizontalLayout: true,
-						toolboxPosition: 'start',
-						zoom: { startScale: 0.78, minScale: 0.5, maxScale: 1.2 }
-					}
-				: {}),
-			scrollbars: true,
-			sounds: false,
-			trashcan: false,
-			move: { scrollbars: true, drag: true, wheel: false }
-		});
-		if (savedState) Blockly.serialization.workspaces.load(savedState, workspace);
-		interpreter = new Interpreter(workspace, (pos) => {
-			robotPosition = { ...pos };
-			checkBatteryPickup(pos.x, pos.y);
-		});
-		Blockly.svgResize(workspace);
+	function createInterpreter() {
+		if (!workspace) return;
+		interpreter = new Interpreter(
+			workspace,
+			updateRobotPosition,
+			gridSize,
+			(blockId) => (activeCommandId = blockId)
+		);
+	}
+
+	function addCommand(type: CommandType) {
+		if (!workspace) return;
+
+		const block = workspace.newBlock(type);
+		block.initSvg();
+		block.render();
+
+		const previousCommand = program.at(-1);
+		const previousBlock = previousCommand ? workspace.getBlockById(previousCommand.id) : null;
+		if (previousBlock?.nextConnection && block.previousConnection) {
+			previousBlock.nextConnection.connect(block.previousConnection);
+		}
+
+		program = [...program, { id: block.id, type }];
+	}
+
+	function clearProgram() {
+		workspace?.clear();
+		program = [];
+		activeCommandId = null;
+	}
+
+	function addBattery() {
+		const freeCells: { x: number; y: number }[] = [];
+		for (let x = 0; x < gridSize; x++) {
+			for (let y = 0; y < gridSize; y++) {
+				if (x === robotPosition.x && y === robotPosition.y) continue;
+				if (batteries.some((battery) => battery.x === x && battery.y === y)) continue;
+				freeCells.push({ x, y });
+			}
+		}
+
+		if (freeCells.length === 0) {
+			alert('На поле нет свободных клеток!');
+			return;
+		}
+
+		batteries = [...batteries, freeCells[Math.floor(Math.random() * freeCells.length)]];
+		isMenuOpen = false;
+	}
+
+	function clearField() {
+		batteries = [];
+		score = 0;
+		interpreter?.reset();
+		isMenuOpen = false;
+	}
+
+	async function runProgram() {
+		if (!program.length || !interpreter) return;
+		await interpreter.execute();
 	}
 
 	function handleViewportChange(event: MediaQueryListEvent) {
-		if (event.matches === isMobileLayout || !workspace) return;
-		const savedState = Blockly.serialization.workspaces.save(workspace);
+		if (event.matches === isMobileLayout) return;
+
 		isMobileLayout = event.matches;
-		createWorkspace(savedState);
-	}
-
-	function handleWindowResize() {
-		if (workspace) Blockly.svgResize(workspace);
-	}
-
-	function handleFlyoutPointerDown(event: PointerEvent) {
-		if (!isMobileLayout || event.pointerType !== 'touch') return;
-		const target = event.target;
-		if (
-			!(target instanceof Element) ||
-			(!target.closest('.blocklyFlyout') && !target.closest('.blocklyFlyoutScrollbar'))
-		)
-			return;
-		if (target.closest('.blocklyDraggable')) return;
-
-		const flyoutWorkspace = workspace?.getFlyout()?.getWorkspace();
-		const metrics = flyoutWorkspace?.getMetricsManager();
-		const view = metrics?.getViewMetrics();
-		const scroll = metrics?.getScrollMetrics();
-		if (!flyoutWorkspace?.scrollbar || !view || !scroll) return;
-
-		flyoutSwipe = {
-			pointerId: event.pointerId,
-			startX: event.clientX,
-			startScroll: view.left - scroll.left
+		gridSize = isMobileLayout ? MOBILE_GRID_SIZE : DESKTOP_GRID_SIZE;
+		robotPosition = {
+			...robotPosition,
+			x: Math.min(robotPosition.x, gridSize - 1),
+			y: Math.min(robotPosition.y, gridSize - 1)
 		};
-		event.preventDefault();
-		event.stopImmediatePropagation();
-		blocklyDiv.setPointerCapture(event.pointerId);
+		batteries = batteries.filter((battery) => battery.x < gridSize && battery.y < gridSize);
+		createInterpreter();
 	}
 
-	function handleFlyoutPointerMove(event: PointerEvent) {
-		if (!flyoutSwipe || event.pointerId !== flyoutSwipe.pointerId) return;
-		const scrollbar = workspace?.getFlyout()?.getWorkspace().scrollbar;
-		if (!scrollbar) return;
-
-		scrollbar.setX(flyoutSwipe.startScroll + flyoutSwipe.startX - event.clientX);
-		event.preventDefault();
-		event.stopImmediatePropagation();
-	}
-
-	function handleFlyoutPointerEnd(event: PointerEvent) {
-		if (!flyoutSwipe || event.pointerId !== flyoutSwipe.pointerId) return;
-		flyoutSwipe = null;
-		event.stopImmediatePropagation();
+	function closeMenu() {
+		isMenuOpen = false;
 	}
 
 	let mobileMediaQuery: MediaQueryList;
 
 	onMount(() => {
+		const savedAvatar = localStorage.getItem('kids-coder-avatar');
+		if (avatars.some((avatar) => avatar.id === savedAvatar)) {
+			selectedAvatarId = savedAvatar ?? 'car';
+		}
+		hasLoadedAvatar = true;
+
 		defineCustomBlocks();
 		mobileMediaQuery = window.matchMedia('(max-width: 900px) and (pointer: coarse)');
 		isMobileLayout = mobileMediaQuery.matches;
-		createWorkspace();
+		gridSize = isMobileLayout ? MOBILE_GRID_SIZE : DESKTOP_GRID_SIZE;
+		robotPosition = { x: 0, y: Math.floor(gridSize / 2), direction: 'right' };
+
+		workspace = Blockly.inject(blocklyDiv, {
+			sounds: false,
+			trashcan: false,
+			move: { scrollbars: false, drag: false, wheel: false }
+		});
+		createInterpreter();
+
 		mobileMediaQuery.addEventListener('change', handleViewportChange);
-		window.addEventListener('resize', handleWindowResize);
-		window.addEventListener('keydown', handleKeyDown);
-		blocklyDiv.addEventListener('pointerdown', handleFlyoutPointerDown, true);
-		blocklyDiv.addEventListener('pointermove', handleFlyoutPointerMove, true);
-		blocklyDiv.addEventListener('pointerup', handleFlyoutPointerEnd, true);
-		blocklyDiv.addEventListener('pointercancel', handleFlyoutPointerEnd, true);
 	});
 
 	onDestroy(() => {
 		mobileMediaQuery?.removeEventListener('change', handleViewportChange);
-		window.removeEventListener('resize', handleWindowResize);
-		window.removeEventListener('keydown', handleKeyDown);
-		blocklyDiv.removeEventListener('pointerdown', handleFlyoutPointerDown, true);
-		blocklyDiv.removeEventListener('pointermove', handleFlyoutPointerMove, true);
-		blocklyDiv.removeEventListener('pointerup', handleFlyoutPointerEnd, true);
-		blocklyDiv.removeEventListener('pointercancel', handleFlyoutPointerEnd, true);
 		workspace?.dispose();
 	});
-
-	function runCode() {
-		if (interpreter) interpreter.execute();
-	}
-
-	function resetRobot() {
-		robotPosition = { x: 5, y: 5, direction: 'right' };
-		batteries = [];
-		score = 0;
-		if (interpreter) interpreter.reset();
-	}
-
-	function clearWorkspace() {
-		if (workspace) workspace.clear();
-	}
 </script>
 
-<div class="app">
-	<header class="app-header">
-		<a href="/" class="home-link">← На главную</a>
-		<h1>💻 Программное приключение</h1>
-		<div class="controls">
-			<button onclick={runCode} class="btn btn-primary">▶ Запустить</button>
-			<button onclick={resetRobot} class="btn btn-secondary">↺ Сброс</button>
+<div class="game-layout">
+	<header class="game-header">
+		<a href="/" class="home-link">
+			<span class="home-full">← На главную</span>
+			<span class="home-short">←</span>
+		</a>
+		<h1>
+			<span class="full-title">🖥️ Программное приключение</span>
+			<span class="short-title">Приключение</span>
+		</h1>
+		<div class="header-actions" role="group" aria-label="Управление игрой">
+			{#if !isMobileLayout}
+				<select bind:value={selectedAvatarId} aria-label="Выбери героя">
+					{#each avatars as avatar}
+						<option value={avatar.id}>{avatar.name}</option>
+					{/each}
+				</select>
+			{/if}
+			<button class="run-button" onclick={runProgram} type="button">▶ Запустить</button>
+			<button class="reset-button" onclick={clearField} type="button">↺ Сброс</button>
 		</div>
 	</header>
 
-	<div class="avatar-selector">
-		<span class="selector-label">Выбери героя:</span>
-		<select class="avatar-select" bind:value={selectedAvatarId} aria-label="Выбери героя для игры">
-			{#each avatars as avatar}
-				<option value={avatar.id}>{avatar.name}</option>
-			{/each}
-		</select>
-		<div class="avatar-buttons" role="group" aria-label="Выбери героя для игры">
-			{#each avatars as avatar}
-				<button
-					class="avatar-btn"
-					class:active={selectedAvatarId === avatar.id}
-					onclick={() => (selectedAvatarId = avatar.id)}
-					title={avatar.name}
-					aria-label={avatar.name}
-					aria-pressed={selectedAvatarId === avatar.id}
-					type="button"
-				>
-					<avatar.component class="avatar-preview" />
-				</button>
-			{/each}
-		</div>
-	</div>
-
-	<div class="app-main">
-		<div class="blockly-area">
-			<div bind:this={blocklyDiv} class="blockly-div"></div>
-			<button class="custom-trashcan" onclick={clearWorkspace} title="Очистить все блоки">
-				<svg
-					width="32"
-					height="32"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<polyline points="3 6 5 6 21 6"></polyline>
-					<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-					></path>
-					<line x1="10" y1="11" x2="10" y2="17"></line>
-					<line x1="14" y1="11" x2="14" y2="17"></line>
-				</svg>
-			</button>
-		</div>
-
-		<div class="screen-area">
+	<main class="game-main">
+		<section class="scene-panel" aria-label="Игровая сцена">
 			<Screen
 				position={robotPosition}
 				{batteries}
-				{score}
-				onAddBattery={addBattery}
 				avatarComponent={currentAvatar.component}
+				{gridSize}
 			/>
+		</section>
+
+		<section class="program-panel" aria-labelledby="program-title">
+			<div class="program-heading">
+				<h2 id="program-title">Программа</h2>
+				<button
+					class="menu-button"
+					class:menu-open={isMenuOpen}
+					onclick={() => (isMenuOpen = !isMenuOpen)}
+					aria-label="Дополнительные действия"
+					aria-expanded={isMenuOpen}
+					aria-controls="game-menu"
+					type="button"
+				>
+					⚙️
+				</button>
+			</div>
+
+			<div class="program-list" aria-live="polite" aria-label="Добавленные команды">
+				{#if program.length === 0}
+					<p class="program-empty">Нажимай на кнопки внизу, чтобы добавить команды</p>
+				{:else}
+					{#each program as command, index (command.id)}
+						{@const commandInfo = commands[command.type]}
+						<div
+							class="command-chip"
+							class:active={activeCommandId === command.id}
+							aria-current={activeCommandId === command.id ? 'step' : undefined}
+						>
+							<span class="command-number">{index + 1}</span>
+							<span class="command-icon" aria-hidden="true">{commandInfo.icon}</span>
+							<span>{commandInfo.label}</span>
+						</div>
+					{/each}
+				{/if}
+			</div>
+		</section>
+
+		<section class="command-palette" role="group" aria-label="Добавить команду">
+			{#each commandList as command (command.type)}
+				<button
+					class="command-button"
+					onclick={() => addCommand(command.type)}
+					aria-label={`Добавить команду: ${command.label}`}
+					type="button"
+				>
+					<span class="palette-icon" aria-hidden="true">{command.icon}</span>
+					<span>{command.label}</span>
+				</button>
+			{/each}
+		</section>
+	</main>
+
+	<div class="blockly-host" bind:this={blocklyDiv} aria-hidden="true"></div>
+
+	<button
+		class="sheet-backdrop"
+		class:visible={isMenuOpen}
+		onclick={closeMenu}
+		aria-label="Закрыть меню"
+		aria-hidden={!isMenuOpen}
+		tabindex={isMenuOpen ? 0 : -1}
+		type="button"
+	></button>
+	<div
+		id="game-menu"
+		class="bottom-sheet"
+		class:open={isMenuOpen}
+		role="dialog"
+		tabindex="-1"
+		aria-modal={isMenuOpen}
+		aria-hidden={!isMenuOpen}
+		aria-labelledby="menu-title"
+		inert={!isMenuOpen}
+	>
+		<div class="sheet-handle" aria-hidden="true"></div>
+		<div class="sheet-heading">
+			<h2 id="menu-title">Дополнительные действия</h2>
+			<button class="close-menu" onclick={closeMenu} aria-label="Закрыть меню" type="button">
+				✕
+			</button>
 		</div>
+		<button class="sheet-action" onclick={addBattery} type="button">⭐ Добавить звезду</button>
+		<p class="sheet-score">⭐ Счёт: {score}</p>
+		<button class="sheet-action" onclick={clearField} type="button">🗑️ Очистить поле</button>
+		<button class="sheet-action secondary-action" onclick={clearProgram} type="button">
+			Очистить программу
+		</button>
 	</div>
 </div>
+
+<style>
+	.game-layout {
+		display: flex;
+		width: 100%;
+		height: 100vh;
+		height: calc(var(--vh, 1vh) * 100);
+		min-height: 0;
+		flex-direction: column;
+		overflow: hidden;
+		background: #f8fafc;
+		color: #0f172a;
+		font-family: system-ui, sans-serif;
+	}
+
+	.game-header {
+		display: grid;
+		min-height: 60px;
+		flex: 0 0 60px;
+		grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+		align-items: center;
+		gap: 12px;
+		padding: 0 16px;
+		border-bottom: 1px solid #e2e8f0;
+		background: #fff;
+	}
+
+	.home-link {
+		display: inline-flex;
+		width: fit-content;
+		min-height: 44px;
+		align-items: center;
+		color: #334155;
+		font-size: 14px;
+		font-weight: 600;
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	.home-short {
+		display: none;
+	}
+
+	.game-header h1 {
+		margin: 0;
+		font-size: clamp(16px, 2vw, 22px);
+		text-align: center;
+		white-space: nowrap;
+	}
+
+	.short-title {
+		display: none;
+	}
+
+	.header-actions {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 8px;
+	}
+
+	.header-actions select,
+	.header-actions button {
+		min-height: 44px;
+		padding: 0 12px;
+		border: 0;
+		border-radius: 10px;
+		font: inherit;
+		font-size: 14px;
+		white-space: nowrap;
+	}
+
+	.header-actions select {
+		max-width: 145px;
+		border: 1px solid #e2e8f0;
+		background: #fff;
+	}
+
+	.header-actions button,
+	.menu-button,
+	.command-button,
+	.sheet-action,
+	.close-menu,
+	.sheet-backdrop {
+		cursor: pointer;
+	}
+
+	.run-button {
+		background: #3b82f6;
+		color: #fff;
+	}
+
+	.reset-button {
+		background: #f3f4f6;
+		color: #1f2937;
+	}
+
+	.game-main {
+		display: grid;
+		min-height: 0;
+		flex: 1;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		grid-template-rows: minmax(0, 1fr) auto;
+		gap: 12px;
+		padding: 12px 12px 20px;
+	}
+
+	.scene-panel {
+		display: grid;
+		min-width: 0;
+		min-height: 0;
+		grid-row: 1 / 3;
+		place-items: center;
+		overflow: hidden;
+	}
+
+	.program-panel {
+		display: flex;
+		min-width: 0;
+		min-height: 0;
+		flex-direction: column;
+		gap: 8px;
+		padding: 12px;
+		border: 1px solid #e2e8f0;
+		border-radius: 16px;
+		background: #fff;
+	}
+
+	.program-heading,
+	.sheet-heading {
+		display: flex;
+		min-height: 44px;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+	}
+
+	.program-heading h2,
+	.sheet-heading h2 {
+		margin: 0;
+		font-size: 16px;
+	}
+
+	.menu-button,
+	.close-menu {
+		display: grid;
+		width: 44px;
+		height: 44px;
+		flex: 0 0 44px;
+		place-items: center;
+		border: 1px solid #e2e8f0;
+		border-radius: 12px;
+		background: #f8fafc;
+		font-size: 20px;
+		transition:
+			background 0.2s ease-out,
+			transform 0.2s ease-out;
+	}
+
+	.program-list {
+		display: flex;
+		max-height: 120px;
+		min-height: 0;
+		flex-wrap: wrap;
+		align-content: flex-start;
+		gap: 8px;
+		overflow-x: hidden;
+		overflow-y: auto;
+		padding: 2px;
+	}
+
+	.program-empty {
+		margin: 0;
+		color: #64748b;
+		font-size: 14px;
+		line-height: 1.4;
+	}
+
+	.command-chip {
+		display: inline-flex;
+		min-height: 40px;
+		align-items: center;
+		gap: 6px;
+		padding: 6px 10px;
+		border: 1px solid #cbd5e1;
+		border-radius: 10px;
+		background: #f8fafc;
+		font-size: 14px;
+		transition:
+			background 0.2s ease-out,
+			border-color 0.2s ease-out;
+	}
+
+	.command-chip.active {
+		border-color: #3b82f6;
+		background: #dbeafe;
+	}
+
+	.command-number {
+		color: #64748b;
+		font-size: 12px;
+		font-weight: 700;
+	}
+
+	.command-icon {
+		font-size: 16px;
+	}
+
+	.command-palette {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 8px;
+		padding: 12px;
+		position: sticky;
+		z-index: 1;
+		bottom: 0;
+		background: #f8fafc;
+	}
+
+	.command-button {
+		display: flex;
+		min-width: 0;
+		min-height: 80px;
+		flex: 1;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		padding: 8px;
+		border: 0;
+		border-radius: 12px;
+		background: #3b82f6;
+		box-shadow: 0 4px 6px rgb(59 130 246 / 30%);
+		color: #fff;
+		font: inherit;
+		font-size: 14px;
+		font-weight: 600;
+		touch-action: manipulation;
+		transition:
+			transform 0.2s ease-out,
+			background 0.2s ease-out;
+	}
+
+	.palette-icon {
+		font-size: 22px;
+		line-height: 1;
+	}
+
+	.blockly-host {
+		position: fixed;
+		top: 0;
+		left: -10000px;
+		width: 320px;
+		height: 240px;
+		overflow: hidden;
+		visibility: hidden;
+		pointer-events: none;
+	}
+
+	.sheet-backdrop {
+		position: fixed;
+		z-index: 99;
+		inset: 0;
+		border: 0;
+		background: rgb(15 23 42 / 45%);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.3s ease-out;
+	}
+
+	.sheet-backdrop.visible {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.bottom-sheet {
+		position: fixed;
+		z-index: 100;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		display: flex;
+		max-height: min(80vh, 520px);
+		flex-direction: column;
+		gap: 10px;
+		padding: 10px 20px calc(20px + env(safe-area-inset-bottom));
+		transform: translateY(100%);
+		border-radius: 20px 20px 0 0;
+		background: #fff;
+		box-shadow: 0 -8px 30px rgb(15 23 42 / 15%);
+		transition: transform 0.3s ease-out;
+	}
+
+	.bottom-sheet.open {
+		transform: translateY(0);
+	}
+
+	.sheet-handle {
+		width: 40px;
+		height: 4px;
+		align-self: center;
+		border-radius: 99px;
+		background: #cbd5e1;
+	}
+
+	.close-menu {
+		font-size: 18px;
+	}
+
+	.sheet-action {
+		min-height: 48px;
+		padding: 10px 14px;
+		border: 1px solid #e2e8f0;
+		border-radius: 12px;
+		background: #f8fafc;
+		color: #0f172a;
+		font: inherit;
+		font-size: 15px;
+		text-align: left;
+	}
+
+	.sheet-score {
+		margin: 0;
+		padding: 10px 14px;
+		border-radius: 12px;
+		background: #fef3c7;
+		color: #854d0e;
+		font-size: 15px;
+		font-weight: 700;
+	}
+
+	.secondary-action {
+		color: #475569;
+	}
+
+	@media (max-width: 900px) and (pointer: coarse) {
+		.game-layout {
+			height: auto;
+			min-height: calc(var(--vh, 1vh) * 110);
+			overflow: visible;
+		}
+
+		.game-header {
+			position: sticky;
+			z-index: 2;
+			top: 0;
+			min-height: 52px;
+			flex-basis: 52px;
+			grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+			gap: 6px;
+			padding: 0 8px;
+		}
+
+		.home-link {
+			font-size: 13px;
+		}
+
+		.game-header h1 {
+			font-size: 16px;
+		}
+
+		.full-title,
+		.header-actions select {
+			display: none;
+		}
+
+		.short-title {
+			display: inline;
+		}
+
+		.header-actions {
+			gap: 5px;
+		}
+
+		.header-actions button {
+			min-height: 44px;
+			padding: 0 8px;
+			font-size: 13px;
+		}
+
+		.game-main {
+			grid-template-columns: minmax(0, 1fr);
+			grid-template-rows: auto auto auto;
+			overflow: visible;
+			gap: 4px;
+			padding: 4px 8px max(20px, env(safe-area-inset-bottom));
+		}
+
+		.scene-panel {
+			grid-row: auto;
+			min-height: min(500px, calc(var(--vh, 1vh) * 60));
+		}
+
+		.program-panel {
+			gap: 4px;
+			padding: 4px 8px;
+			border: 0;
+			border-radius: 10px;
+			background: transparent;
+		}
+
+		.program-heading {
+			min-height: 36px;
+		}
+
+		.program-heading h2 {
+			font-size: 14px;
+		}
+
+		.menu-button {
+			width: 40px;
+			height: 40px;
+			flex-basis: 40px;
+		}
+
+		.program-list {
+			max-height: min(120px, 22vh);
+			gap: 6px;
+		}
+
+		.command-chip {
+			min-height: 34px;
+			gap: 5px;
+			padding: 4px 8px;
+			font-size: 13px;
+		}
+
+		.command-palette {
+			padding: 8px 4px 4px;
+		}
+
+		.command-button {
+			min-height: 20px;
+			font-size: 14px;
+			flex-direction: row;
+			padding: 5px;
+		}
+
+		.bottom-sheet {
+			padding-right: 16px;
+			padding-left: 16px;
+		}
+	}
+
+	@media (max-width: 499px) and (pointer: coarse) {
+		.game-header {
+			grid-template-columns: auto minmax(0, 1fr) auto;
+		}
+
+		.game-header h1 {
+			font-size: 14px;
+		}
+
+		.home-full {
+			display: none;
+		}
+
+		.home-short {
+			display: inline;
+		}
+
+		.command-palette {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			padding: 8px;
+		}
+	}
+
+	@media (min-width: 768px) and (max-width: 900px) and (pointer: coarse) {
+		.scene-panel {
+			padding: 8px;
+		}
+
+		.program-panel {
+			padding: 10px 16px;
+		}
+	}
+
+	@media (hover: hover) {
+		.header-actions button:hover,
+		.menu-button:hover,
+		.close-menu:hover,
+		.sheet-action:hover {
+			filter: brightness(0.96);
+		}
+
+		.command-button:hover {
+			background: #2563eb;
+		}
+	}
+
+	.command-button:active {
+		transform: scale(0.95);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		* {
+			scroll-behavior: auto !important;
+			transition-duration: 0.01ms !important;
+		}
+	}
+</style>

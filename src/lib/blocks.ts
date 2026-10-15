@@ -4,7 +4,7 @@ export function defineCustomBlocks() {
 	// Идти вперёд
 	Blockly.Blocks['move_forward'] = {
 		init: function () {
-			this.appendDummyInput().appendField('➤ Двигаться вперёд');
+			this.appendDummyInput().appendField('➤ Вперёд');
 			this.setPreviousStatement(true);
 			this.setNextStatement(true);
 			this.setColour('#4C97FF');
@@ -14,7 +14,7 @@ export function defineCustomBlocks() {
 
 	Blockly.Blocks['move_backward'] = {
 		init: function () {
-			this.appendDummyInput().appendField('◀ Двигаться назад');
+			this.appendDummyInput().appendField('◀ Назад');
 			this.setPreviousStatement(true);
 			this.setNextStatement(true);
 			this.setColour('#4C97FF');
@@ -47,7 +47,7 @@ export function defineCustomBlocks() {
 	// Повернуть влево
 	Blockly.Blocks['turn_left'] = {
 		init: function () {
-			this.appendDummyInput().appendField('↺ Повернуться влево');
+			this.appendDummyInput().appendField('↺ Влево');
 			this.setPreviousStatement(true);
 			this.setNextStatement(true);
 			this.setColour('#4C97FF');
@@ -58,7 +58,7 @@ export function defineCustomBlocks() {
 	// Повернуть вправо
 	Blockly.Blocks['turn_right'] = {
 		init: function () {
-			this.appendDummyInput().appendField('↻ Повернуться вправо');
+			this.appendDummyInput().appendField('↻ Вправо');
 			this.setPreviousStatement(true);
 			this.setNextStatement(true);
 			this.setColour('#4C97FF');

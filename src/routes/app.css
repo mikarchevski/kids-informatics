@@ -72,6 +72,10 @@ body {
 	align-items: center;
 }
 
+.mobile-game-actions {
+	display: none;
+}
+
 .score {
 	padding: 0.5rem 1rem;
 	background: #fff3cd;
@@ -316,8 +320,8 @@ body {
 /* Сетка 10x10 + заголовки */
 .grid {
 	display: grid;
-	grid-template-columns: 40px repeat(10, 50px); /* Заголовок строки + 10 ячеек */
-	grid-template-rows: 40px repeat(10, 50px); /* Заголовок столбца + 10 строк */
+	grid-template-columns: 40px repeat(var(--grid-size), 50px); /* Заголовок строки + ячейки */
+	grid-template-rows: 40px repeat(var(--grid-size), 50px); /* Заголовок столбца + строки */
 	gap: 2px;
 	background: #dee2e6;
 	padding: 2px;
@@ -434,35 +438,11 @@ body {
 	}
 
 	.app-header .controls {
-		gap: 0.35rem;
-	}
-
-	.app-header .btn {
-		padding: 0.5rem 0.65rem;
-		font-size: 0.85rem;
-		white-space: nowrap;
+		display: none;
 	}
 
 	.avatar-selector {
-		flex: 0 0 auto;
-		gap: 0.5rem;
-		margin: 0;
-		padding: 0.4rem 0.65rem;
-		border-radius: 0;
-		box-shadow: none;
-	}
-
-	.selector-label {
-		margin: 0;
-		font-size: 0.85rem;
-	}
-
-	.avatar-select {
-		display: block;
-		flex: 1;
-		min-width: 0;
-		min-height: 40px;
-		padding: 0.45rem 0.6rem;
+		display: none;
 	}
 
 	.avatar-buttons {
@@ -518,8 +498,8 @@ body {
 	.grid {
 		width: min(100%, 520px);
 		aspect-ratio: 1;
-		grid-template-columns: 8% repeat(10, minmax(0, 1fr));
-		grid-template-rows: 8% repeat(10, minmax(0, 1fr));
+		grid-template-columns: 8% repeat(var(--grid-size), minmax(0, 1fr));
+		grid-template-rows: 8% repeat(var(--grid-size), minmax(0, 1fr));
 		gap: 1px;
 		padding: 1px;
 	}
@@ -557,5 +537,59 @@ body {
 	.score {
 		padding: 0.45rem 0.7rem;
 		font-size: 0.9rem;
+	}
+}
+
+@media (max-width: 900px) and (pointer: coarse) and (orientation: landscape) {
+	.app {
+		height: auto;
+		min-height: 100dvh;
+		overflow: visible;
+		padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+	}
+
+	.app-main {
+		min-height: 100dvh;
+		flex: 0 0 100dvh;
+		flex-direction: row;
+	}
+
+	.blockly-area {
+		width: 60%;
+		height: 100%;
+		flex: 0 0 60%;
+		border-right: 2px solid #e9ecef;
+		border-bottom: 0;
+	}
+
+	.screen-area {
+		width: 40%;
+		flex: 1 1 40%;
+		justify-content: center;
+		overflow: visible;
+	}
+
+	.mobile-game-actions {
+		position: fixed;
+		z-index: 1000;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		display: flex;
+		justify-content: center;
+		gap: 0.75rem;
+		padding: 0.5rem 0.75rem calc(0.5rem + env(safe-area-inset-bottom));
+		background: rgb(248 249 250 / 94%);
+		border-top: 1px solid #dee2e6;
+		box-shadow: 0 -2px 8px rgb(0 0 0 / 10%);
+		backdrop-filter: blur(8px);
+	}
+
+	.mobile-game-actions .btn {
+		min-width: 8rem;
+		min-height: 44px;
+		padding: 0.55rem 1rem;
+		font-size: 0.95rem;
+		font-weight: 600;
 	}
 }

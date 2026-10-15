@@ -2,30 +2,42 @@ import type { WorkspaceSvg } from 'blockly';
 
 type Position = { x: number; y: number; direction: string };
 type Callback = (pos: Position) => void;
+type ActiveCommandCallback = (blockId: string | null) => void;
 
 export class Interpreter {
 	private workspace: WorkspaceSvg;
 	private onUpdate: Callback;
+	private gridSize: number;
+	private onActiveCommand: ActiveCommandCallback;
 	private position: Position = { x: 0, y: 0, direction: 'right' };
 	private isRunning = false;
 
-	constructor(workspace: WorkspaceSvg, onUpdate: Callback) {
+	constructor(
+		workspace: WorkspaceSvg,
+		onUpdate: Callback,
+		gridSize = 10,
+		onActiveCommand: ActiveCommandCallback = () => {}
+	) {
 		this.workspace = workspace;
 		this.onUpdate = onUpdate;
+		this.gridSize = gridSize;
+		this.onActiveCommand = onActiveCommand;
 	}
 
 	reset() {
-		this.position = { x: 0, y: 5, direction: 'right' };
+		this.position = { x: 0, y: Math.floor(this.gridSize / 2), direction: 'right' };
 		this.isRunning = false;
+		this.onActiveCommand(null);
 		this.onUpdate({ ...this.position });
 	}
 
 	async execute() {
 		if (this.isRunning) return;
 		this.isRunning = true;
+		this.onActiveCommand(null);
 
 		// Сбрасываем позицию перед выполнением
-		this.position = { x: 0, y: 5, direction: 'right' };
+		this.position = { x: 0, y: Math.floor(this.gridSize / 2), direction: 'right' };
 		this.onUpdate({ ...this.position });
 
 		const topBlocks = this.workspace.getTopBlocks(true);
@@ -35,13 +47,15 @@ export class Interpreter {
 		}
 
 		this.isRunning = false;
+		this.onActiveCommand(null);
 	}
 
 	private async executeBlock(block: any): Promise<void> {
 		if (!block) return;
 
+		this.onActiveCommand(block.id);
 		const type = block.type;
-		const GRID_SIZE = 10;
+		const GRID_SIZE = this.gridSize;
 
 		// Вспомогательная функция проверки границ
 		const isInside = (x: number, y: number) => x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE;
