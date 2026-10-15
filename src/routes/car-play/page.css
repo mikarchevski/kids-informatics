@@ -1,0 +1,874 @@
+/* === Базовые стили === */
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family:
+		'Inter',
+		-apple-system,
+		BlinkMacSystemFont,
+		'Segoe UI',
+		sans-serif;
+	background: #f8f9fa;
+	color: #212529;
+}
+
+/* === Layout приложения (десктоп) === */
+.app {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.app-header {
+	padding: 1rem 2rem;
+	background: #f8f9fa;
+	border-bottom: 2px solid #e9ecef;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.app-header h1 {
+	margin: 0;
+	font-size: 1.5rem;
+	color: #212529;
+}
+
+.app-main {
+	flex: 1;
+	display: flex;
+}
+
+/* === Панель Blockly (60%) === */
+.blockly-area {
+	width: 60%;
+	border-right: 2px solid #e9ecef;
+	display: flex;
+	position: relative;
+}
+
+.blockly-div {
+	width: 100%;
+	height: 100%;
+}
+
+/* === Панель экрана (40%) === */
+.screen-area {
+	width: 40%;
+	background: #f8f9fa;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: auto;
+}
+
+/* === Кастомная корзина для Blockly === */
+.custom-trashcan {
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+	width: 56px;
+	height: 56px;
+	background: white;
+	border: 2px solid #dee2e6;
+	border-radius: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all 0.2s;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	z-index: 10;
+	color: #6c757d;
+}
+
+.custom-trashcan:hover {
+	background: #dc3545;
+	border-color: #dc3545;
+	color: white;
+	transform: scale(1.1);
+	box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.custom-trashcan:active {
+	transform: scale(0.95);
+}
+
+.custom-trashcan svg {
+	width: 28px;
+	height: 28px;
+}
+
+/* === Ссылка "На главную" === */
+.home-link {
+	display: inline-flex;
+	align-items: center;
+	text-decoration: none;
+	color: #495057;
+	font-weight: 600;
+	font-size: 0.95rem;
+	margin-right: 1.5rem;
+	padding: 0.4rem 0.8rem;
+	border-radius: 6px;
+	transition: all 0.2s;
+	min-height: 44px;
+	white-space: nowrap;
+}
+
+.home-link:hover {
+	background: #e9ecef;
+	color: #212529;
+}
+
+/* === Панель выбора персонажа === */
+.avatar-selector {
+	display: flex;
+	align-items: center;
+	gap: 0.8rem;
+	padding: 0.8rem 1.2rem;
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+	margin-bottom: 1rem;
+	flex-wrap: wrap;
+}
+
+.selector-label {
+	font-weight: 600;
+	color: #495057;
+	font-size: 0.95rem;
+	margin-right: 0.5rem;
+}
+
+.avatar-btn {
+	width: 48px;
+	height: 48px;
+	font-size: 1.8rem;
+	background: #f8f9fa;
+	border: 2px solid transparent;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+}
+
+.avatar-btn:hover {
+	background: #e9ecef;
+	transform: scale(1.1);
+}
+
+.avatar-btn.active {
+	background: #e8f4fd;
+	border-color: #4c97ff;
+	transform: scale(1.15);
+	box-shadow: 0 4px 12px rgba(76, 151, 255, 0.2);
+}
+
+.avatar-preview {
+	width: 32px;
+	height: 32px;
+}
+
+.avatar-select {
+	display: none;
+	min-width: 12rem;
+	padding: 0.65rem 2rem 0.65rem 0.75rem;
+	border: 1px solid #ced4da;
+	border-radius: 8px;
+	background: white;
+	color: #212529;
+	font: inherit;
+}
+
+.avatar-buttons {
+	display: flex;
+	align-items: center;
+	gap: 0.8rem;
+}
+
+/* === Игровое поле === */
+.screen {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 1rem;
+	background: #f8f9fa;
+	border-radius: 12px;
+}
+
+/* === Сетка === */
+.grid {
+	display: grid;
+	grid-template-columns: 40px repeat(var(--grid-size), 50px);
+	grid-template-rows: 40px repeat(var(--grid-size), 50px);
+	gap: 2px;
+	background: #dee2e6;
+	padding: 2px;
+	border-radius: 8px;
+}
+
+.cell {
+	background: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: #495057;
+}
+
+.cell.header {
+	background: #e9ecef;
+	color: #212529;
+	font-weight: 700;
+}
+
+.cell.robot {
+	background: #fff3cd;
+	border: 2px solid #ffc107;
+}
+
+/* === Аватар на поле === */
+.robot-emoji {
+	display: inline-block;
+	font-size: 2.2rem;
+	line-height: 1;
+	transition: transform 0.3s ease;
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.robot-orientation {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	transition: transform 0.3s ease;
+}
+
+.robot-svg {
+	width: 48px;
+	height: 48px;
+	transition: transform 0.3s ease;
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+.fuel-icon {
+	font-size: 1.5rem;
+}
+
+/* === Кнопки === */
+.btn {
+	padding: 0.5rem 1.5rem;
+	border: none;
+	border-radius: 6px;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.btn-primary {
+	background: #4c97ff;
+	color: white;
+}
+
+.btn-primary:hover {
+	background: #3d85e8;
+}
+
+.btn-secondary {
+	background: #e9ecef;
+	color: #495057;
+}
+
+.btn-secondary:hover {
+	background: #dee2e6;
+}
+
+.btn-fuel {
+	background: #28a745;
+	color: white;
+}
+
+.btn-fuel:hover {
+	background: #218838;
+}
+
+.controls {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	justify-content: center;
+	padding: 0.5rem;
+}
+
+.score {
+	padding: 0.5rem 1rem;
+	background: #fff3cd;
+	border-radius: 8px;
+	font-weight: 600;
+	font-size: 1rem;
+	color: #856404;
+}
+
+.mobile-game-actions {
+	display: none;
+}
+
+/* === Стили для мобильной версии игры === */
+.game-layout {
+	display: flex;
+	width: 100%;
+	height: 100vh;
+	height: 100dvh;
+	min-height: 0;
+	flex-direction: column;
+	background: #f8fafc;
+	color: #0f172a;
+	font-family: system-ui, sans-serif;
+}
+
+.game-header {
+	display: grid;
+	min-height: 60px;
+	flex: 0 0 60px;
+	grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+	align-items: center;
+	gap: 12px;
+	padding: 0 16px;
+	border-bottom: 1px solid #e2e8f0;
+	background: #fff;
+}
+
+.home-short {
+	display: none;
+}
+
+.game-header h1 {
+	margin: 0;
+	font-size: clamp(16px, 2vw, 22px);
+	text-align: center;
+	white-space: nowrap;
+}
+
+.short-title {
+	display: none;
+}
+
+.header-actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+.header-actions select,
+.header-actions button {
+	min-height: 44px;
+	padding: 0 12px;
+	border: 0;
+	border-radius: 10px;
+	font: inherit;
+	font-size: 14px;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.header-actions select {
+	max-width: 145px;
+	border: 1px solid #e2e8f0;
+	background: #fff;
+}
+
+.header-actions button,
+.menu-button,
+.command-button,
+.sheet-action,
+.close-menu,
+.sheet-backdrop {
+	cursor: pointer;
+}
+
+.run-button {
+	background: #3b82f6;
+	color: #fff;
+}
+
+.reset-button {
+	background: #f3f4f6;
+	color: #1f2937;
+}
+
+.game-content {
+	display: grid;
+	min-height: 0;
+	flex: 1;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	grid-template-rows: minmax(0, 1fr);
+	gap: 12px;
+	padding: 12px;
+}
+
+.scene-section {
+	display: grid;
+	min-width: 0;
+	min-height: 0;
+	place-items: center;
+}
+
+.program-section {
+	display: flex;
+	min-width: 0;
+	min-height: 0;
+	flex-direction: column;
+	gap: 8px;
+	padding: 12px;
+	border: 1px solid #e2e8f0;
+	border-radius: 16px;
+	background: #fff;
+}
+
+.program-heading,
+.sheet-heading {
+	display: flex;
+	min-height: 44px;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+.program-heading h2,
+.sheet-heading h2 {
+	margin: 0;
+	font-size: 16px;
+}
+
+.menu-button,
+.close-menu {
+	display: grid;
+	width: 44px;
+	height: 44px;
+	flex: 0 0 44px;
+	place-items: center;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+	background: #f8fafc;
+	font-size: 20px;
+	transition:
+		background 0.2s ease-out,
+		transform 0.2s ease-out;
+}
+
+.program-list {
+	display: flex;
+	max-height: 100vh;
+	min-height: 0;
+	flex-wrap: wrap;
+	align-content: flex-start;
+	gap: 8px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 2px;
+}
+
+.program-empty {
+	margin: 0;
+	color: #64748b;
+	font-size: 14px;
+	line-height: 1.4;
+}
+
+.command-chip {
+	display: inline-flex;
+	min-height: 40px;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 10px;
+	border: 1px solid #cbd5e1;
+	border-radius: 10px;
+	background: #f8fafc;
+	font-size: 14px;
+	transition:
+		background 0.2s ease-out,
+		border-color 0.2s ease-out;
+}
+
+.command-chip.active {
+	border-color: #3b82f6;
+	background: #dbeafe;
+}
+
+.command-number {
+	color: #64748b;
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.command-icon {
+	font-size: 16px;
+}
+
+.command-palette {
+	display: grid;
+	min-height: 104px;
+	flex: 0 0 auto;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 8px;
+	padding: 12px;
+	background: #f8fafc;
+	border-top: 1px solid #e2e8f0;
+}
+
+.command-button {
+	display: flex;
+	min-width: 0;
+	min-height: 80px;
+	flex: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 8px;
+	border: 0;
+	border-radius: 12px;
+	background: #3b82f6;
+	box-shadow: 0 4px 6px rgb(59 130 246 / 30%);
+	color: #fff;
+	font: inherit;
+	font-size: 14px;
+	font-weight: 600;
+	touch-action: manipulation;
+	transition:
+		transform 0.2s ease-out,
+		background 0.2s ease-out;
+}
+
+.palette-icon {
+	font-size: 22px;
+	line-height: 1;
+}
+
+.blockly-host {
+	position: fixed;
+	top: 0;
+	left: -10000px;
+	width: 320px;
+	height: 240px;
+	overflow: hidden;
+	visibility: hidden;
+	pointer-events: none;
+}
+
+.sheet-backdrop {
+	position: fixed;
+	z-index: 99;
+	inset: 0;
+	border: 0;
+	background: rgb(15 23 42 / 45%);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s ease-out;
+}
+
+.sheet-backdrop.visible {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.bottom-sheet {
+	position: fixed;
+	z-index: 100;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: flex;
+	max-height: min(80vh, 520px);
+	flex-direction: column;
+	gap: 10px;
+	padding: 10px 20px calc(20px + env(safe-area-inset-bottom));
+	transform: translateY(100%);
+	border-radius: 20px 20px 0 0;
+	background: #fff;
+	box-shadow: 0 -8px 30px rgb(15 23 42 / 15%);
+	transition: transform 0.3s ease-out;
+}
+
+.bottom-sheet.open {
+	transform: translateY(0);
+}
+
+.sheet-handle {
+	width: 40px;
+	height: 4px;
+	align-self: center;
+	border-radius: 99px;
+	background: #cbd5e1;
+}
+
+.close-menu {
+	font-size: 18px;
+}
+
+.sheet-action {
+	min-height: 48px;
+	padding: 10px 14px;
+	border: 1px solid #e2e8f0;
+	border-radius: 12px;
+	background: #f8fafc;
+	color: #0f172a;
+	font: inherit;
+	font-size: 15px;
+	text-align: left;
+}
+
+.sheet-score {
+	margin: 0;
+	padding: 10px 14px;
+	border-radius: 12px;
+	background: #fef3c7;
+	color: #854d0e;
+	font-size: 15px;
+	font-weight: 700;
+}
+
+.secondary-action {
+	color: #475569;
+}
+
+/* === Мобильная адаптация === */
+@media (max-width: 900px) and (pointer: coarse) {
+	html,
+	body {
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		touch-action: auto;
+	}
+
+	.game-layout {
+		height: 100vh;
+		height: 100dvh;
+		min-height: 0;
+		overflow: hidden;
+	}
+
+	.game-header {
+		min-height: 52px;
+		flex-basis: 52px;
+		grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+		gap: 6px;
+		padding: 0 8px;
+	}
+
+	.home-link {
+		font-size: 13px;
+	}
+
+	.game-header h1 {
+		font-size: 16px;
+	}
+
+	.full-title,
+	.header-actions select {
+		display: none;
+	}
+
+	.short-title {
+		display: inline;
+	}
+
+	.header-actions {
+		gap: 5px;
+	}
+
+	.header-actions button {
+		min-height: 44px;
+		padding: 0 8px;
+		font-size: 13px;
+	}
+
+	.game-content {
+		display: flex;
+		overflow: hidden;
+		gap: 4px;
+		padding: 4px 8px;
+	}
+
+	.scene-section {
+		flex: 1 1 0;
+		min-height: 0;
+		padding: 4px;
+	}
+
+	.program-section {
+		overflow: hidden;
+		gap: 4px;
+		padding: 4px 8px;
+		border: 0;
+		border-radius: 10px;
+		background: transparent;
+	}
+
+	.program-heading {
+		min-height: 40px;
+		flex: 0 0 40px;
+	}
+
+	.program-heading h2 {
+		font-size: 14px;
+	}
+
+	.menu-button {
+		width: 40px;
+		height: 40px;
+		flex-basis: 40px;
+	}
+
+	.program-list {
+		max-height: none;
+		min-height: 0;
+		flex: 1 1 auto;
+		gap: 4px;
+	}
+
+	.command-chip {
+		min-height: 30px;
+		gap: 4px;
+		padding: 3px 7px;
+		font-size: 13px;
+	}
+
+	.command-palette {
+		height: 100px;
+		min-height: 100px;
+		flex: 0 0 100px;
+		padding: 8px 4px 4px;
+	}
+
+	.command-button {
+		min-height: 20px;
+		font-size: 14px;
+		flex-direction: row;
+		padding: 5px;
+	}
+
+	.bottom-sheet {
+		padding-right: 16px;
+		padding-left: 16px;
+	}
+
+	/* Скрываем десктопные элементы */
+	.app-header .controls {
+		display: none;
+	}
+
+	.blockly-area {
+		display: none;
+	}
+
+	.grid {
+		width: min(90%, 90vh - 200px);
+		height: min(90%, 90vh - 200px);
+		max-width: 350px;
+		max-height: 350px;
+	}
+
+	.cell {
+		font-size: 12px;
+	}
+}
+
+@media (max-width: 499px) and (pointer: coarse) {
+	.game-header {
+		grid-template-columns: auto minmax(0, 1fr) auto;
+	}
+
+	.game-header h1 {
+		font-size: 14px;
+	}
+
+	.home-full {
+		display: none;
+	}
+
+	.home-short {
+		display: inline;
+	}
+
+	.command-palette {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		padding: 8px;
+	}
+}
+
+@media (max-height: 600px) and (pointer: coarse) {
+	.program-section {
+		flex-basis: 40%;
+	}
+
+	.program-heading {
+		min-height: 28px;
+		flex-basis: 28px;
+	}
+
+	.menu-button {
+		width: 28px;
+		height: 28px;
+		flex-basis: 28px;
+	}
+
+	.command-palette {
+		height: 30px;
+		min-height: 28px;
+		flex-basis: 45px;
+		padding: 6px 8px;
+	}
+
+	.command-button {
+		min-height: 0;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 900px) and (pointer: coarse) {
+	.scene-section {
+		padding: 8px;
+	}
+
+	.program-section {
+		padding: 10px 16px;
+	}
+}
+
+@media (hover: hover) {
+	.header-actions button:hover,
+	.menu-button:hover,
+	.close-menu:hover,
+	.sheet-action:hover {
+		filter: brightness(0.96);
+	}
+
+	.command-button:hover {
+		background: #2563eb;
+	}
+
+	.home-link:hover {
+		background: #e9ecef;
+	}
+}
+
+.command-button:active {
+	transform: scale(0.95);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
+	}
+}
