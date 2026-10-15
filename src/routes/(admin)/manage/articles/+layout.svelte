@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { LayoutData } from './$types';
 	let { data, children } = $props();
-	import './layuot.css';
-	import './page.css';
+	import './layout.css';
 </script>
 
 <div class="admin-dashboard">
@@ -20,6 +19,3 @@
 		</div>
 	</main>
 </div>
-
-<style>
-</style>
