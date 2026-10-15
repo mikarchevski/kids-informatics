@@ -22,8 +22,6 @@
 
 	<!-- Основная область -->
 	<main class="main-content">
-		<div class="page-content">
-			{@render children()}
-		</div>
+		{@render children()}
 	</main>
 </div>
