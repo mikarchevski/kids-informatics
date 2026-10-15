@@ -11,24 +11,17 @@
 			<h2>🚀 Kids Coder</h2>
 		</div>
 		<nav class="sidebar-nav">
-			<a href="/manage/articles" class="nav-item">
-				<span class="icon">📝</span> Управление статьями
-			</a>
 			<a href="/manage/users" class="nav-item">
 				<span class="icon">👥</span> Пользователи
+			</a>
+			<a href="/manage/articles" class="nav-item">
+				<span class="icon">📝</span> Управление статьями
 			</a>
 		</nav>
 	</aside>
 
 	<!-- Основная область -->
 	<main class="main-content">
-		<!-- <header class="top-bar">
-			<div class="user-info">
-				<span class="username">Привет, {data.user?.username}!</span>
-				<a href="/logout" class="btn-logout">Выйти</a>
-			</div>
-		</header> -->
-
 		<div class="page-content">
 			{@render children()}
 		</div>
