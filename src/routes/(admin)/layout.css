@@ -42,6 +42,7 @@
 }
 .main-content {
 	flex: 1;
+	min-width: 0;
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
@@ -75,9 +76,4 @@
 }
 .btn-logout:hover {
 	background: #cbd5e0;
-}
-.page-content {
-	flex: 1;
-	padding: 2rem;
-	overflow-y: auto;
 }
