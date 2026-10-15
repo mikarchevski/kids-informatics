@@ -206,8 +206,8 @@
 		</div>
 	</header>
 
-	<main class="game-main">
-		<section class="scene-panel" aria-label="Игровая сцена">
+	<main class="game-content">
+		<section class="scene-section" aria-label="Игровая сцена">
 			<Screen
 				position={robotPosition}
 				{batteries}
@@ -216,7 +216,7 @@
 			/>
 		</section>
 
-		<section class="program-panel" aria-labelledby="program-title">
+		<section class="program-section" aria-labelledby="program-title">
 			<div class="program-heading">
 				<h2 id="program-title">Программа</h2>
 				<button
@@ -251,21 +251,21 @@
 				{/if}
 			</div>
 		</section>
-
-		<section class="command-palette" role="group" aria-label="Добавить команду">
-			{#each commandList as command (command.type)}
-				<button
-					class="command-button"
-					onclick={() => addCommand(command.type)}
-					aria-label={`Добавить команду: ${command.label}`}
-					type="button"
-				>
-					<span class="palette-icon" aria-hidden="true">{command.icon}</span>
-					<span>{command.label}</span>
-				</button>
-			{/each}
-		</section>
 	</main>
+
+	<footer class="command-palette" role="group" aria-label="Добавить команду">
+		{#each commandList as command (command.type)}
+			<button
+				class="command-button"
+				onclick={() => addCommand(command.type)}
+				aria-label={`Добавить команду: ${command.label}`}
+				type="button"
+			>
+				<span class="palette-icon" aria-hidden="true">{command.icon}</span>
+				<span>{command.label}</span>
+			</button>
+		{/each}
+	</footer>
 
 	<div class="blockly-host" bind:this={blocklyDiv} aria-hidden="true"></div>
 
@@ -310,7 +310,7 @@
 		display: flex;
 		width: 100%;
 		height: 100vh;
-		height: calc(var(--vh, 1vh) * 100);
+		height: 100dvh;
 		min-height: 0;
 		flex-direction: column;
 		overflow: hidden;
@@ -401,28 +401,25 @@
 		color: #1f2937;
 	}
 
-	.game-main {
+	.game-content {
 		display: grid;
 		min-height: 0;
 		flex: 1;
-		overflow-y: auto;
-		-webkit-overflow-scrolling: touch;
 		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-		grid-template-rows: minmax(0, 1fr) auto;
+		grid-template-rows: minmax(0, 1fr);
 		gap: 12px;
-		padding: 12px 12px 20px;
+		padding: 12px;
 	}
 
-	.scene-panel {
+	.scene-section {
 		display: grid;
 		min-width: 0;
 		min-height: 0;
-		grid-row: 1 / 3;
 		place-items: center;
 		overflow: hidden;
 	}
 
-	.program-panel {
+	.program-section {
 		display: flex;
 		min-width: 0;
 		min-height: 0;
@@ -516,13 +513,13 @@
 
 	.command-palette {
 		display: grid;
+		min-height: 104px;
+		flex: 0 0 auto;
 		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: 8px;
 		padding: 12px;
-		position: sticky;
-		z-index: 1;
-		bottom: 0;
 		background: #f8fafc;
+		border-top: 1px solid #e2e8f0;
 	}
 
 	.command-button {
@@ -643,15 +640,13 @@
 
 	@media (max-width: 900px) and (pointer: coarse) {
 		.game-layout {
-			height: auto;
-			min-height: calc(var(--vh, 1vh) * 110);
-			overflow: visible;
+			height: 100vh;
+			height: 100dvh;
+			min-height: 0;
+			overflow: hidden;
 		}
 
 		.game-header {
-			position: sticky;
-			z-index: 2;
-			top: 0;
 			min-height: 52px;
 			flex-basis: 52px;
 			grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -686,20 +681,24 @@
 			font-size: 13px;
 		}
 
-		.game-main {
-			grid-template-columns: minmax(0, 1fr);
-			grid-template-rows: auto auto auto;
-			overflow: visible;
+		.game-content {
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
 			gap: 4px;
-			padding: 4px 8px max(20px, env(safe-area-inset-bottom));
+			padding: 4px 8px;
 		}
 
-		.scene-panel {
-			grid-row: auto;
-			min-height: min(500px, calc(var(--vh, 1vh) * 60));
+		.scene-section {
+			flex: 1 1 0;
+			min-height: 0;
+			padding: 4px;
 		}
 
-		.program-panel {
+		.program-section {
+			height: 120px;
+			flex: 0 0 120px;
+			overflow: hidden;
 			gap: 4px;
 			padding: 4px 8px;
 			border: 0;
@@ -708,7 +707,8 @@
 		}
 
 		.program-heading {
-			min-height: 36px;
+			min-height: 40px;
+			flex: 0 0 40px;
 		}
 
 		.program-heading h2 {
@@ -722,18 +722,23 @@
 		}
 
 		.program-list {
-			max-height: min(120px, 22vh);
-			gap: 6px;
+			max-height: none;
+			min-height: 0;
+			flex: 1 1 auto;
+			gap: 4px;
 		}
 
 		.command-chip {
-			min-height: 34px;
-			gap: 5px;
-			padding: 4px 8px;
+			min-height: 30px;
+			gap: 4px;
+			padding: 3px 7px;
 			font-size: 13px;
 		}
 
 		.command-palette {
+			height: 100px;
+			min-height: 100px;
+			flex: 0 0 100px;
 			padding: 8px 4px 4px;
 		}
 
@@ -773,12 +778,41 @@
 		}
 	}
 
+	@media (max-height: 600px) and (pointer: coarse) {
+		.program-section {
+			height: 80px;
+			flex-basis: 80px;
+		}
+
+		.program-heading {
+			min-height: 28px;
+			flex-basis: 28px;
+		}
+
+		.menu-button {
+			width: 28px;
+			height: 28px;
+			flex-basis: 28px;
+		}
+
+		.command-palette {
+			height: 30px;
+			min-height: 28px;
+			flex-basis: 45px;
+			padding: 6px 8px;
+		}
+
+		.command-button {
+			min-height: 0;
+		}
+	}
+
 	@media (min-width: 768px) and (max-width: 900px) and (pointer: coarse) {
-		.scene-panel {
+		.scene-section {
 			padding: 8px;
 		}
 
-		.program-panel {
+		.program-section {
 			padding: 10px 16px;
 		}
 	}

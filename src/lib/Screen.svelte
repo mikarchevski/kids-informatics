@@ -66,7 +66,8 @@
 
 	.scene-grid {
 		display: grid;
-		width: min(100%, 500px, calc(var(--vh, 1vh) * 42));
+		width: min(100%, 400px);
+		max-height: 100%;
 		aspect-ratio: 1;
 		grid-template-columns: 8% repeat(var(--grid-size), minmax(0, 1fr));
 		grid-template-rows: 8% repeat(var(--grid-size), minmax(0, 1fr));
@@ -125,7 +126,7 @@
 
 	@media (max-width: 900px) and (pointer: coarse) {
 		.scene-grid {
-			width: min(100%, 500px, calc(var(--vh, 1vh) * 60));
+			width: min(100%, 400px);
 		}
 	}
 </style>
