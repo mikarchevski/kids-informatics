@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { getReadTime } from '#lib/articles/content';
+	import RichEditor from '../../../../../lib/components/RichEditor.svelte';
 	import { untrack } from 'svelte';
 	import type { PageData } from './$types';
 	import './page.css';
@@ -12,6 +14,16 @@
 	let isTagMenuOpen = $state(false);
 	let tagError = $state<string | null>(null);
 	let createTagForm = $state<HTMLFormElement>();
+	let articleForm = $state<HTMLFormElement>();
+	let articleTitle = $state(untrack(() => data.article.title));
+	let articleContent = $state(untrack(() => data.article.content));
+	let wordCount = $state(0);
+	let isPublished = $state(untrack(() => data.article.isPublished));
+	let isPreviewOpen = $state(false);
+	let saveStatus = $state<'idle' | 'unsaved' | 'saving' | 'saved' | 'error'>('idle');
+	let isSaving = false;
+	let saveTimer: ReturnType<typeof setTimeout> | undefined;
+	let changeVersion = 0;
 
 	$effect(() => {
 		availableTags = data.tags;
@@ -28,7 +40,55 @@
 		if (!selectedTagIds.includes(tagId)) selectedTagIds = [...selectedTagIds, tagId];
 		tagSearch = '';
 		tagError = null;
+		scheduleDraftSave();
 	}
+
+	function scheduleDraftSave() {
+		changeVersion += 1;
+		saveStatus = 'unsaved';
+		if (saveTimer) clearTimeout(saveTimer);
+
+		if (data.article.isPublished || isPublished) return;
+
+		saveTimer = setTimeout(() => {
+			if (isSaving) {
+				scheduleDraftSave();
+				return;
+			}
+			articleForm?.requestSubmit();
+		}, 1000);
+	}
+
+	function escapeHtml(value: string) {
+		return value.replace(/[&<>"']/g, (character) => {
+			const entities: Record<string, string> = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#39;'
+			};
+			return entities[character];
+		});
+	}
+
+	const previewDocument = $derived(`<!doctype html>
+		<html lang="ru">
+			<head>
+				<meta charset="utf-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1">
+				<style>
+					body { max-width: 760px; margin: 2rem auto; padding: 0 1rem; color: #343a40; font: 18px/1.7 system-ui, sans-serif; }
+					h1, h2, h3 { line-height: 1.25; color: #212529; }
+					img { max-width: 100%; height: auto; }
+					table { width: 100%; border-collapse: collapse; }
+					th, td { padding: .5rem; border: 1px solid #ced4da; text-align: left; }
+					blockquote { margin: 1.5rem 0; padding: .75rem 1rem; border-left: 4px solid #4c97ff; background: #f8f9fa; }
+					pre { overflow: auto; padding: 1rem; border-radius: 6px; background: #1e293b; color: #e2e8f0; }
+				</style>
+			</head>
+			<body><article><h1>${escapeHtml(articleTitle)}</h1>${articleContent}</article></body>
+		</html>`);
 
 	function handleTagKeydown(event: KeyboardEvent) {
 		if (event.key !== 'Enter') return;
@@ -80,10 +140,40 @@
 		<div class="alert alert-success">✅ Статья сохранена!</div>
 	{/if}
 
-	<form id="article-form" method="POST" action="?/save_article" class="editor-form">
+	<form
+		id="article-form"
+		bind:this={articleForm}
+		method="POST"
+		action="?/save_article"
+		class="editor-form"
+		oninput={scheduleDraftSave}
+		onchange={scheduleDraftSave}
+		use:enhance={() => {
+			isSaving = true;
+			saveStatus = 'saving';
+			const submittedVersion = changeVersion;
+
+			return async ({ result, update }) => {
+				await update({ reset: false, invalidateAll: false });
+				isSaving = false;
+				if (result.type === 'success') {
+					saveStatus = changeVersion === submittedVersion ? 'saved' : 'unsaved';
+				} else {
+					saveStatus = 'error';
+				}
+			};
+		}}
+	>
 		<div class="form-group">
 			<label for="title">Заголовок</label>
-			<input id="title" name="title" value={data.article.title} required class="form-input" />
+			<input
+				id="title"
+				name="title"
+				bind:value={articleTitle}
+				required
+				maxlength="200"
+				class="form-input"
+			/>
 		</div>
 
 		<div class="form-row">
@@ -98,7 +188,10 @@
 									type="button"
 									class="remove-tag"
 									aria-label="Удалить тег {tag.name}"
-									onclick={() => (selectedTagIds = selectedTagIds.filter((id) => id !== tag.id))}
+									onclick={() => {
+										selectedTagIds = selectedTagIds.filter((id) => id !== tag.id);
+										scheduleDraftSave();
+									}}
 								>
 									×
 								</button>
@@ -167,26 +260,60 @@
 
 		<div class="form-group checkbox-group">
 			<label class="checkbox-label">
-				<input type="checkbox" name="isPublished" checked={data.article.isPublished} />
+				<input type="checkbox" name="isPublished" bind:checked={isPublished} />
 				<span>Опубликовать статью</span>
 			</label>
 		</div>
 
 		<div class="form-group">
-			<label for="content">Содержание (HTML)</label>
-			<textarea id="content" name="content" rows={15} class="form-textarea"
-				>{data.article.content}</textarea
-			>
-			<small class="hint">Поддерживается HTML. Позже здесь будет визуальный редактор.</small>
+			<p class="field-label">Содержание статьи</p>
+			<RichEditor
+				bind:content={articleContent}
+				bind:wordCount
+				oncontentchange={scheduleDraftSave}
+			/>
+			<small class="hint">
+				{wordCount} слов · около {getReadTime(articleContent.replace(/<[^>]*>/g, ' '))} чтения. Заголовок
+				статьи отображается как H1.
+			</small>
 		</div>
 
 		<div class="form-actions">
-			<button type="submit" class="btn btn-primary">💾 Сохранить изменения</button>
-			<a href="/articles/{data.article.slug}" target="_blank" class="btn btn-secondary">
-				👁️ Предпросмотр
-			</a>
+			<button type="submit" class="btn btn-primary">💾 Сохранить</button>
+			<button
+				type="button"
+				class="btn btn-secondary"
+				onclick={() => (isPreviewOpen = !isPreviewOpen)}
+			>
+				👁️ {isPreviewOpen ? 'Скрыть предпросмотр' : 'Предпросмотр'}
+			</button>
+			<span class="save-status" aria-live="polite">
+				{#if saveStatus === 'saving'}
+					Сохранение…
+				{:else if saveStatus === 'saved'}
+					Сохранено
+				{:else if saveStatus === 'unsaved'}
+					{data.article.isPublished || isPublished
+						? 'Есть несохранённые изменения'
+						: 'Черновик сохранится автоматически'}
+				{:else if saveStatus === 'error'}
+					Не удалось сохранить
+				{/if}
+			</span>
 		</div>
 	</form>
+
+	{#if isPreviewOpen}
+		<section class="preview-panel" aria-label="Предпросмотр статьи">
+			<h2>Предпросмотр статьи</h2>
+			<iframe
+				title="Предпросмотр статьи"
+				srcdoc={previewDocument}
+				sandbox=""
+				referrerpolicy="no-referrer"
+			></iframe>
+		</section>
+	{/if}
 
 	<form
 		id="create-tag-form"
