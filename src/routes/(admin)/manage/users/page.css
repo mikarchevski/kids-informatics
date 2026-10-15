@@ -1,0 +1,22 @@
+.placeholder-page {
+	text-align: center;
+	padding: 4rem 2rem;
+	color: #64748b;
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.placeholder-icon {
+	font-size: 4rem;
+	margin-bottom: 1rem;
+	opacity: 0.5;
+}
+.placeholder-page h1 {
+	color: #334155;
+	margin-bottom: 0.5rem;
+}
+.placeholder-page p {
+	max-width: 500px;
+	margin: 0 auto;
+	line-height: 1.6;
+}

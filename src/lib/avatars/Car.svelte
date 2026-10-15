@@ -1,6 +1,5 @@
 <script lang="ts">
 	let { direction = 'right', isMoving = false } = $props();
-	console.log('🚗 Car direction:', direction);
 </script>
 
 <div class="car-wrapper" class:flipped={direction === 'left'} class:moving={isMoving}>

@@ -15,6 +15,13 @@
       "when": 1791895018566,
       "tag": "0001_petite_frank_castle",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792054822759,
+      "tag": "0002_blushing_obadiah_stane",
+      "breakpoints": true
     }
   ]
 }

@@ -55,3 +55,12 @@ export const articles = pgTable('articles', {
 	createdAt: timestamp('created_at').defaultNow().notNull(),
 	updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
+
+export const sessions = pgTable('sessions', {
+	id: varchar('id', { length: 36 }).primaryKey(), // UUID как строка
+	userId: uuid('user_id')
+		.references(() => users.id, { onDelete: 'cascade' })
+		.notNull(),
+	expiresAt: timestamp('expires_at').notNull(),
+	createdAt: timestamp('created_at').defaultNow().notNull()
+});
