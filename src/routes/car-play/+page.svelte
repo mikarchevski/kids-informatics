@@ -27,6 +27,8 @@
 	let interpreter: Interpreter = $state() as Interpreter;
 	let batteries = $state<{ x: number; y: number }[]>([]);
 	let score = $state(0);
+	let isMobileLayout = $state(false);
+	let flyoutSwipe: { pointerId: number; startX: number; startScroll: number } | null = null;
 
 	// Инициализируем из localStorage или берем 'car' по умолчанию
 	let selectedAvatarId = $state(localStorage.getItem('kids-coder-avatar') || 'car');
@@ -45,7 +47,7 @@
 		if (event.key === 'Delete' || event.key === 'Backspace') {
 			const selected = Blockly.getSelected();
 			if (selected && selected instanceof Blockly.Block) {
-				selected.dispose(false, true);
+				selected.dispose(false);
 				event.preventDefault();
 			}
 		}
@@ -76,8 +78,8 @@
 		}
 	}
 
-	onMount(() => {
-		defineCustomBlocks();
+	function createWorkspace(savedState?: ReturnType<typeof Blockly.serialization.workspaces.save>) {
+		workspace?.dispose();
 		workspace = Blockly.inject(blocklyDiv, {
 			toolbox: {
 				kind: 'flyoutToolbox',
@@ -88,20 +90,104 @@
 					{ kind: 'block', type: 'turn_right' }
 				]
 			},
+			...(isMobileLayout
+				? {
+						horizontalLayout: true,
+						toolboxPosition: 'start',
+						zoom: { startScale: 0.78, minScale: 0.5, maxScale: 1.2 }
+					}
+				: {}),
 			scrollbars: true,
 			sounds: false,
 			trashcan: false,
 			move: { scrollbars: true, drag: true, wheel: false }
 		});
+		if (savedState) Blockly.serialization.workspaces.load(savedState, workspace);
 		interpreter = new Interpreter(workspace, (pos) => {
 			robotPosition = { ...pos };
 			checkBatteryPickup(pos.x, pos.y);
 		});
+		Blockly.svgResize(workspace);
+	}
+
+	function handleViewportChange(event: MediaQueryListEvent) {
+		if (event.matches === isMobileLayout || !workspace) return;
+		const savedState = Blockly.serialization.workspaces.save(workspace);
+		isMobileLayout = event.matches;
+		createWorkspace(savedState);
+	}
+
+	function handleWindowResize() {
+		if (workspace) Blockly.svgResize(workspace);
+	}
+
+	function handleFlyoutPointerDown(event: PointerEvent) {
+		if (!isMobileLayout || event.pointerType !== 'touch') return;
+		const target = event.target;
+		if (
+			!(target instanceof Element) ||
+			(!target.closest('.blocklyFlyout') && !target.closest('.blocklyFlyoutScrollbar'))
+		)
+			return;
+		if (target.closest('.blocklyDraggable')) return;
+
+		const flyoutWorkspace = workspace?.getFlyout()?.getWorkspace();
+		const metrics = flyoutWorkspace?.getMetricsManager();
+		const view = metrics?.getViewMetrics();
+		const scroll = metrics?.getScrollMetrics();
+		if (!flyoutWorkspace?.scrollbar || !view || !scroll) return;
+
+		flyoutSwipe = {
+			pointerId: event.pointerId,
+			startX: event.clientX,
+			startScroll: view.left - scroll.left
+		};
+		event.preventDefault();
+		event.stopImmediatePropagation();
+		blocklyDiv.setPointerCapture(event.pointerId);
+	}
+
+	function handleFlyoutPointerMove(event: PointerEvent) {
+		if (!flyoutSwipe || event.pointerId !== flyoutSwipe.pointerId) return;
+		const scrollbar = workspace?.getFlyout()?.getWorkspace().scrollbar;
+		if (!scrollbar) return;
+
+		scrollbar.setX(flyoutSwipe.startScroll + flyoutSwipe.startX - event.clientX);
+		event.preventDefault();
+		event.stopImmediatePropagation();
+	}
+
+	function handleFlyoutPointerEnd(event: PointerEvent) {
+		if (!flyoutSwipe || event.pointerId !== flyoutSwipe.pointerId) return;
+		flyoutSwipe = null;
+		event.stopImmediatePropagation();
+	}
+
+	let mobileMediaQuery: MediaQueryList;
+
+	onMount(() => {
+		defineCustomBlocks();
+		mobileMediaQuery = window.matchMedia('(max-width: 900px) and (pointer: coarse)');
+		isMobileLayout = mobileMediaQuery.matches;
+		createWorkspace();
+		mobileMediaQuery.addEventListener('change', handleViewportChange);
+		window.addEventListener('resize', handleWindowResize);
 		window.addEventListener('keydown', handleKeyDown);
+		blocklyDiv.addEventListener('pointerdown', handleFlyoutPointerDown, true);
+		blocklyDiv.addEventListener('pointermove', handleFlyoutPointerMove, true);
+		blocklyDiv.addEventListener('pointerup', handleFlyoutPointerEnd, true);
+		blocklyDiv.addEventListener('pointercancel', handleFlyoutPointerEnd, true);
 	});
 
 	onDestroy(() => {
+		mobileMediaQuery?.removeEventListener('change', handleViewportChange);
+		window.removeEventListener('resize', handleWindowResize);
 		window.removeEventListener('keydown', handleKeyDown);
+		blocklyDiv.removeEventListener('pointerdown', handleFlyoutPointerDown, true);
+		blocklyDiv.removeEventListener('pointermove', handleFlyoutPointerMove, true);
+		blocklyDiv.removeEventListener('pointerup', handleFlyoutPointerEnd, true);
+		blocklyDiv.removeEventListener('pointercancel', handleFlyoutPointerEnd, true);
+		workspace?.dispose();
 	});
 
 	function runCode() {
@@ -132,17 +218,26 @@
 
 	<div class="avatar-selector">
 		<span class="selector-label">Выбери героя:</span>
-		{#each avatars as avatar}
-			<button
-				class="avatar-btn"
-				class:active={selectedAvatarId === avatar.id}
-				onclick={() => (selectedAvatarId = avatar.id)}
-				title={avatar.name}
-				type="button"
-			>
-				<avatar.component class="avatar-preview" />
-			</button>
-		{/each}
+		<select class="avatar-select" bind:value={selectedAvatarId} aria-label="Выбери героя для игры">
+			{#each avatars as avatar}
+				<option value={avatar.id}>{avatar.name}</option>
+			{/each}
+		</select>
+		<div class="avatar-buttons" role="group" aria-label="Выбери героя для игры">
+			{#each avatars as avatar}
+				<button
+					class="avatar-btn"
+					class:active={selectedAvatarId === avatar.id}
+					onclick={() => (selectedAvatarId = avatar.id)}
+					title={avatar.name}
+					aria-label={avatar.name}
+					aria-pressed={selectedAvatarId === avatar.id}
+					type="button"
+				>
+					<avatar.component class="avatar-preview" />
+				</button>
+			{/each}
+		</div>
 	</div>
 
 	<div class="app-main">

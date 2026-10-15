@@ -1,6 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { db } from '#lib/db';
 import { articleTags, articles, tags } from '#lib/db/schema';
+import { getReadTimeFromHtml } from '#lib/articles/content';
 import { eq, inArray } from 'drizzle-orm';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -88,6 +89,7 @@ export const actions: Actions = {
 						.replace(/[^a-zа-яё0-9]+/g, '-')
 						.replace(/^-|-$/g, ''),
 					content,
+					readTime: getReadTimeFromHtml(content),
 					sortOrder,
 					isPublished,
 					updatedAt: new Date()
