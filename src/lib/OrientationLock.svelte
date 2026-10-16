@@ -1,16 +1,22 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import './OrientationLock.css';
 
 	let isVisible = $state(false);
 
 	onMount(() => {
 		const portraitQuery = window.matchMedia('(orientation: portrait)');
-		const mobileQuery = window.matchMedia('(max-width: 900px)');
+		const mobileQuery = window.matchMedia('(max-width: 900px), (pointer: coarse)');
 		const previousBodyOverflow = document.body.style.overflow;
 		const previousDocumentOverflow = document.documentElement.style.overflow;
 
 		function updateVisibility() {
-			isVisible = portraitQuery.matches && mobileQuery.matches;
+			const viewport = window.visualViewport;
+			const viewportWidth = viewport?.width ?? window.innerWidth;
+			const viewportHeight = viewport?.height ?? window.innerHeight;
+			const isPortrait = portraitQuery.matches || viewportHeight >= viewportWidth;
+
+			isVisible = isPortrait && mobileQuery.matches;
 			const overflow = isVisible ? 'hidden' : '';
 			document.body.style.overflow = overflow || previousBodyOverflow;
 			document.documentElement.style.overflow = overflow || previousDocumentOverflow;
@@ -19,10 +25,16 @@
 		updateVisibility();
 		portraitQuery.addEventListener('change', updateVisibility);
 		mobileQuery.addEventListener('change', updateVisibility);
+		window.addEventListener('resize', updateVisibility);
+		window.addEventListener('orientationchange', updateVisibility);
+		window.visualViewport?.addEventListener('resize', updateVisibility);
 
 		return () => {
 			portraitQuery.removeEventListener('change', updateVisibility);
 			mobileQuery.removeEventListener('change', updateVisibility);
+			window.removeEventListener('resize', updateVisibility);
+			window.removeEventListener('orientationchange', updateVisibility);
+			window.visualViewport?.removeEventListener('resize', updateVisibility);
 			document.body.style.overflow = previousBodyOverflow;
 			document.documentElement.style.overflow = previousDocumentOverflow;
 		};
