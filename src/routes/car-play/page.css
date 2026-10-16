@@ -490,6 +490,7 @@ body {
 .menu-button,
 .close-menu {
 	display: grid;
+	padding: 0;
 	width: 44px;
 	height: 44px;
 	flex: 0 0 44px;
@@ -689,6 +690,7 @@ body {
 }
 
 .sheet-score {
+	max-width: 100%;
 	margin: 0;
 	padding: 10px 14px;
 	border-radius: 12px;

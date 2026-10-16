@@ -113,18 +113,19 @@
 /* === Обёртка контента === */
 .content-wrapper {
 	max-width: 1200px;
+	width: 100%;
 	margin: 0 auto;
 	padding: 2.5rem 2rem;
 	display: flex;
 	gap: 2rem;
 	flex: 1;
+	box-sizing: border-box;
 }
 
 /* === Сайдбар === */
 .sidebar {
 	width: 260px;
 	flex-shrink: 0;
-
 	/* Делаем панель липкой */
 	position: sticky;
 	top: 100px; /* Отступ сверху, чтобы не наезжать на хедер (высота хедера ~70px + запас) */
@@ -178,8 +179,8 @@
 
 /* === Основной контент === */
 .main-content {
-	flex: 1;
-	min-width: 0;
+	flex: 1 1 0;
+	min-width: 300px;
 }
 
 .section-title {
@@ -291,6 +292,12 @@
 .mobile-menu-play,
 .menu-backdrop {
 	display: none;
+}
+
+@media (max-width: 1250px) {
+	.content-wrapper {
+		min-width: 100%;
+	}
 }
 @media (max-width: 1024px) {
 	.hero-title {

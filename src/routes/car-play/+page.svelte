@@ -102,6 +102,7 @@
 		workspace?.clear();
 		program = [];
 		activeCommandId = null;
+		isMenuOpen = false;
 	}
 
 	function addBattery() {
