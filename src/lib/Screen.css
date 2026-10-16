@@ -71,7 +71,7 @@
 	place-items: center;
 }
 
-.avatar-icon :global(svg) {
+.avatar-icon svg {
 	width: 100%;
 	height: 100%;
 }

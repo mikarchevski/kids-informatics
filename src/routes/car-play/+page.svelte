@@ -195,13 +195,6 @@
 			<span class="short-title">Приключение</span>
 		</h1>
 		<div class="header-actions" role="group" aria-label="Управление игрой">
-			{#if !isMobileLayout}
-				<select bind:value={selectedAvatarId} aria-label="Выбери героя">
-					{#each avatars as avatar}
-						<option value={avatar.id}>{avatar.name}</option>
-					{/each}
-				</select>
-			{/if}
 			<button class="run-button" onclick={runProgram} type="button">▶ Запустить</button>
 			<button class="reset-button" onclick={clearField} type="button">↺ Сброс</button>
 		</div>
@@ -209,17 +202,56 @@
 
 	<main class="game-content">
 		<section class="scene-section" aria-label="Игровая сцена">
-			<Screen
-				position={robotPosition}
-				{batteries}
-				avatarComponent={currentAvatar.component}
-				{gridSize}
-			/>
+			<div class="avatar-selector" role="group" aria-label="Выбор персонажа">
+				<span class="selector-label">Персонаж</span>
+				{#each avatars as avatar (avatar.id)}
+					{@const Avatar = avatar.component}
+					<button
+						class="avatar-option"
+						class:selected={selectedAvatarId === avatar.id}
+						onclick={() => (selectedAvatarId = avatar.id)}
+						aria-label={avatar.name}
+						aria-pressed={selectedAvatarId === avatar.id}
+						title={avatar.name}
+						type="button"
+					>
+						<span class="avatar-option-icon"><Avatar /></span>
+						<span class="avatar-option-name">{avatar.name}</span>
+					</button>
+				{/each}
+			</div>
+
+			<div class="scene-field">
+				<Screen
+					position={robotPosition}
+					{batteries}
+					avatarComponent={currentAvatar.component}
+					{gridSize}
+				/>
+			</div>
+
+			<div class="scene-actions" role="group" aria-label="Управление игровым полем">
+				<button class="scene-action add-star-button" onclick={addBattery} type="button">
+					⭐ Добавить звезду
+				</button>
+				<p class="scene-score" aria-live="polite">⭐ Счёт: {score}</p>
+				<button class="scene-action clear-field-button" onclick={clearField} type="button">
+					🗑️ Очистить поле
+				</button>
+			</div>
 		</section>
 
 		<section class="program-section" aria-labelledby="program-title">
 			<div class="program-heading">
 				<h2 id="program-title">Программа</h2>
+				<button
+					class="desktop-clear-program"
+					onclick={clearProgram}
+					disabled={program.length === 0}
+					type="button"
+				>
+					Очистить программу
+				</button>
 				<button
 					class="menu-button"
 					class:menu-open={isMenuOpen}
