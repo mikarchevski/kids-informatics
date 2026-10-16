@@ -15,6 +15,3 @@
 <div class="page-content">
 	{@render children()}
 </div>
-
-<style>
-</style>

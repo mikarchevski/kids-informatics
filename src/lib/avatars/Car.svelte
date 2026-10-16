@@ -1,4 +1,5 @@
 <script lang="ts">
+	import './Car.css';
 	let { direction = 'right', isMoving = false } = $props();
 </script>
 
@@ -44,32 +45,4 @@
 	</svg>
 </div>
 
-<style>
-	.car-wrapper {
-		width: 100%;
-		height: 100%;
-		display: block;
-		transform-origin: center center;
-		transition: transform 0.2s ease-out;
-		will-change: transform;
-	}
-
-	.car-wrapper.flipped {
-		transform: rotateY(180deg);
-		outline: 3px solid lime !important; /* Временная подсветка */
-	}
-
-	/* Опционально: анимация подпрыгивания при движении */
-	.car-wrapper.moving svg {
-		animation: bounce 0.4s ease-in-out infinite alternate;
-	}
-
-	@keyframes bounce {
-		from {
-			transform: translateY(0);
-		}
-		to {
-			transform: translateY(-5px);
-		}
-	}
-</style>
+<style src="./Car.css"></style>

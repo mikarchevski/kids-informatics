@@ -48,6 +48,8 @@
 	border-radius: 20px;
 	font-size: 0.8rem;
 	font-weight: 600;
+	background: color-mix(in srgb, var(--tag-color) 12.5%, transparent);
+	color: var(--tag-color);
 }
 
 .article-time {

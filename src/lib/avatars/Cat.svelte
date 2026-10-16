@@ -1,5 +1,6 @@
 <script lang="ts">
 	let { direction = 'right', isMoving = false } = $props();
+	import './Cat.css';
 </script>
 
 <div class="avatar-wrapper" class:flipped={direction === 'left'} class:moving={isMoving}>
@@ -74,40 +75,4 @@
 	</div>
 </div>
 
-<style>
-	/* Внешняя обёртка: отвечает ТОЛЬКО за игровое направление */
-	.avatar-wrapper {
-		width: 100%;
-		height: 100%;
-		display: block;
-		transform-origin: center center;
-		transition: transform 0.2s ease-out;
-		will-change: transform;
-	}
-
-	.avatar-wrapper.flipped {
-		transform: scaleX(-1);
-	}
-
-	/* Внутренний контейнер: разворачивает исходный SVG лицом вправо */
-	.cat-body {
-		width: 100%;
-		height: 100%;
-		transform: scaleX(-1);
-		transform-origin: center center;
-	}
-
-	/* Анимация при движении: учитывает базовый поворот */
-	.avatar-wrapper.moving .cat-body {
-		animation: bounce 0.4s ease-in-out infinite alternate;
-	}
-
-	@keyframes bounce {
-		from {
-			transform: scaleX(-1) translateY(0);
-		}
-		to {
-			transform: scaleX(-1) translateY(-10px);
-		}
-	}
-</style>
+<style src="./Cat.css"></style>

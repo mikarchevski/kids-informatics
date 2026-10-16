@@ -1,6 +1,6 @@
 <script lang="ts">
 	import './app.css';
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 
 	let { children } = $props();
 
@@ -13,11 +13,11 @@
 		updateViewportHeight();
 		window.addEventListener('resize', updateViewportHeight);
 		window.addEventListener('orientationchange', updateViewportHeight);
-	});
 
-	onDestroy(() => {
-		window.removeEventListener('resize', updateViewportHeight);
-		window.removeEventListener('orientationchange', updateViewportHeight);
+		return () => {
+			window.removeEventListener('resize', updateViewportHeight);
+			window.removeEventListener('orientationchange', updateViewportHeight);
+		};
 	});
 </script>
 
