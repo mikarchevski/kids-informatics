@@ -305,5 +305,3 @@
 		</button>
 	</div>
 </div>
-
-<style src="./car-play.css"></style>

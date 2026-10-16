@@ -25,7 +25,7 @@
 
 		<header class="detail-article-header">
 			{#each data.article.tags as tag (tag.id)}
-				<span class="detail-article-tag" style="background: {tag.color}20; color: {tag.color};">
+				<span class="detail-article-tag" style:--tag-color={tag.color}>
 					{tag.name}
 				</span>
 			{/each}
@@ -61,6 +61,3 @@
 		<a href="/articles" class="back-button">← К статьям</a>
 	</div>
 {/if}
-
-<style>
-</style>

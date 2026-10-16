@@ -1,0 +1,46 @@
+body {
+	max-width: 760px;
+	margin: 2rem auto;
+	padding: 0 1rem;
+	color: #343a40;
+	font: 18px/1.7 system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3 {
+	line-height: 1.25;
+	color: #212529;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th,
+td {
+	padding: 0.5rem;
+	border: 1px solid #ced4da;
+	text-align: left;
+}
+
+blockquote {
+	margin: 1.5rem 0;
+	padding: 0.75rem 1rem;
+	border-left: 4px solid #4c97ff;
+	background: #f8f9fa;
+}
+
+pre {
+	overflow: auto;
+	padding: 1rem;
+	border-radius: 6px;
+	background: #1e293b;
+	color: #e2e8f0;
+}

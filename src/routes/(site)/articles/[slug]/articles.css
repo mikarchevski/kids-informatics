@@ -32,6 +32,8 @@
 	font-size: 0.85rem;
 	font-weight: 600;
 	margin-bottom: 1rem;
+	background: color-mix(in srgb, var(--tag-color) 12.5%, transparent);
+	color: var(--tag-color);
 }
 
 .detail-article-time {

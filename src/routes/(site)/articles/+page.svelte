@@ -18,7 +18,7 @@
 		<a href="/articles/{article.slug}" class="article-card">
 			<div class="article-header">
 				{#each article.tags as tag (tag.id)}
-					<span class="article-tag" style="background: {tag.color}20; color: {tag.color};">
+					<span class="article-tag" style:--tag-color={tag.color}>
 						{tag.name}
 					</span>
 				{/each}
@@ -31,7 +31,3 @@
 		</a>
 	{/each}
 </div>
-
-<style>
-	/* Ваши стили остаются здесь */
-</style>

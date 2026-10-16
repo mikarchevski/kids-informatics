@@ -1,0 +1,45 @@
+.orientation-lock {
+	position: fixed;
+	z-index: 2147483647;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2rem;
+	padding: 2rem;
+	background: #1a202c;
+	color: #fff;
+	text-align: center;
+	touch-action: none;
+}
+
+.phone-icon {
+	width: 5rem;
+	height: auto;
+	animation: rotate-phone 1.8s ease-in-out infinite alternate;
+}
+
+p {
+	max-width: 24rem;
+	margin: 0;
+	font-size: clamp(1.25rem, 5vw, 1.75rem);
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+@keyframes rotate-phone {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(90deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.phone-icon {
+		animation: none;
+		transform: rotate(90deg);
+	}
+}

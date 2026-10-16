@@ -77,15 +77,7 @@
 			<head>
 				<meta charset="utf-8">
 				<meta name="viewport" content="width=device-width, initial-scale=1">
-				<style>
-					body { max-width: 760px; margin: 2rem auto; padding: 0 1rem; color: #343a40; font: 18px/1.7 system-ui, sans-serif; }
-					h1, h2, h3 { line-height: 1.25; color: #212529; }
-					img { max-width: 100%; height: auto; }
-					table { width: 100%; border-collapse: collapse; }
-					th, td { padding: .5rem; border: 1px solid #ced4da; text-align: left; }
-					blockquote { margin: 1.5rem 0; padding: .75rem 1rem; border-left: 4px solid #4c97ff; background: #f8f9fa; }
-					pre { overflow: auto; padding: 1rem; border-radius: 6px; background: #1e293b; color: #e2e8f0; }
-				</style>
+				<link rel="stylesheet" href="/article-preview.css">
 			</head>
 			<body><article><h1>${escapeHtml(articleTitle)}</h1>${articleContent}</article></body>
 		</html>`);
@@ -182,7 +174,7 @@
 				<div class="tag-picker">
 					<div class="selected-tags">
 						{#each availableTags.filter((tag) => selectedTagIds.includes(tag.id)) as tag (tag.id)}
-							<span class="selected-tag" style="--tag-color: {tag.color}">
+							<span class="selected-tag" style:--tag-color={tag.color}>
 								{tag.name}
 								<button
 									type="button"
@@ -342,6 +334,3 @@
 		}}
 	></form>
 </div>
-
-<style>
-</style>

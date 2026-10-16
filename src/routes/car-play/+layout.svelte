@@ -32,18 +32,4 @@
 {@render children()}
 <OrientationLock />
 
-<style>
-	@media (max-width: 900px) and (pointer: coarse) {
-		:global(html.game-active),
-		:global(body.game-active) {
-			position: static;
-			width: 100%;
-			min-height: 100%;
-			height: auto;
-			overflow-x: clip;
-			touch-action: pan-y pinch-zoom;
-			-webkit-user-select: none;
-			user-select: none;
-		}
-	}
-</style>
+<style src="./layout.css"></style>

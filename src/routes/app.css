@@ -14,3 +14,7 @@ body {
 	background: #f8f9fa;
 	color: #212529;
 }
+
+.sveltekit-body {
+	display: contents;
+}

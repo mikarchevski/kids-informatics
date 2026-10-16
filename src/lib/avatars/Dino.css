@@ -1,0 +1,52 @@
+.avatar-wrapper {
+	width: 100%;
+	height: 100%;
+	display: block;
+	transform-origin: center center;
+	transition: transform 0.2s ease-out;
+	will-change: transform;
+}
+
+.avatar-wrapper.flipped {
+	transform: scaleX(-1);
+}
+
+.dino-body {
+	width: 100%;
+	height: 100%;
+	transform: scaleX(-1);
+	transform-origin: center center;
+}
+
+.avatar-wrapper.moving .dino-body {
+	animation: bounce 0.4s ease-in-out infinite alternate;
+}
+
+.dino-dark {
+	fill: #494434;
+}
+
+.dino-mid {
+	fill: #776f4f;
+}
+
+.dino-green {
+	fill: #80995f;
+}
+
+.dino-light-green {
+	fill: #8cae65;
+}
+
+.dino-brown {
+	fill: #4c443b;
+}
+
+@keyframes bounce {
+	from {
+		transform: scaleX(-1) translateY(0);
+	}
+	to {
+		transform: scaleX(-1) translateY(-10px);
+	}
+}

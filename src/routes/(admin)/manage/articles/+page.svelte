@@ -39,7 +39,7 @@
 						</td>
 						<td>
 							{#each article.tags as tag (tag.id)}
-								<span class="tag-badge" style="background: {tag.color}">{tag.name}</span>
+								<span class="tag-badge" style:--tag-color={tag.color}>{tag.name}</span>
 							{:else}
 								<span class="tag-badge">Без тега</span>
 							{/each}

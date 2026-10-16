@@ -1,143 +1,87 @@
-/* src/lib/Screen.css */
-.screen {
-  padding: 2rem;
+.scene-board {
+	display: grid;
+	width: 100%;
+	height: 100%;
+	min-width: 0;
+	min-height: 0;
+	place-items: center;
 }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: 30px repeat(10, 40px);
-  grid-template-rows: 30px repeat(10, 40px);
-  gap: 2px;
-  background: #dee2e6;
-  padding: 2px;
-  border-radius: 8px;
+.scene-grid {
+	display: grid;
+	width: min(100%, 400px);
+	max-height: 100%;
+	aspect-ratio: 1;
+	grid-template-columns: 8% repeat(var(--grid-size), minmax(0, 1fr));
+	grid-template-rows: 8% repeat(var(--grid-size), minmax(0, 1fr));
+	gap: 2px;
+	padding: 2px;
+	overflow: hidden;
+	border-radius: 10px;
+	background: #cbd5e1;
 }
 
-.corner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: bold;
-  color: #6c757d;
-  background: #f8f9fa;
-  border-radius: 4px;
+.grid-cell {
+	display: flex;
+	min-width: 0;
+	min-height: 0;
+	align-items: center;
+	justify-content: center;
+	background: white;
+	color: #334155;
+	font-size: clamp(0.625rem, 2.5vw, 0.875rem);
+	font-weight: 600;
 }
 
-.header-x, .header-y {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #495057;
-  background: #f8f9fa;
-  border-radius: 4px;
+.grid-heading {
+	background: #f1f5f9;
+	font-size: clamp(0.625rem, 2vw, 0.75rem);
 }
 
-.cell {
-  background: white;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  position: relative;
+.robot-cell {
+	border: 2px solid #f59e0b;
+	background: #fef3c7;
 }
 
-.robot {
-  background: #fff3cd !important;
-  box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+.robot-orientation {
+	display: grid;
+	width: 100%;
+	height: 100%;
+	place-items: center;
+	transform: rotate(270deg);
+	transition: transform 0.2s ease-out;
 }
 
-.fuel {
-  background: #d4edda !important;
+.robot-orientation.direction-right {
+	transform: rotate(0deg);
 }
 
-.robot-svg {
-  display: block;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  width: 36px;
-  height: 36px;
+.robot-orientation.direction-down {
+	transform: rotate(90deg);
 }
 
-.robot-svg svg {
-  width: 100%;
-  height: 100%;
+.robot-orientation.direction-left {
+	transform: rotate(180deg);
 }
 
-.fuel-emoji {
-  font-size: 1.8rem;
-  animation: pulse 1.5s ease-in-out infinite;
+.avatar-icon {
+	display: grid;
+	width: min(80%, 40px);
+	height: min(80%, 40px);
+	place-items: center;
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
+.avatar-icon :global(svg) {
+	width: 100%;
+	height: 100%;
 }
 
-.add-battery-btn {
-  display: block;
-  margin: 0 auto 1rem auto;
-  padding: 0.6rem 1.5rem;
-  background: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
+.star-icon {
+	font-size: clamp(0.75rem, 3vw, 1.25rem);
 }
 
-.add-battery-btn:hover {
-  background: #218838;
-  transform: translateY(-1px);
-}
-
-.add-battery-btn:active {
-  transform: translateY(0);
-}
-
-/* Панель инструментов над полем */
-.screen-toolbar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-/* Кнопка добавления канистры */
-.add-battery-btn {
-  padding: 0.5rem 1.2rem;
-  background: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-      margin: 0;
-}
-
-.add-battery-btn:hover {
-  background: #218838;
-  transform: translateY(-1px);
-}
-
-.add-battery-btn:active {
-  transform: translateY(0);
-}
-
-/* Бейдж со счётом */
-.score-badge {
-  padding: 0.5rem 1rem;
-  background: #fff3cd;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 0.95rem;
-  color: #856404;
-  border: 1px solid #ffeaa7;
+@media (max-width: 900px) and (pointer: coarse) {
+	.scene-grid {
+		width: min(100%, 400px);
+	}
 }

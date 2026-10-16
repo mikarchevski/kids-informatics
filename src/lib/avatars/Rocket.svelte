@@ -34,40 +34,4 @@
 	</div>
 </div>
 
-<style>
-	/* Внешняя обёртка: отвечает ТОЛЬКО за отражение направления */
-	.avatar-wrapper {
-		width: 100%;
-		height: 100%;
-		display: block;
-		transform-origin: center center;
-		transition: transform 0.2s ease-out;
-		will-change: transform;
-	}
-
-	.avatar-wrapper.flipped {
-		transform: scaleX(-1);
-	}
-
-	/* Внутренний контейнер: отвечает ТОЛЬКО за поворот на 90° */
-	.rocket-body {
-		width: 100%;
-		height: 100%;
-		transform: rotate(90deg);
-		transform-origin: center center;
-	}
-
-	/* Анимация покачивания при движении */
-	.avatar-wrapper.moving .rocket-body {
-		animation: hover 0.6s ease-in-out infinite alternate;
-	}
-
-	@keyframes hover {
-		from {
-			transform: rotate(90deg) translateY(0);
-		}
-		to {
-			transform: rotate(90deg) translateY(-15px);
-		}
-	}
-</style>
+<style src="./Rocket.css"></style>
