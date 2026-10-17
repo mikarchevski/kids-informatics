@@ -274,6 +274,11 @@
 	font-size: 0.9rem;
 }
 
+.footer-inner__right {
+	font-size: 0.9rem;
+	font-weight: 500;
+}
+
 .footer-links {
 	display: flex;
 	gap: 1.5rem;

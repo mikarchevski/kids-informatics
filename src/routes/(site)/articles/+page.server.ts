@@ -46,7 +46,11 @@ export async function load() {
 			articlesById.set(article.id, article);
 		}
 		if (row.tagId && row.tagName && row.tagColor) {
-			article.tags.push({ id: row.tagId, name: row.tagName, color: row.tagColor });
+			article.tags.push({
+				id: row.tagId,
+				name: row.tagName,
+				color: row.tagColor
+			});
 		}
 	}
 

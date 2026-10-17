@@ -127,7 +127,7 @@ body {
 .avatar-selector {
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	gap: 6px;
 	padding: 8px;
 	border: 1px solid #e2e8f0;

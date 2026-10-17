@@ -86,7 +86,7 @@
 	<!-- Подвал -->
 	<footer class="site-footer">
 		<div class="footer-inner">
-			<p>© 2026 Kids Informatics. Все права защищены.</p>
+			<p class="footer-inner__right">© 2026 Kids Informatics. Все права защищены.</p>
 			<div class="footer-links">
 				<a href="/legal">Правовая информация</a>
 				<a href="/parents">Родителям</a>
