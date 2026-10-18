@@ -1,0 +1,298 @@
+/* .game-page {
+	min-height: 100vh;
+	background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+	padding: 2rem 1rem;
+} */
+
+.game-container {
+	max-width: 1000px;
+	margin: 0 auto;
+	background: white;
+	border-radius: 24px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+	padding: 2rem;
+}
+
+/* Шапка */
+.game-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1.5rem;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+.header-left {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.header-icon {
+	font-size: 2rem;
+}
+
+.game-header h1 {
+	font-size: 1.5rem;
+	color: #3b82f6;
+	margin: 0;
+	font-weight: 700;
+}
+
+.score {
+	display: flex;
+	align-items: baseline;
+	gap: 0.25rem;
+	background: #f0fdf4;
+	padding: 0.5rem 1rem;
+	border-radius: 12px;
+}
+
+.score-number {
+	font-size: 2rem;
+	font-weight: bold;
+	color: #22c55e;
+}
+
+.score-text {
+	font-size: 1.1rem;
+	color: #6b7280;
+	font-weight: 600;
+}
+
+/* Прогресс бар */
+.progress-container {
+	margin-bottom: 2rem;
+}
+
+.progress-bar {
+	height: 24px;
+	background: #e5e7eb;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+	height: 100%;
+	background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
+	border-radius: 12px;
+	transition: width 0.5s ease-out;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Игровое поле */
+.game-field {
+	position: relative;
+	height: 500px;
+	background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+	border: 3px solid #60a5fa;
+	border-radius: 16px;
+	overflow: hidden;
+	margin-bottom: 1.5rem;
+}
+
+.bubble {
+	position: absolute;
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow:
+		inset -10px -10px 20px rgba(0, 0, 0, 0.1),
+		inset 10px 10px 20px rgba(255, 255, 255, 0.4),
+		0 10px 30px rgba(0, 0, 0, 0.2);
+	transition: transform 0.1s ease;
+	animation: bubbleAppear 0.5s ease-out;
+	will-change: transform;
+}
+
+.bubble:hover {
+	transform: scale(1.05);
+}
+
+.bubble:active {
+	transform: scale(0.95);
+}
+
+.bubble-highlight {
+	position: absolute;
+	top: 15%;
+	left: 15%;
+	width: 30%;
+	height: 20%;
+	background: radial-gradient(ellipse, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+	border-radius: 50%;
+}
+
+@keyframes bubbleAppear {
+	0% {
+		opacity: 0;
+		transform: scale(0);
+	}
+	50% {
+		transform: scale(1.1);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+/* Экран победы */
+.win-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(74, 222, 128, 0.95);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	animation: winFadeIn 0.5s ease-out;
+	z-index: 10;
+}
+
+.win-content {
+	text-align: center;
+	color: white;
+	padding: 2rem;
+}
+
+.win-icon {
+	font-size: 6rem;
+	margin-bottom: 1rem;
+	animation: bounce 1s ease infinite;
+}
+
+.win-content h2 {
+	font-size: 2.5rem;
+	margin: 0 0 1rem 0;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.win-content p {
+	font-size: 1.3rem;
+	margin-bottom: 2rem;
+	opacity: 0.95;
+}
+
+.repeat-btn {
+	background: white;
+	color: #22c55e;
+	border: none;
+	padding: 1rem 2.5rem;
+	font-size: 1.3rem;
+	font-weight: bold;
+	border-radius: 50px;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+	transition:
+		transform 0.2s,
+		box-shadow 0.2s;
+}
+
+.repeat-btn:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.repeat-btn:active {
+	transform: translateY(-1px);
+}
+
+@keyframes winFadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes bounce {
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-20px);
+	}
+}
+
+/* Подсказка */
+.hint {
+	background: #eff6ff;
+	border: 2px solid #bfdbfe;
+	border-radius: 12px;
+	padding: 1rem 1.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	color: #1e40af;
+	font-size: 1.1rem;
+	margin-bottom: 1.5rem;
+}
+
+.hint-icon {
+	font-size: 1.3rem;
+}
+
+/* Кнопка назад */
+.back-section {
+	text-align: center;
+}
+
+.back-btn {
+	background: #f3f4f6;
+	color: #4b5563;
+	border: 2px solid #d1d5db;
+	padding: 0.75rem 2rem;
+	font-size: 1.1rem;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.2s;
+	font-weight: 600;
+}
+
+.back-btn:hover {
+	background: #e5e7eb;
+	border-color: #9ca3af;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+	.game-header {
+		flex-direction: column;
+		text-align: center;
+	}
+
+	.header-left {
+		justify-content: center;
+	}
+
+	.game-header h1 {
+		font-size: 1.2rem;
+	}
+
+	.game-field {
+		height: 400px;
+	}
+
+	.bubble {
+		min-width: 60px;
+		min-height: 60px;
+	}
+
+	.win-content h2 {
+		font-size: 1.8rem;
+	}
+
+	.win-icon {
+		font-size: 4rem;
+	}
+}

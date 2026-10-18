@@ -10,10 +10,10 @@
 		{ icon: '🏠', label: 'Главная', href: '/' },
 		{ icon: '📚', label: 'Познавательные статьи', href: '/articles' },
 		{ icon: '👨‍👩‍👧', label: 'Родителям', href: '/parents' },
-		{ icon: '⚖️', label: 'Правовая информация', href: '/legal' }
+		{ icon: '⚖️', label: 'Правовая информация', href: '/legal' },
+		{ icon: '🖱️', label: 'Тренажёр мышки', href: '/mouse-trainer', isDesktopOnly: true }
 	];
 
-	// Функция для проверки активного пункта меню
 	function isActive(href: string) {
 		if (href === '/') return page.url.pathname === '/';
 		return page.url.pathname.startsWith(href);
@@ -64,6 +64,7 @@
 						href={item.href}
 						class="menu-item"
 						class:active={isActive(item.href)}
+						class:desktop-only={item.isDesktopOnly}
 						onclick={() => (isMenuOpen = false)}
 					>
 						<span class="menu-icon">{item.icon}</span>
@@ -77,7 +78,6 @@
 			</nav>
 		</aside>
 
-		<!-- Сюда вставляется контент конкретной страницы -->
 		<main class="main-content">
 			{@render children()}
 		</main>
@@ -94,3 +94,16 @@
 		</div>
 	</footer>
 </div>
+
+<style>
+	/* 👇 Добавляем стили для скрытия пункта меню на мобильных устройствах */
+	.desktop-only {
+		display: none !important;
+	}
+	
+	@media (min-width: 1024px) {
+		.desktop-only {
+			display: flex !important; /* Или block, в зависимости от ваших стилей .menu-item в home.css */
+		}
+	}
+</style>

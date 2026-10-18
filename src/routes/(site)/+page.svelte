@@ -5,7 +5,7 @@
 		{ icon: '📚', label: 'Познавательные статьи', href: '/articles' },
 		{ icon: '💻', label: 'Программное приключение', href: '/car-play' },
 		{ icon: '👨‍👩‍👧', label: 'Родителям', href: '/parents' },
-		{ icon: '⚖️', label: 'Правовая информация', href: '/legal' }
+		{ icon: '⚖️', label: 'Правовая информация12', href: '/legal' }
 	];
 
 	const news = [
