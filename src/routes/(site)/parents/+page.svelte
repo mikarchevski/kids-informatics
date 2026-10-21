@@ -1,14 +1,13 @@
 <script lang="ts">
+	import Seo from '#lib/components/Seo.svelte';
 	import './parents.css';
 </script>
 
-<svelte:head>
-	<title>Родителям — Kids Informatics</title>
-	<meta
-		name="description"
-		content="Узнайте, как устроена детская игра Kids Informatics: безопасность, польза, экранное время и ответы на частые вопросы."
-	/>
-</svelte:head>
+<Seo
+	title="Родителям: безопасность и обучение детей — Kids Informatics"
+	description="Информация для родителей о бесплатных детских играх Kids Informatics: безопасность, приватность, польза, экранное время и ответы на частые вопросы."
+	path="/parents"
+/>
 
 <div class="parents-page">
 	<section class="parents-hero" aria-labelledby="parents-title">

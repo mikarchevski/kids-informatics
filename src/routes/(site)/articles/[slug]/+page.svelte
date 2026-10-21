@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import Seo from '#lib/components/Seo.svelte';
 	import { marked } from 'marked';
 	import './articles.css';
 	let { data }: { data: PageData } = $props();
@@ -15,9 +16,25 @@
 	);
 </script>
 
-<svelte:head>
-	<title>{data.article?.title || 'Статья'} — Kids Informatics</title>
-</svelte:head>
+{#if data.article}
+	<Seo
+		title="{data.article.title} — Kids Informatics"
+		description={data.article.excerpt || data.article.subtitle || data.article.title}
+		path="/articles/{data.article.slug}"
+		type="article"
+		schema={{
+			'@type': 'Article',
+			headline: data.article.title,
+			description: data.article.excerpt || data.article.subtitle || data.article.title,
+			datePublished: data.article.createdAt.toISOString(),
+			dateModified: data.article.updatedAt.toISOString(),
+			mainEntityOfPage: `https://kids-informatics.mk5d.ru/articles/${encodeURIComponent(data.article.slug)}`,
+			author: { '@type': 'Organization', name: 'Kids Informatics' },
+			publisher: { '@id': 'https://kids-informatics.mk5d.ru/#organization' },
+			inLanguage: 'ru-RU'
+		}}
+	/>
+{/if}
 
 {#if data.article}
 	<article class="detail-article-full">

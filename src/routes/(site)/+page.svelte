@@ -1,48 +1,13 @@
 <script lang="ts">
+	import Seo from '#lib/components/Seo.svelte';
 	import './home.css';
-
-	const menuItems = [
-		{ icon: '📚', label: 'Познавательные статьи', href: '/articles' },
-		{ icon: '💻', label: 'Программное приключение', href: '/car-play' },
-		{ icon: '👨‍👩‍👧', label: 'Родителям', href: '/parents' },
-		{ icon: '⚖️', label: 'Правовая информация12', href: '/legal' }
-	];
-
-	const news = [
-		{
-			id: 1,
-			date: '12 октября 2026',
-			title: 'Запуск платформы Kids Informatics',
-			excerpt:
-				'Мы рады представить нашу платформу для изучения основ программирования через игру. Начните с "Программное приключение" — первого интерактивного урока!',
-			tag: 'Новость'
-		},
-		{
-			id: 2,
-			date: '15 октября 2026',
-			title: 'Скоро: новые уровни и задачи',
-			excerpt:
-				'В ближайшее время мы добавим режим головоломок с готовыми заданиями, системой достижений и таблицей лидеров.',
-			tag: 'Анонс'
-		},
-		{
-			id: 3,
-			date: '20 октября 2026',
-			title: 'Статья: "Зачем детям программирование?"',
-			excerpt:
-				'Разбираем, как базовые навыки алгоритмического мышления помогают в школе и развивают логику.',
-			tag: 'Статья'
-		}
-	];
 </script>
 
-<svelte:head>
-	<title>Kids Informatics — Программирование для детей</title>
-	<meta
-		name="description"
-		content="Интерактивная платформа для изучения основ программирования через игру"
-	/>
-</svelte:head>
+<Seo
+	title="Программирование и логика для детей — Kids Informatics"
+	description="Бесплатные детские игры и занятия по программированию: изучайте алгоритмы и логику в интерактивных заданиях для детей от 5 лет."
+	path="/"
+/>
 
 <div class="home">
 	<!-- Шапка сайта -->
@@ -65,20 +30,32 @@
 
 		<!-- Центральная часть с новостями -->
 		<div class="main-content">
-			<h2 class="section-title">Новости и обновления</h2>
+			<h2 class="section-title">Учимся в игре и читаем о технологиях</h2>
 
 			<div class="news-list">
-				{#each news as item}
-					<article class="news-card">
-						<div class="news-header">
-							<span class="news-tag">{item.tag}</span>
-							<time class="news-date">{item.date}</time>
-						</div>
-						<h3 class="news-title">{item.title}</h3>
-						<p class="news-excerpt">{item.excerpt}</p>
-						<a href="/articles/why-programming" class="news-link">Читать далее →</a>
-					</article>
-				{/each}
+				<article class="news-card">
+					<h3 class="news-title">Первые шаги в алгоритмах</h3>
+					<p class="news-excerpt">
+						Собирай команды из блоков и помогай персонажу выполнить задание в программном
+						приключении.
+					</p>
+					<a href="/car-play" class="news-link">Начать игру →</a>
+				</article>
+				<article class="news-card">
+					<h3 class="news-title">Игры для тренировки мыши</h3>
+					<p class="news-excerpt">
+						Практикуй клики, перетаскивание и прокрутку в коротких интерактивных заданиях.
+					</p>
+					<a href="/mouse-trainer" class="news-link">Выбрать тренажёр →</a>
+				</article>
+				<article class="news-card">
+					<h3 class="news-title">Статьи о логике и программировании</h3>
+					<p class="news-excerpt">
+						Читайте познавательные материалы о технологиях, алгоритмах и развитии логического
+						мышления.
+					</p>
+					<a href="/articles" class="news-link">Перейти к статьям →</a>
+				</article>
 			</div>
 		</div>
 	</div>

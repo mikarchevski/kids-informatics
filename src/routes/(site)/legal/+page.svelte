@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Seo from '#lib/components/Seo.svelte';
 	import '../home.css';
 	import './legal.css';
 
@@ -12,13 +13,11 @@
 	];
 </script>
 
-<svelte:head>
-	<title>Правовая информация — Kids Informatics</title>
-	<meta
-		name="description"
-		content="Пользовательское соглашение, политика конфиденциальности и правовая информация"
-	/>
-</svelte:head>
+<Seo
+	title="Правовая информация и политика конфиденциальности — Kids Informatics"
+	description="Пользовательское соглашение, политика конфиденциальности и сведения об обработке данных на сайте Kids Informatics."
+	path="/legal"
+/>
 
 <div class="home">
 	<!-- Основной контент -->

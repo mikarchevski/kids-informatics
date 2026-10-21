@@ -4,6 +4,10 @@
 	import './layout.css';
 </script>
 
+<svelte:head>
+	<meta name="robots" content="noindex, nofollow" />
+</svelte:head>
+
 <div class="admin-dashboard">
 	<!-- Боковое меню -->
 	<aside class="sidebar">

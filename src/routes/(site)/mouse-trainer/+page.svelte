@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Seo from '#lib/components/Seo.svelte';
 	import './page.css';
 	const games = [
 		{
@@ -46,9 +47,11 @@
 	];
 </script>
 
-<svelte:head>
-	<title>Тренажёр мышки</title>
-</svelte:head>
+<Seo
+	title="Тренажёр мышки для детей: учимся играть и кликать"
+	description="Бесплатные игры для тренировки мыши: клики, двойной клик, перетаскивание, прокрутка и точность курсора."
+	path="/mouse-trainer"
+/>
 
 <div class="trainer-page">
 	<h1 class="trainer-page__title">Тренажёр мышки</h1>

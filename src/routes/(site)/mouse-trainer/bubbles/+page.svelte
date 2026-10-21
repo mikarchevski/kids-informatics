@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
-  import './page.css';
+	import Seo from '#lib/components/Seo.svelte';
+	import './page.css';
 
 	interface Bubble {
 		id: number;
@@ -30,7 +31,7 @@
 		'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', // оранжево-розовый
 		'linear-gradient(135deg, #30cfd0 0%, #330867 100%)', // тёмно-синий
 		'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)', // светло-розовый
-		'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'  // персиковый
+		'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)' // персиковый
 	];
 
 	function getRandomPosition(size: number) {
@@ -39,7 +40,7 @@
 		const maxX = 90 - size / 8;
 		const minY = 10;
 		const maxY = 90 - size / 8;
-		
+
 		return {
 			x: Math.random() * (maxX - minX) + minX,
 			y: Math.random() * (maxY - minY) + minY
@@ -50,7 +51,7 @@
 		const size = 80 + Math.random() * 40; // 80-120px
 		const pos = getRandomPosition(size);
 		const color = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
-		
+
 		return {
 			id: bubbleIdCounter++,
 			x: pos.x,
@@ -68,11 +69,11 @@
 
 	function popBubble(bubbleId: number) {
 		if (gameWon) return;
-		
+
 		// Удаляем лопнувший пузырь
-		bubbles = bubbles.filter(b => b.id !== bubbleId);
+		bubbles = bubbles.filter((b) => b.id !== bubbleId);
 		poppedCount++;
-		
+
 		// Если ещё не достигли цели, добавляем новый пузырь
 		if (poppedCount < TOTAL_TO_POP && bubbles.length < MAX_BUBBLES) {
 			// Небольшая задержка перед появлением нового для лучшего UX
@@ -82,7 +83,7 @@
 				}
 			}, 100);
 		}
-		
+
 		// Проверяем победу
 		if (poppedCount >= TOTAL_TO_POP) {
 			gameWon = true;
@@ -97,14 +98,14 @@
 		poppedCount = 0;
 		gameWon = false;
 		bubbleIdCounter = 0;
-		
+
 		// Создаём начальные 5 пузырьков
 		for (let i = 0; i < INITIAL_BUBBLES; i++) {
 			setTimeout(() => {
 				addBubble();
 			}, i * 200); // Небольшая задержка между появлением для красоты
 		}
-		
+
 		// Устанавливаем интервал добавления пузырьков каждые 10 секунд
 		addInterval = setInterval(() => {
 			addBubble();
@@ -136,9 +137,11 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Ломай пузырьки - Тренажёр мышки</title>
-</svelte:head>
+<Seo
+	title="Игра «Лопай пузырьки»: тренировка левого клика мыши"
+	description="Лопай яркие пузырьки левой кнопкой мыши и тренируй точность клика в бесплатной детской игре."
+	path="/mouse-trainer/bubbles"
+/>
 
 <div class="game-page">
 	<div class="game-container">
@@ -157,19 +160,17 @@
 		<!-- Прогресс бар -->
 		<div class="progress-container">
 			<div class="progress-bar">
-				<div 
-					class="progress-fill" 
-					style="width: {(poppedCount / TOTAL_TO_POP) * 100}%"
-				></div>
+				<div class="progress-fill" style="width: {(poppedCount / TOTAL_TO_POP) * 100}%"></div>
 			</div>
 		</div>
 
 		<!-- Игровое поле -->
 		<div class="game-field">
 			{#each bubbles as bubble (bubble.id)}
-				<div
+				<button
 					class="bubble"
 					class:popping={false}
+					type="button"
 					style="
 						left: {bubble.x}%;
 						top: {bubble.y}%;
@@ -179,11 +180,10 @@
 						animation-delay: {bubble.id * 0.05}s
 					"
 					onclick={() => popBubble(bubble.id)}
-					role="button"
 					aria-label="Пузырёк"
 				>
 					<div class="bubble-highlight"></div>
-				</div>
+				</button>
 			{/each}
 
 			<!-- Экран победы -->
@@ -210,13 +210,10 @@
 
 		<!-- Кнопка назад -->
 		<div class="back-section">
-			<button class="back-btn" onclick={goBack}>
-				← Назад к играм
-			</button>
+			<button class="back-btn" onclick={goBack}> ← Назад к играм </button>
 		</div>
 	</div>
 </div>
 
 <style>
-	
 </style>
