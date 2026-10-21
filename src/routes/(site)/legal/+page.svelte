@@ -254,6 +254,6 @@
 					</p>
 				</div>
 			</section>
-		</d>
+		</div>
 	</div>
 </div>
