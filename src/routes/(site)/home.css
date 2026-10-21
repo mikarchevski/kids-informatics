@@ -82,6 +82,7 @@
 	font-weight: 800;
 	margin: 0 0 1rem 0;
 	letter-spacing: -0.02em;
+	color: white;
 }
 
 .hero-subtitle {
@@ -90,6 +91,7 @@
 	margin: 0 auto 2rem auto;
 	opacity: 0.95;
 	line-height: 1.6;
+	color: white;
 }
 
 .btn-hero {
