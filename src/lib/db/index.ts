@@ -1,48 +1,37 @@
 import { config } from 'dotenv';
-import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { resolve } from 'node:path';
+import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as schema from './schema';
 
-// Вычисляем абсолютный путь к .env от текущего файла
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const envPath = resolve(__dirname, '../../../.env');
+// .env ищем от process.cwd() (корень проекта и в dev, и на сервере),
+// а НЕ от расположения файла — в сборке файл живёт в .svelte-kit/output/...
+config({ path: resolve(process.cwd(), '.env') });
 
-// Явно читаем .env ДО обращения к process.env
-const result = config({ path: envPath });
-
-if (result.error) {
-	console.error('⚠️ Ошибка чтения .env:', result.error.message);
-} else if (result.parsed) {
-	// Принудительно пробрасываем распарсенные значения в process.env
-	// (это защита от того, что Vite их не инжектнул)
-	for (const [key, value] of Object.entries(result.parsed)) {
-		if (process.env[key] === undefined) {
-			process.env[key] = value;
-		}
-	}
-}
-
-const databaseUrl = process.env.DATABASE_URL;
-
-if (!databaseUrl) {
-	throw new Error(
-		`❌ DATABASE_URL не найдена!\n` +
-			`dotenv result: ${result.error?.message ?? 'parsed ' + Object.keys(result.parsed ?? {}).length + ' keys'}\n` +
-			`envPath: ${envPath}\n` +
-			`process.cwd(): ${process.cwd()}`
-	);
-}
-
-// Singleton-пул для защиты от утечек при HMR
 const globalForDb = globalThis as unknown as {
 	pool?: Pool;
-	db?: ReturnType<typeof drizzle>;
+	db?: NodePgDatabase<typeof schema>;
 };
 
-const pool = globalForDb.pool ?? new Pool({ connectionString: databaseUrl });
-globalForDb.pool = pool;
+function createDb(): NodePgDatabase<typeof schema> {
+	const databaseUrl = process.env.DATABASE_URL;
+	if (!databaseUrl) {
+		throw new Error(
+			'❌ DATABASE_URL не найдена! Задайте переменную окружения ' +
+				'(systemd EnvironmentFile / PM2 env) или .env в корне проекта.'
+		);
+	}
+	const pool = new Pool({ connectionString: databaseUrl });
+	return drizzle(pool, { schema });
+}
 
-export const db = globalForDb.db ?? drizzle(pool, { schema });
-globalForDb.db = db;
+// Ленивая инициализация через Proxy: импорт модуля БЕЗОПАСЕН без env
+// (build/analyse больше не падает), подключение создаётся при первом запросе.
+// API прежнее: db.select(), db.insert() и т.д.
+export const db = new Proxy({} as NodePgDatabase<typeof schema>, {
+	get(_target, prop) {
+		const instance = (globalForDb.db ??= createDb());
+		const value = Reflect.get(instance, prop);
+		return typeof value === 'function' ? value.bind(instance) : value;
+	}
+});
