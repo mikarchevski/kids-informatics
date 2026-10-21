@@ -201,7 +201,7 @@
 		</div>
 	</header>
 
-	<main class="game-content">
+	<div class="game-content">
 		<section class="scene-section" aria-label="Игровая сцена">
 			<div class="avatar-selector" role="group" aria-label="Выбор персонажа">
 				<span class="selector-label">Персонаж</span>
@@ -285,7 +285,7 @@
 				{/if}
 			</div>
 		</section>
-	</main>
+	</div>
 
 	<footer class="command-palette" role="group" aria-label="Добавить команду">
 		{#each commandList as command (command.type)}

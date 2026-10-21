@@ -89,7 +89,7 @@
 
 <svelte:window onkeydown={handleKeydown} onpointerdown={handleOutsidePointerDown} />
 
-<main class="game-page">
+<div class="game-page">
 	<div class="feed-game-card">
 		<header class="game-heading">
 			<h1><span aria-hidden="true">🐰</span> Покорми всех животных!</h1>
@@ -174,7 +174,7 @@
 			<a class="back-btn" href="/mouse-trainer">← Назад к играм</a>
 		</div>
 	</div>
-</main>
+</div>
 
 {#if feedbackAnimal}
 	<div class="modal-backdrop">

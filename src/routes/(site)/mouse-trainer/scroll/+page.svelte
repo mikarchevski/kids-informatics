@@ -65,7 +65,7 @@
 	/>
 </svelte:head>
 
-<main class="game-page">
+<div class="game-page">
 	<div class="scroll-game-card">
 		<header class="scroll-game-heading">
 			<h1><span aria-hidden="true">🏴‍☠️</span> Найди все сокровища!</h1>
@@ -169,4 +169,4 @@
 			<a class="scroll-game-back-button" href="/mouse-trainer">← Назад к играм</a>
 		</div>
 	</div>
-</main>
+</div>

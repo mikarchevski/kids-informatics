@@ -64,7 +64,7 @@
 		<!-- Левое меню -->
 
 		<!-- Центральная часть с новостями -->
-		<main class="main-content">
+		<div class="main-content">
 			<h2 class="section-title">Новости и обновления</h2>
 
 			<div class="news-list">
@@ -76,10 +76,10 @@
 						</div>
 						<h3 class="news-title">{item.title}</h3>
 						<p class="news-excerpt">{item.excerpt}</p>
-						<a href="#" class="news-link">Читать далее →</a>
+						<a href="/articles/why-programming" class="news-link">Читать далее →</a>
 					</article>
 				{/each}
 			</div>
-		</main>
+		</div>
 	</div>
 </div>

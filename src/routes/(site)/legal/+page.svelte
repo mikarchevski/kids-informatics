@@ -26,7 +26,7 @@
 		<!-- Левое меню -->
 
 		<!-- Центральная часть с правовым контентом -->
-		<main class="main-content">
+		<div class="main-content">
 			<h1 class="page-title">Правовая информация</h1>
 			<p class="page-intro">Последнее обновление: 12 октября 2026 года</p>
 
@@ -254,6 +254,6 @@
 					</p>
 				</div>
 			</section>
-		</main>
+		</d>
 	</div>
 </div>

@@ -120,7 +120,7 @@
 	onkeydown={handleKeydown}
 />
 
-<main class="game-page">
+<div class="game-page">
 	<div class="drag-game-card">
 		<header class="drag-game-heading">
 			<h1><span aria-hidden="true">🎨</span> Разложи предметы по категориям!</h1>
@@ -197,7 +197,7 @@
 			<a class="drag-back-button" href="/mouse-trainer">← Назад к играм</a>
 		</div>
 	</div>
-</main>
+</div>
 
 {#if draggedItem}
 	<div

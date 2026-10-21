@@ -67,7 +67,7 @@
 	<meta name="description" content="Открой все семь сундуков двойным нажатием левой кнопки мыши." />
 </svelte:head>
 
-<main class="game-page">
+<div class="game-page">
 	<div class="double-click-card">
 		<header class="double-click-heading">
 			<h1><span aria-hidden="true">📦</span> Открой все сундуки двойным кликом!</h1>
@@ -147,4 +147,4 @@
 			<a class="double-click-back-button" href="/mouse-trainer">← Назад к играм</a>
 		</div>
 	</div>
-</main>
+</div>

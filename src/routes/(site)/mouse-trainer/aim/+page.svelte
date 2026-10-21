@@ -144,7 +144,7 @@
 	<meta name="description" content="Попади по пятнадцати мишеням, которые становятся всё меньше." />
 </svelte:head>
 
-<main class="game-page">
+<div class="game-page">
 	<div class="aim-game-card">
 		<header class="aim-game-heading">
 			<h1><span aria-hidden="true">🎯</span> Попади в цель!</h1>
@@ -230,4 +230,4 @@
 			<a class="aim-game-back-button" href="/mouse-trainer">← Назад к играм</a>
 		</div>
 	</div>
-</main>
+</div>
