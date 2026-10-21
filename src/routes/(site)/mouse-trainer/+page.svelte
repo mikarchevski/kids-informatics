@@ -1,12 +1,48 @@
 <script lang="ts">
-import './page.css';
+	import './page.css';
 	const games = [
-		{ id: 'bubbles', title: 'Левый клик', desc: 'Учимся нажимать левую кнопку мыши', icon: '🔵', color: '#4ade80' },
-		{ id: 'feed-animals', title: 'Правый клик', desc: 'Учимся нажимать правую кнопку мыши', icon: '🐰', color: '#f472b6' },
-		{ id: 'double-click', title: 'Двойной клик', desc: 'Тренируем быстрый двойной щелчок', icon: '📦', color: '#fbbf24' },
-		{ id: 'drag', title: 'Перетаскивание', desc: 'Учимся захватывать и перемещать объекты', icon: '🎨', color: '#a78bfa' },
-		{ id: 'scroll', title: 'Прокрутка', desc: 'Тренируем использование колесика мыши', icon: '🏴‍☠️', color: '#34d399' },
-		{ id: 'aim', title: 'Точность', desc: 'Попадаем курсором в маленькие цели', icon: '🎯', color: '#f87171' }
+		{
+			id: 'bubbles',
+			title: 'Левый клик',
+			desc: 'Учимся нажимать левую кнопку мыши',
+			icon: '🔵',
+			color: '#4ade80'
+		},
+		{
+			id: 'feed-animals',
+			title: 'Правый клик',
+			desc: 'Учимся нажимать правую кнопку мыши',
+			icon: '🐰',
+			color: '#f472b6'
+		},
+		{
+			id: 'double-click',
+			title: 'Двойной клик',
+			desc: 'Тренируем быстрый двойной щелчок',
+			icon: '📦',
+			color: '#fbbf24'
+		},
+		{
+			id: 'drag',
+			title: 'Перетаскивание',
+			desc: 'Учимся захватывать и перемещать объекты',
+			icon: '🎨',
+			color: '#a78bfa'
+		},
+		{
+			id: 'scroll',
+			title: 'Прокрутка',
+			desc: 'Тренируем использование колесика мыши',
+			icon: '🏴‍☠️',
+			color: '#34d399'
+		},
+		{
+			id: 'aim',
+			title: 'Точность',
+			desc: 'Попадаем курсором в маленькие цели',
+			icon: '🎯',
+			color: '#f87171'
+		}
 	];
 </script>
 
@@ -15,7 +51,7 @@ import './page.css';
 </svelte:head>
 
 <div class="trainer-page">
-	<h1>🖱️ Тренажёр мышки</h1>
+	<h1 class="trainer-page__title">Тренажёр мышки</h1>
 	<p class="subtitle">Выбери игру и начни тренировку!</p>
 
 	<div class="games-grid">
@@ -31,5 +67,4 @@ import './page.css';
 </div>
 
 <style>
-	
 </style>

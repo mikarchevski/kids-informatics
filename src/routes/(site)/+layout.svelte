@@ -100,7 +100,7 @@
 	.desktop-only {
 		display: none !important;
 	}
-	
+
 	@media (min-width: 1024px) {
 		.desktop-only {
 			display: flex !important; /* Или block, в зависимости от ваших стилей .menu-item в home.css */

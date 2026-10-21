@@ -27,7 +27,6 @@
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 	gap: 2rem;
-	margin-bottom: 2rem;
 }
 
 .game-card {
@@ -120,10 +119,12 @@
 }
 
 .trainer-page {
-	padding: 2rem;
 	max-width: 1000px;
 	margin: 0 auto;
 	text-align: center;
+}
+.trainer-page__title {
+	margin: 0 0 10px 0;
 }
 
 h1 {

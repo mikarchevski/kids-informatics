@@ -1,0 +1,380 @@
+.double-click-card {
+	display: flex;
+	width: min(100%, 960px);
+	min-height: min(740px, calc(100dvh - 180px));
+	flex-direction: column;
+	gap: 24px;
+	margin: 0 auto;
+	padding: 32px;
+	border-radius: 24px;
+	background: #fff;
+	box-shadow: 0 12px 30px rgb(25 61 88 / 16%);
+}
+
+.double-click-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.double-click-heading h1 {
+	margin: 0;
+	color: #8955f6;
+	font-size: clamp(21px, 3vw, 29px);
+	font-weight: 700;
+}
+
+.double-click-heading h1 span {
+	margin-right: 8px;
+	font-size: 24px;
+}
+
+.double-click-score {
+	margin: 0;
+	font-size: 26px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.double-click-progress {
+	height: 24px;
+	overflow: hidden;
+	border-radius: 8px;
+	background: #e5e7eb;
+}
+
+.double-click-progress-fill {
+	height: 100%;
+	border-radius: inherit;
+	background: #18c66b;
+	transition: width 220ms ease;
+}
+
+.double-click-board {
+	position: relative;
+	min-height: min(500px, 50vh);
+	flex: 1;
+	overflow: hidden;
+	border: 3px solid #8955f6;
+	border-radius: 14px;
+	background: linear-gradient(135deg, #ead8ff, #dcd6ff);
+}
+
+.double-click-chest-position {
+	position: absolute;
+	top: var(--chest-y);
+	left: var(--chest-x);
+	display: grid;
+	min-width: 64px;
+	min-height: 64px;
+	place-items: center;
+	transform: translate(-50%, -50%);
+}
+
+.double-click-chest-wrap {
+	position: relative;
+	display: grid;
+	place-items: center;
+}
+
+.double-click-chest {
+	display: grid;
+	width: 72px;
+	height: 72px;
+	place-items: center;
+	padding: 0;
+	border: 0;
+	border-radius: 14px;
+	background: transparent;
+	font-size: 56px;
+	line-height: 1;
+	cursor: pointer;
+	filter: drop-shadow(0 6px 7px rgb(54 32 82 / 24%));
+	transition: transform 140ms ease;
+	user-select: none;
+}
+
+.double-click-chest:hover {
+	transform: scale(1.1);
+}
+
+.double-click-chest:active {
+	transform: scale(0.93);
+}
+
+.double-click-chest:focus-visible {
+	border-radius: 12px;
+	outline: 3px solid #6735d0;
+	outline-offset: 3px;
+}
+
+.double-click-hint {
+	position: absolute;
+	bottom: calc(100% + 5px);
+	left: 50%;
+	z-index: 2;
+	padding: 5px 9px;
+	border-radius: 8px;
+	background: #fff;
+	box-shadow: 0 3px 10px rgb(54 32 82 / 18%);
+	color: #6735d0;
+	font-size: 13px;
+	font-weight: 700;
+	white-space: nowrap;
+	transform: translateX(-50%);
+	pointer-events: none;
+}
+
+.double-click-reward {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 5px;
+	animation: double-click-reward-appear 240ms ease-out both;
+}
+
+.double-click-reward-icon {
+	font-size: 52px;
+	line-height: 1;
+	filter: drop-shadow(0 4px 5px rgb(54 32 82 / 18%));
+}
+
+.double-click-sparkles {
+	color: #fbbf24;
+	font-size: 20px;
+	white-space: nowrap;
+}
+
+.double-click-instruction {
+	display: flex;
+	min-height: 56px;
+	align-items: center;
+	justify-content: center;
+	gap: 7px;
+	margin: 0;
+	padding: 12px 16px;
+	border-radius: 9px;
+	background: #ead8ff;
+	color: #5622b8;
+	font-size: 16px;
+	text-align: center;
+}
+
+.double-click-back-section {
+	text-align: center;
+}
+
+.double-click-back-button {
+	display: inline-flex;
+	min-height: 44px;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 24px;
+	border: 2px solid #d1d5db;
+	border-radius: 10px;
+	background: #f3f4f6;
+	color: #4b5563;
+	font: inherit;
+	font-size: 16px;
+	font-weight: 600;
+	text-decoration: none;
+	transition:
+		background-color 160ms ease,
+		border-color 160ms ease;
+}
+
+.double-click-back-button:hover {
+	border-color: #9ca3af;
+	background: #e5e7eb;
+}
+
+.double-click-win-overlay {
+	position: absolute;
+	z-index: 5;
+	inset: 0;
+	display: grid;
+	place-items: center;
+	padding: 20px;
+	background: rgb(74 222 128 / 94%);
+	animation: double-click-overlay-appear 240ms ease-out both;
+}
+
+.double-click-win-content {
+	display: flex;
+	width: min(100%, 440px);
+	flex-direction: column;
+	align-items: center;
+	gap: 14px;
+	padding: 32px;
+	color: #123a2c;
+	text-align: center;
+}
+
+.double-click-win-icon {
+	font-size: 56px;
+	line-height: 1;
+}
+
+.double-click-win-content h2 {
+	margin: 0;
+	color: #153c2d;
+	font-size: clamp(28px, 4.5vw, 44px);
+	line-height: 1.15;
+}
+
+.double-click-win-content p {
+	margin: 0 0 8px;
+	font-size: clamp(16px, 2.2vw, 21px);
+	line-height: 1.5;
+}
+
+.double-click-repeat {
+	display: inline-flex;
+	min-height: 48px;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 12px 30px;
+	border: 0;
+	border-radius: 999px;
+	background: #fff;
+	box-shadow: 0 8px 22px rgb(0 0 0 / 16%);
+	color: #13ad65;
+	font: inherit;
+	font-size: 20px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: transform 160ms ease;
+}
+
+.double-click-repeat:hover {
+	transform: translateY(-2px);
+}
+
+@keyframes double-click-reward-appear {
+	from {
+		opacity: 0;
+		transform: scale(0.5);
+	}
+
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes double-click-overlay-appear {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@media (max-width: 700px) {
+	.game-page {
+		padding: 12px 0;
+	}
+
+	.double-click-card {
+		min-height: 0;
+		gap: 16px;
+		padding: 20px;
+		border-radius: 18px;
+	}
+
+	.double-click-heading h1 {
+		font-size: clamp(18px, 5vw, 25px);
+	}
+
+	.double-click-score {
+		font-size: 22px;
+	}
+
+	.double-click-progress {
+		height: 18px;
+		flex: 0 0 18px;
+	}
+
+	.double-click-board {
+		min-height: 420px;
+		flex: 0 0 420px;
+	}
+
+	.double-click-chest {
+		width: 60px;
+		height: 60px;
+		font-size: 48px;
+	}
+
+	.double-click-reward-icon {
+		font-size: 44px;
+	}
+
+	.double-click-sparkles {
+		font-size: 16px;
+	}
+
+	.double-click-instruction {
+		flex-wrap: wrap;
+		padding: 12px;
+		font-size: 14px;
+		line-height: 1.45;
+	}
+
+	.double-click-win-content {
+		gap: 12px;
+		padding: 24px 18px;
+	}
+
+	.double-click-win-content h2 {
+		font-size: clamp(26px, 6vw, 34px);
+	}
+
+	.double-click-repeat {
+		min-height: 50px;
+		font-size: 17px;
+	}
+}
+
+@media (max-width: 390px) {
+	.double-click-card {
+		padding: 16px;
+	}
+
+	.double-click-board {
+		min-height: 360px;
+		flex-basis: 360px;
+	}
+
+	.double-click-chest {
+		width: 52px;
+		height: 52px;
+		font-size: 42px;
+	}
+
+	.double-click-reward-icon {
+		font-size: 38px;
+	}
+
+	.double-click-sparkles {
+		font-size: 14px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.double-click-chest,
+	.double-click-progress-fill,
+	.double-click-repeat,
+	.double-click-win-overlay {
+		transition: none;
+		animation: none;
+	}
+
+	.double-click-reward {
+		animation: none;
+	}
+}

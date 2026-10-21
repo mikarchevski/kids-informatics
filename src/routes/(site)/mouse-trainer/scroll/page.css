@@ -1,0 +1,491 @@
+.scroll-game-card {
+	display: flex;
+	width: min(100%, 960px);
+	min-height: min(740px, calc(100dvh - 180px));
+	flex-direction: column;
+	gap: 20px;
+	margin: 0 auto;
+	padding: 30px;
+	border-radius: 24px;
+	background: #fff;
+	box-shadow: 0 12px 30px rgb(25 61 88 / 16%);
+}
+
+.scroll-game-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.scroll-game-heading h1 {
+	margin: 0;
+	color: #ed3f9b;
+	font-size: clamp(21px, 3vw, 29px);
+	font-weight: 700;
+}
+
+.scroll-game-heading h1 span {
+	margin-right: 8px;
+	font-size: 24px;
+}
+
+.scroll-game-score {
+	margin: 0;
+	font-size: 26px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.scroll-game-progress {
+	height: 24px;
+	overflow: hidden;
+	border-radius: 8px;
+	background: #e5e7eb;
+}
+
+.scroll-game-progress-fill {
+	height: 100%;
+	border-radius: inherit;
+	background: #18c66b;
+	transition: width 220ms ease;
+}
+
+.scroll-ocean-shell {
+	position: relative;
+	display: grid;
+	width: 100%;
+	height: min(66vh, 620px);
+	min-height: 420px;
+	flex: 0 0 auto;
+	grid-template-columns: 64px minmax(0, 1fr);
+	grid-template-rows: minmax(0, 1fr);
+	overflow: hidden;
+	border: 3px solid #ed3f9b;
+	border-radius: 14px;
+	background: linear-gradient(180deg, #159fe0 0%, #0474a8 100%);
+}
+
+.depth-ruler {
+	position: relative;
+	z-index: 2;
+	overflow: hidden;
+	background: rgb(0 45 83 / 15%);
+}
+
+.depth-ruler-content {
+	position: relative;
+	width: 100%;
+	transition: transform 80ms linear;
+}
+
+.depth-marker {
+	position: absolute;
+	left: 8px;
+	padding: 5px 7px;
+	border-radius: 5px;
+	background: rgb(0 51 85 / 58%);
+	color: #e7f8ff;
+	font-size: 13px;
+	font-weight: 700;
+	transform: translateY(-50%);
+	transition:
+		background-color 160ms ease,
+		color 160ms ease;
+	white-space: nowrap;
+}
+
+.depth-marker:first-child {
+	top: 14px !important;
+	transform: none;
+}
+
+.depth-marker-active {
+	background: #ffda60;
+	color: #17405a;
+}
+
+.scroll-ocean {
+	position: relative;
+	height: 100%;
+	min-width: 0;
+	min-height: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	scrollbar-color: #75d8ee #075d8d;
+	scrollbar-width: thin;
+	scroll-behavior: auto;
+	overscroll-behavior: contain;
+}
+
+.scroll-ocean:focus-visible {
+	outline: 3px solid #ffda60;
+	outline-offset: -4px;
+}
+
+.ocean-content {
+	position: relative;
+	min-height: 0;
+	background: linear-gradient(
+		180deg,
+		#159fe0 0%,
+		#0781b7 27%,
+		#05628e 58%,
+		#064a6c 82%,
+		#092f45 100%
+	);
+}
+
+.ocean-bubbles {
+	position: absolute;
+	top: 18px;
+	right: 22px;
+	left: 20px;
+	color: rgb(230 250 255 / 38%);
+	font-size: 27px;
+	letter-spacing: 24px;
+	pointer-events: none;
+}
+
+.ocean-treasure {
+	position: absolute;
+	z-index: 1;
+	top: var(--treasure-y);
+	left: var(--treasure-x);
+	display: grid;
+	width: 68px;
+	height: 68px;
+	place-items: center;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: radial-gradient(circle, rgb(255 232 94 / 36%), rgb(255 232 94 / 0%) 72%);
+	font: inherit;
+	font-size: 48px;
+	line-height: 1;
+	cursor: pointer;
+	transform: translate(-50%, -50%);
+	transition:
+		filter 180ms ease,
+		opacity 180ms ease,
+		transform 180ms ease,
+		background-color 180ms ease;
+}
+
+.ocean-treasure:hover:not(:disabled) {
+	transform: translate(-50%, -50%) scale(1.16);
+}
+
+.ocean-treasure:focus-visible {
+	border-radius: 50%;
+	outline: 3px solid #fff2a8;
+	outline-offset: 2px;
+}
+
+.ocean-treasure-collected {
+	background: transparent;
+	cursor: default;
+	filter: brightness(0.32) saturate(0.65);
+	opacity: 0.8;
+}
+
+.ocean-seabed {
+	position: absolute;
+	top: 2600px;
+	right: 0;
+	left: 0;
+	display: flex;
+	min-height: 300px;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	background:
+		radial-gradient(ellipse at 20% 25%, rgb(237 197 112 / 52%) 0 4%, transparent 35%),
+		radial-gradient(ellipse at 76% 5%, rgb(220 181 109 / 42%) 0 6%, transparent 34%),
+		linear-gradient(180deg, #1f6373 0%, #94754d 36%, #d0aa6f 100%);
+	color: #49351f;
+	text-align: center;
+}
+
+.ocean-seabed::before,
+.ocean-seabed::after {
+	position: absolute;
+	right: -10%;
+	left: -10%;
+	height: 60px;
+	border-radius: 50%;
+	background: rgb(236 202 138 / 42%);
+	content: '';
+}
+
+.ocean-seabed::before {
+	top: 0;
+	transform: rotate(-2deg);
+}
+
+.ocean-seabed::after {
+	top: 24px;
+	background: rgb(107 83 59 / 28%);
+	transform: rotate(2deg);
+}
+
+.ocean-seabed h2 {
+	z-index: 1;
+	margin: 0;
+	font-size: clamp(25px, 4vw, 36px);
+	text-shadow: 0 2px rgb(255 240 199 / 72%);
+}
+
+.ocean-seabed p {
+	z-index: 1;
+	margin: 12px 0 0;
+	font-size: 32px;
+	letter-spacing: 8px;
+}
+
+.seabed-decor {
+	position: absolute;
+	font-size: 40px;
+	opacity: 0.9;
+}
+
+.seabed-coral {
+	bottom: 44px;
+	left: 12%;
+}
+
+.seabed-shell {
+	right: 18%;
+	bottom: 50px;
+}
+
+.seabed-plant {
+	bottom: 54px;
+	left: 31%;
+}
+
+.seabed-starfish {
+	right: 34%;
+	bottom: 40px;
+}
+
+.scroll-game-instruction {
+	display: flex;
+	min-height: 56px;
+	align-items: center;
+	justify-content: center;
+	gap: 7px;
+	margin: 0;
+	padding: 12px 16px;
+	border-radius: 9px;
+	background: #fce7f3;
+	color: #9d174d;
+	font-size: 16px;
+	text-align: center;
+}
+
+.scroll-game-back-section {
+	text-align: center;
+}
+
+.scroll-game-back-button {
+	display: inline-flex;
+	min-height: 44px;
+	align-items: center;
+	justify-content: center;
+	padding: 10px 24px;
+	border: 2px solid #d1d5db;
+	border-radius: 10px;
+	background: #f3f4f6;
+	color: #4b5563;
+	font: inherit;
+	font-size: 16px;
+	font-weight: 600;
+	text-decoration: none;
+	transition:
+		background-color 160ms ease,
+		border-color 160ms ease;
+}
+
+.scroll-game-back-button:hover {
+	border-color: #9ca3af;
+	background: #e5e7eb;
+}
+
+.scroll-win-overlay {
+	position: absolute;
+	z-index: 10;
+	inset: 0;
+	display: grid;
+	place-items: center;
+	padding: 24px;
+	background: rgb(74 222 128 / 94%);
+	animation: scroll-win-appear 300ms ease-out both;
+}
+
+.scroll-win-content {
+	display: flex;
+	max-width: 560px;
+	flex-direction: column;
+	align-items: center;
+	gap: 14px;
+	color: #123a2c;
+	text-align: center;
+}
+
+.scroll-win-icon {
+	font-size: clamp(64px, 10vw, 96px);
+	line-height: 1;
+}
+
+.scroll-win-content h2 {
+	margin: 0;
+	font-size: clamp(28px, 4.5vw, 44px);
+	line-height: 1.15;
+}
+
+.scroll-win-content p {
+	margin: 0 0 8px;
+	font-size: clamp(16px, 2.2vw, 21px);
+	line-height: 1.5;
+}
+
+.scroll-win-repeat {
+	display: inline-flex;
+	min-height: 58px;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	padding: 12px 30px;
+	border: 0;
+	border-radius: 999px;
+	background: #fff;
+	box-shadow: 0 8px 22px rgb(0 0 0 / 16%);
+	color: #13ad65;
+	font: inherit;
+	font-size: 20px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: transform 160ms ease;
+}
+
+.scroll-win-repeat:hover {
+	transform: translateY(-2px);
+}
+
+@keyframes scroll-win-appear {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@media (max-width: 700px) {
+	.game-page {
+		padding: 12px 0;
+	}
+
+	.scroll-game-card {
+		min-height: 0;
+		gap: 16px;
+		padding: 20px;
+		border-radius: 18px;
+	}
+
+	.scroll-game-heading h1 {
+		font-size: clamp(18px, 5vw, 25px);
+	}
+
+	.scroll-game-score {
+		font-size: 22px;
+	}
+
+	.scroll-game-progress {
+		height: 18px;
+		flex: 0 0 18px;
+	}
+
+	.scroll-ocean-shell {
+		height: 500px;
+		min-height: 0;
+		flex-basis: 500px;
+		grid-template-columns: 54px minmax(0, 1fr);
+	}
+
+	.scroll-ocean {
+		max-height: none;
+	}
+
+	.depth-marker {
+		left: 5px;
+		padding: 4px 5px;
+		font-size: 11px;
+	}
+
+	.ocean-treasure {
+		width: 58px;
+		height: 58px;
+		font-size: 42px;
+	}
+
+	.ocean-seabed p {
+		font-size: 24px;
+		letter-spacing: 2px;
+	}
+
+	.scroll-game-instruction {
+		flex-wrap: wrap;
+		padding: 12px;
+		font-size: 14px;
+		line-height: 1.45;
+	}
+
+	.scroll-win-overlay {
+		padding: 16px;
+	}
+
+	.scroll-win-repeat {
+		min-height: 50px;
+		font-size: 17px;
+	}
+}
+
+@media (max-width: 390px) {
+	.scroll-game-card {
+		padding: 16px;
+	}
+
+	.scroll-ocean-shell {
+		height: 440px;
+		flex-basis: 440px;
+		grid-template-columns: 48px minmax(0, 1fr);
+	}
+
+	.scroll-ocean {
+		max-height: none;
+	}
+
+	.ocean-treasure {
+		width: 50px;
+		height: 50px;
+		font-size: 36px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.depth-ruler-content,
+	.scroll-game-progress-fill,
+	.ocean-treasure,
+	.scroll-game-back-button,
+	.scroll-win-repeat {
+		transition: none;
+	}
+
+	.scroll-win-overlay {
+		animation: none;
+	}
+}
