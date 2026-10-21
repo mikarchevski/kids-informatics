@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Seo from '#lib/components/Seo.svelte';
 	import './page.css';
 
 	type FoodId = 'carrot' | 'bone' | 'fish' | 'bamboo' | 'banana' | 'cheese';
@@ -79,13 +80,11 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Накорми животных — Kids Informatics</title>
-	<meta
-		name="description"
-		content="Выбери подходящую еду для каждого животного и помоги накормить всех!"
-	/>
-</svelte:head>
+<Seo
+	title="Игра «Накорми животных»: тренировка правого клика"
+	description="Выбирай правильную еду для зверят и тренируй правую кнопку мыши в бесплатной игре для детей."
+	path="/mouse-trainer/feed-animals"
+/>
 
 <svelte:window onkeydown={handleKeydown} onpointerdown={handleOutsidePointerDown} />
 

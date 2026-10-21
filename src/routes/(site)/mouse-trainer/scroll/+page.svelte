@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Seo from '#lib/components/Seo.svelte';
 	import './page.css';
 
 	type Treasure = {
@@ -57,13 +58,11 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Прокрутка — Тренажёр мышки</title>
-	<meta
-		name="description"
-		content="Прокручивай морское дно и собирай сокровища на глубине до 25 метров."
-	/>
-</svelte:head>
+<Seo
+	title="Подводная игра: тренируем прокрутку колёсиком мыши"
+	description="Исследуй подводный мир, прокручивай страницу колёсиком мыши и собирай сокровища."
+	path="/mouse-trainer/scroll"
+/>
 
 <div class="game-page">
 	<div class="scroll-game-card">

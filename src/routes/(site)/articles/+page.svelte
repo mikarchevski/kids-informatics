@@ -1,12 +1,15 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import Seo from '#lib/components/Seo.svelte';
 	import './articles.css';
 	let { data }: { data: PageData } = $props();
 </script>
 
-<svelte:head>
-	<title>Познавательные статьи — Kids Informatics</title>
-</svelte:head>
+<Seo
+	title="Статьи о программировании и технологиях для детей — Kids Informatics"
+	description="Познавательные статьи для детей и родителей: простым языком об алгоритмах, логике, программировании и технологиях."
+	path="/articles"
+/>
 
 <h1 class="page-title">📚 Познавательные статьи</h1>
 <p class="page-intro">

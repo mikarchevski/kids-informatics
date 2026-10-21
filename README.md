@@ -172,11 +172,11 @@ import * as schema from './schema';
 const databaseUrl = process.env.DATABASE_URL;
 
 if (!databaseUrl) {
-  throw new Error('❌ ОШИБКА: DATABASE_URL не найдена. Проверьте файл .env в корне проекта.');
+	throw new Error('❌ ОШИБКА: DATABASE_URL не найдена. Проверьте файл .env в корне проекта.');
 }
 
 const pool = new Pool({
-  connectionString: databaseUrl,
+	connectionString: databaseUrl
 });
 
 export const db = drizzle(pool, { schema });
@@ -349,6 +349,14 @@ kids-informatics/
 | `npx drizzle-kit generate` | Создать миграции               |
 
 ---
+
+## SEO и публикация сайта
+
+- Основной адрес сайта для canonical URL и структурированных данных задаётся в `src/lib/seo.ts`.
+- Если домен изменится, обновите также ссылку на sitemap в `static/robots.txt`.
+- `/sitemap.xml` содержит публичные страницы и опубликованные статьи из PostgreSQL. Неопубликованные статьи в sitemap не попадают.
+- Для каждой новой публичной страницы укажите уникальные заголовок, описание и canonical URL через компонент `Seo` из `src/lib/components/Seo.svelte`.
+- Административные страницы помечены `noindex`; не добавляйте их в sitemap.
 
 ## Помощь
 

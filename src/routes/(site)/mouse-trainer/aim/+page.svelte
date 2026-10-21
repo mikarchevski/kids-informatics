@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
+	import Seo from '#lib/components/Seo.svelte';
 	import './page.css';
 
 	type Target = {
@@ -139,10 +140,19 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Точность — Тренажёр мышки</title>
-	<meta name="description" content="Попади по пятнадцати мишеням, которые становятся всё меньше." />
-</svelte:head>
+<Seo
+	title="Тренировка точности мыши для детей — Kids Informatics"
+	description="Попадай курсором в мишени, которые становятся всё меньше, и тренируй точность управления мышью."
+	path="/mouse-trainer/aim"
+	schema={{
+		'@type': 'WebApplication',
+		name: 'Тренировка точности мыши',
+		applicationCategory: 'GameApplication',
+		educationalUse: 'Тренировка точности управления компьютерной мышью',
+		inLanguage: 'ru-RU',
+		isPartOf: { '@id': 'https://kids-informatics.mk5d.ru/#website' }
+	}}
+/>
 
 <div class="game-page">
 	<div class="aim-game-card">

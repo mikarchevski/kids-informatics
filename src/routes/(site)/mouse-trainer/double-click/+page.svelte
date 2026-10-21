@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
+	import Seo from '#lib/components/Seo.svelte';
 	import './page.css';
 
 	type Chest = {
@@ -62,10 +63,11 @@
 	});
 </script>
 
-<svelte:head>
-	<title>Двойной клик — Тренажёр мышки</title>
-	<meta name="description" content="Открой все семь сундуков двойным нажатием левой кнопки мыши." />
-</svelte:head>
+<Seo
+	title="Игра «Сундуки»: учимся двойному клику мыши"
+	description="Открывай сундуки двойным нажатием левой кнопки мыши и осваивай двойной клик в игровой форме."
+	path="/mouse-trainer/double-click"
+/>
 
 <div class="game-page">
 	<div class="double-click-card">

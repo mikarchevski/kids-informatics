@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
-	import * as Blockly from 'blockly';
-	import { defineCustomBlocks } from '#lib/blocks';
+	import { onMount } from 'svelte';
+	import type { WorkspaceSvg } from 'blockly';
 	import { Interpreter } from '#lib/interpreter';
+	import Seo from '#lib/components/Seo.svelte';
 	import Screen from '#lib/Screen.svelte';
 	import './page.css';
 
@@ -39,7 +39,7 @@
 		{ type: 'turn_right', ...commands.turn_right }
 	];
 
-	let workspace: Blockly.WorkspaceSvg | null = null;
+	let workspace: WorkspaceSvg | null = null;
 	let blocklyDiv: HTMLDivElement;
 	let robotPosition = $state({ x: 0, y: 4, direction: 'right' });
 	let interpreter: Interpreter | null = null;
@@ -157,33 +157,57 @@
 	let mobileMediaQuery: MediaQueryList;
 
 	onMount(() => {
-		const savedAvatar = localStorage.getItem('kids-coder-avatar');
-		if (avatars.some((avatar) => avatar.id === savedAvatar)) {
-			selectedAvatarId = savedAvatar ?? 'car';
-		}
-		hasLoadedAvatar = true;
+		let cancelled = false;
+		const initialize = async () => {
+			const [Blockly, { defineCustomBlocks }] = await Promise.all([
+				import('blockly'),
+				import('#lib/blocks')
+			]);
+			if (cancelled) return;
 
-		defineCustomBlocks();
-		mobileMediaQuery = window.matchMedia('(max-width: 900px) and (pointer: coarse)');
-		isMobileLayout = mobileMediaQuery.matches;
-		gridSize = isMobileLayout ? MOBILE_GRID_SIZE : DESKTOP_GRID_SIZE;
-		robotPosition = { x: 0, y: Math.floor(gridSize / 2), direction: 'right' };
+			const savedAvatar = localStorage.getItem('kids-coder-avatar');
+			if (avatars.some((avatar) => avatar.id === savedAvatar)) {
+				selectedAvatarId = savedAvatar ?? 'car';
+			}
+			hasLoadedAvatar = true;
 
-		workspace = Blockly.inject(blocklyDiv, {
-			sounds: false,
-			trashcan: false,
-			move: { scrollbars: false, drag: false, wheel: false }
-		});
-		createInterpreter();
+			defineCustomBlocks();
+			mobileMediaQuery = window.matchMedia('(max-width: 900px) and (pointer: coarse)');
+			isMobileLayout = mobileMediaQuery.matches;
+			gridSize = isMobileLayout ? MOBILE_GRID_SIZE : DESKTOP_GRID_SIZE;
+			robotPosition = { x: 0, y: Math.floor(gridSize / 2), direction: 'right' };
 
-		mobileMediaQuery.addEventListener('change', handleViewportChange);
-	});
+			workspace = Blockly.inject(blocklyDiv, {
+				sounds: false,
+				trashcan: false,
+				move: { scrollbars: false, drag: false, wheel: false }
+			});
+			createInterpreter();
 
-	onDestroy(() => {
-		mobileMediaQuery?.removeEventListener('change', handleViewportChange);
-		workspace?.dispose();
+			mobileMediaQuery.addEventListener('change', handleViewportChange);
+		};
+		void initialize();
+
+		return () => {
+			cancelled = true;
+			mobileMediaQuery?.removeEventListener('change', handleViewportChange);
+			workspace?.dispose();
+		};
 	});
 </script>
+
+<Seo
+	title="Программирование для детей: играй и составляй алгоритмы"
+	description="Составляй команды из блоков, управляй персонажем и собирай звёзды в бесплатной игре для первого знакомства с алгоритмами."
+	path="/car-play"
+	schema={{
+		'@type': 'WebApplication',
+		name: 'Программное приключение',
+		applicationCategory: 'GameApplication',
+		educationalUse: 'Изучение алгоритмов и основ программирования',
+		inLanguage: 'ru-RU'
+	}}
+/>
 
 <div class="game-layout">
 	<header class="game-header">

@@ -89,7 +89,11 @@
 
 .bubble {
 	position: absolute;
+	display: block;
+	padding: 0;
+	border: 0;
 	border-radius: 50%;
+	color: inherit;
 	cursor: pointer;
 	box-shadow:
 		inset -10px -10px 20px rgba(0, 0, 0, 0.1),
@@ -106,6 +110,11 @@
 
 .bubble:active {
 	transform: scale(0.95);
+}
+
+.bubble:focus-visible {
+	outline: 4px solid #1d4ed8;
+	outline-offset: 3px;
 }
 
 .bubble-highlight {

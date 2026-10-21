@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import OrientationLock from '#lib/OrientationLock.svelte';
 
 	let { children } = $props();
@@ -17,15 +17,14 @@
 		window.addEventListener('resize', updateViewportHeight);
 		window.addEventListener('orientationchange', updateViewportHeight);
 		window.visualViewport?.addEventListener('resize', updateViewportHeight);
-	});
-
-	onDestroy(() => {
-		window.removeEventListener('resize', updateViewportHeight);
-		window.removeEventListener('orientationchange', updateViewportHeight);
-		window.visualViewport?.removeEventListener('resize', updateViewportHeight);
-		document.documentElement.classList.remove('game-active');
-		document.body.classList.remove('game-active');
-		document.documentElement.style.removeProperty('--vh');
+		return () => {
+			window.removeEventListener('resize', updateViewportHeight);
+			window.removeEventListener('orientationchange', updateViewportHeight);
+			window.visualViewport?.removeEventListener('resize', updateViewportHeight);
+			document.documentElement.classList.remove('game-active');
+			document.body.classList.remove('game-active');
+			document.documentElement.style.removeProperty('--vh');
+		};
 	});
 </script>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Seo from '#lib/components/Seo.svelte';
 	import './page.css';
 
 	type CategoryId = 'fruits' | 'toys' | 'transport';
@@ -105,13 +106,11 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Перетаскивание — Тренажёр мышки</title>
-	<meta
-		name="description"
-		content="Перетащи предметы в подходящие категории, удерживая левую кнопку мыши."
-	/>
-</svelte:head>
+<Seo
+	title="Игра на перетаскивание мышью: сортировка предметов"
+	description="Перетаскивай фрукты, игрушки и транспорт в подходящие категории, тренируя управление мышью."
+	path="/mouse-trainer/drag"
+/>
 
 <svelte:window
 	onpointermove={moveDrag}
