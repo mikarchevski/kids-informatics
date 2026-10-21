@@ -40,10 +40,8 @@
 }
 
 p {
-	max-width: 24rem;
 	margin: 0;
 	font-size: clamp(1.25rem, 5vw, 1.75rem);
-	font-weight: 600;
 	line-height: 1.4;
 }
 
