@@ -9,6 +9,7 @@
 	const menuItems = [
 		{ icon: '🏠', label: 'Главная', href: '/' },
 		{ icon: '📚', label: 'Познавательные статьи', href: '/articles' },
+		{ href: '/games', label: 'Игры', icon: '🎮' },
 		{ icon: '👨‍👩‍👧', label: 'Родителям', href: '/parents' },
 		{ icon: '⚖️', label: 'Правовая информация', href: '/legal' },
 		{ icon: '🖱️', label: 'Тренажёр мышки', href: '/mouse-trainer', isDesktopOnly: true }
