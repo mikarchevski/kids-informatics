@@ -1,4 +1,4 @@
-import { db } from '#lib/db';
+import { db } from '#lib/db/index.ts';
 import { articleTags, articles, tags } from '#lib/db/schema';
 
 // Ваши текущие статьи из articles.ts

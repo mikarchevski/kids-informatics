@@ -1,4 +1,4 @@
-import { db } from '#lib/db';
+import { db } from '#lib/db/index.ts';
 import { users } from '#lib/db/schema';
 import bcrypt from 'bcryptjs';
 
