@@ -35,7 +35,7 @@ export const games: Game[] = [
 		icon: '✏️',
 		difficulty: 'medium',
 		estimatedTime: '10-15 минут',
-		isAvailable: false
+		isAvailable: true
 	},
 	{
 		id: '4',
