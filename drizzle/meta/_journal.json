@@ -29,6 +29,13 @@
       "when": 1792068588969,
       "tag": "0003_normalize_article_tags",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792789469853,
+      "tag": "0004_stale_firedrake",
+      "breakpoints": true
     }
   ]
 }

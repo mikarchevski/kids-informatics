@@ -82,3 +82,17 @@ export const sessions = pgTable('sessions', {
 	expiresAt: timestamp('expires_at').notNull(),
 	createdAt: timestamp('created_at').defaultNow().notNull()
 });
+
+export const dictationLevels = pgTable('dictation_levels', {
+	id: uuid('id').defaultRandom().primaryKey(),
+	name: varchar('name', { length: 100 }).notNull(),
+	emoji: varchar('emoji', { length: 10 }).notNull(),
+	description: varchar('description', { length: 500 }),
+	gridSize: integer('grid_size').notNull().default(7),
+	startX: integer('start_x').notNull().default(0),
+	startY: integer('start_y').notNull().default(0),
+	commands: jsonb('commands').notNull(), // [{direction: 'right', steps: 3}, ...]
+	isActive: boolean('is_active').default(true),
+	createdAt: timestamp('created_at').defaultNow(),
+	updatedAt: timestamp('updated_at').defaultNow()
+});

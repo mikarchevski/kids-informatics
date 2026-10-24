@@ -1,0 +1,30 @@
+// Вместо массива levels:
+let levels = $state<Level[]>([]);
+
+onMount(async () => {
+	// Загрузка уровней из БД
+	try {
+		const response = await fetch('/api/admin/dictation-levels');
+		if (response.ok) {
+			const dbLevels = await response.json();
+			levels = dbLevels.map((l: any) => ({
+				id: l.id,
+				name: l.name,
+				emoji: l.emoji,
+				gridSize: l.gridSize,
+				startPos: { x: l.startX, y: l.startY },
+				commands: l.commands,
+				description: l.description
+			}));
+		}
+	} catch (error) {
+		console.error('Ошибка загрузки уровней:', error);
+	}
+
+	// Если уровней нет, используем дефолтные
+	if (levels.length === 0) {
+		levels = defaultLevels; // ваш старый массив
+	}
+
+	loadLevel(levels[0]);
+});

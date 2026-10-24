@@ -21,6 +21,9 @@
 			<a href="/manage/articles" class="nav-item">
 				<span class="icon">📝</span> Управление статьями
 			</a>
+			<a href="/manage/dictation-editor" class="nav-item">
+				<span class="icon">✏️</span> Графический диктант
+			</a>
 		</nav>
 	</aside>
 

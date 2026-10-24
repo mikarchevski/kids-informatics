@@ -1,9 +1,8 @@
 <script lang="ts">
-	import './page.css';
 	import { onMount } from 'svelte';
 
-	// Типы
 	type Direction = 'up' | 'down' | 'left' | 'right';
+	type Edge = 'top' | 'bottom' | 'left' | 'right';
 
 	interface Command {
 		direction: Direction;
@@ -20,8 +19,8 @@
 		description: string;
 	}
 
-	// Пресеты уровней
-	const levels: Level[] = [
+	// Дефолтные уровни (обновлены под рёберную логику)
+	const defaultLevels: Level[] = [
 		{
 			id: 'square',
 			name: 'Квадрат',
@@ -50,129 +49,73 @@
 			description: 'Учимся рисовать буквы'
 		},
 		{
-			id: 'letter-n',
-			name: 'Буква Н',
-			emoji: 'Н',
-			gridSize: 7,
-			startPos: { x: 1, y: 1 },
-			commands: [
-				{ direction: 'down', steps: 5 },
-				{ direction: 'up', steps: 3 },
-				{ direction: 'right', steps: 3 },
-				{ direction: 'down', steps: 3 },
-				{ direction: 'up', steps: 5 }
-			],
-			description: 'Сложная фигура с пересечением'
-		},
-		{
-			id: 'stairs',
-			name: 'Лесенка',
-			emoji: '🪜',
-			gridSize: 6,
-			startPos: { x: 0, y: 0 },
-			commands: [
-				{ direction: 'right', steps: 1 },
-				{ direction: 'down', steps: 1 },
-				{ direction: 'right', steps: 1 },
-				{ direction: 'down', steps: 1 },
-				{ direction: 'right', steps: 1 },
-				{ direction: 'down', steps: 1 },
-				{ direction: 'right', steps: 1 },
-				{ direction: 'down', steps: 1 }
-			],
-			description: 'Ступеньки вниз'
-		},
-		{
 			id: 'house',
 			name: 'Домик',
 			emoji: '🏠',
-			gridSize: 10,
-			startPos: { x: 1, y: 8 }, // Начинаем с левого нижнего угла
+			gridSize: 7,
+			startPos: { x: 1, y: 5 },
 			commands: [
-				{ direction: 'right', steps: 7 }, // Основание дома (пол)
-				{ direction: 'up', steps: 5 }, // Правая стена
-				{ direction: 'left', steps: 1 }, // Правый скат крыши
-				{ direction: 'up', steps: 1 }, // Вершина крыши
-				{ direction: 'left', steps: 1 }, // Правый скат крыши
-				{ direction: 'up', steps: 1 }, // Вершина крыши
-				{ direction: 'left', steps: 1 }, // Правый скат крыши
-				{ direction: 'up', steps: 1 }, // Вершина крыши
-				{ direction: 'left', steps: 1 }, // Левый скат крыши
-				{ direction: 'down', steps: 1 }, // Спуск к левой стене
-				{ direction: 'left', steps: 1 }, // Левый скат крыши
-				{ direction: 'down', steps: 1 }, // Спуск к левой стене
-				{ direction: 'left', steps: 1 }, // Левый скат крыши
-				{ direction: 'down', steps: 1 }, // Спуск к левой стене
-				{ direction: 'left', steps: 1 }, // Левый скат крыши
-				{ direction: 'down', steps: 1 }, // Спуск к левой стене
-				{ direction: 'down', steps: 4 } // Левая стена (возврат вниз)
+				{ direction: 'right', steps: 5 },
+				{ direction: 'up', steps: 3 },
+				{ direction: 'left', steps: 1 },
+				{ direction: 'up', steps: 1 },
+				{ direction: 'left', steps: 1 },
+				{ direction: 'down', steps: 1 },
+				{ direction: 'left', steps: 1 },
+				{ direction: 'down', steps: 3 }
 			],
 			description: 'Домик с треугольной крышей'
 		}
 	];
 
 	// Состояние игры
+	let levels = $state<Level[]>(defaultLevels);
 	let currentLevel = $state<Level>(levels[0]);
 	let position = $state<{ x: number; y: number }>({ x: 0, y: 0 });
-	let drawnCells = $state<Set<string>>(new Set());
+
+	// НОВОЕ: храним нарисованные рёбра вместо закрашенных клеток
+	let drawnEdges = $state<Set<string>>(new Set());
+
 	let currentCommandIndex = $state(0);
+	let currentStepInCommand = $state(0);
 	let isAutoPlaying = $state(false);
 	let isCompleted = $state(false);
+	let lastError = $state<string | null>(null);
 	let autoPlayTimeout: number | null = null;
+
+	// Определяем, какое ребро рисовать при движении в направлении
+	function getEdgeForDirection(dir: Direction): Edge {
+		switch (dir) {
+			case 'right':
+				return 'bottom';
+			case 'left':
+				return 'top';
+			case 'up':
+				return 'right';
+			case 'down':
+				return 'left';
+		}
+	}
+
+	function getEdgeKey(x: number, y: number, edge: Edge): string {
+		return `${x},${y},${edge}`;
+	}
 
 	// Инициализация уровня
 	function loadLevel(level: Level) {
 		currentLevel = level;
 		position = { ...level.startPos };
-		drawnCells = new Set([`${position.x},${position.y}`]);
+		drawnEdges = new Set();
 		currentCommandIndex = 0;
+		currentStepInCommand = 0;
 		isCompleted = false;
+		lastError = null;
 		stopAutoPlay();
 	}
 
-	// Выполнить один шаг
-	function executeStep() {
-		if (isCompleted) return;
-		if (currentCommandIndex >= currentLevel.commands.length) {
-			isCompleted = true;
-			stopAutoPlay();
-			return;
-		}
-
-		const command = currentLevel.commands[currentCommandIndex];
-
-		// Двигаемся на 1 клетку в нужном направлении
-		switch (command.direction) {
-			case 'up':
-				position = { ...position, y: position.y - 1 };
-				break;
-			case 'down':
-				position = { ...position, y: position.y + 1 };
-				break;
-			case 'left':
-				position = { ...position, x: position.x - 1 };
-				break;
-			case 'right':
-				position = { ...position, x: position.x + 1 };
-				break;
-		}
-
-		// Добавляем клетку в нарисованные
-		drawnCells = new Set([...drawnCells, `${position.x},${position.y}`]);
-
-		// Проверяем, закончилась ли текущая команда
-		// Для этого нужно отслеживать шаги внутри команды
-		// Упростим: каждый клик = 1 шаг, но команда считается выполненной после N шагов
-		// Используем отдельный счётчик шагов текущей команды
-	}
-
-	// Переработанная логика с учётом шагов внутри команды
-	let currentStepInCommand = $state(0);
-
-	let lastError = $state<string | null>(null);
-
+	// Выполнить один шаг — рисуем ребро
 	function executeStepV2() {
-		if (isCompleted) return;
+		if (isCompleted || !currentLevel) return;
 		if (currentCommandIndex >= currentLevel.commands.length) {
 			isCompleted = true;
 			stopAutoPlay();
@@ -181,7 +124,6 @@
 
 		const command = currentLevel.commands[currentCommandIndex];
 
-		// Вычисляем новую позицию
 		let newX = position.x;
 		let newY = position.y;
 
@@ -202,7 +144,7 @@
 
 		// Проверка границ
 		if (newX < 0 || newX >= currentLevel.gridSize || newY < 0 || newY >= currentLevel.gridSize) {
-			lastError = `⚠️ Нельзя выйти за пределы поля! Попробуй другую команду.`;
+			lastError = `️ Нельзя выйти за пределы поля! Попробуй другую команду.`;
 			setTimeout(() => {
 				lastError = null;
 			}, 2000);
@@ -210,13 +152,18 @@
 			return;
 		}
 
-		// Применяем новое положение
+		// Рисуем ребро для ТЕКУЩЕЙ клетки (откуда идём)
+		const edge = getEdgeForDirection(command.direction);
+		drawnEdges = new Set([
+			...drawnEdges,
+			getEdgeKey(position.x, position.y, edge),
+			getEdgeKey(newX, newY, edge)
+		]);
+
 		position = { x: newX, y: newY };
-		drawnCells = new Set([...drawnCells, `${position.x},${position.y}`]);
 		currentStepInCommand++;
 		lastError = null;
 
-		// Если все шаги команды выполнены — переходим к следующей
 		if (currentStepInCommand >= command.steps) {
 			currentStepInCommand = 0;
 			currentCommandIndex++;
@@ -228,26 +175,26 @@
 		}
 	}
 
-	// Ручное управление стрелками
+	// Ручное управление
 	function handleDirectionClick(direction: Direction) {
-		if (isCompleted) return;
+		if (isCompleted || !currentLevel) return;
 
-		// Проверяем, совпадает ли направление с текущей командой
 		const currentCommand = currentLevel.commands[currentCommandIndex];
 		if (!currentCommand) return;
 
 		if (currentCommand.direction === direction) {
 			executeStepV2();
 		} else {
-			// Ошибка — направление не совпадает с командой
-			// Можно добавить визуальную обратную связь
-			console.log('Неверное направление!');
+			lastError = `⚠️ Нужно идти ${currentCommand.direction === 'up' ? 'вверх' : currentCommand.direction === 'down' ? 'вниз' : currentCommand.direction === 'left' ? 'влево' : 'вправо'}!`;
+			setTimeout(() => {
+				lastError = null;
+			}, 1500);
 		}
 	}
 
 	// Автоматическое выполнение
 	function startAutoPlay() {
-		if (isCompleted || isAutoPlaying) return;
+		if (isCompleted || isAutoPlaying || !currentLevel) return;
 		isAutoPlaying = true;
 
 		const tick = () => {
@@ -268,10 +215,11 @@
 		}
 	}
 
-	// Сброс текущего уровня
 	function resetLevel() {
-		stopAutoPlay();
-		loadLevel(currentLevel);
+		if (currentLevel) {
+			stopAutoPlay();
+			loadLevel(currentLevel);
+		}
 	}
 
 	// Обработка клавиатуры
@@ -298,8 +246,29 @@
 		}
 	}
 
-	onMount(() => {
-		loadLevel(currentLevel);
+	// Загрузка при старте
+	onMount(async () => {
+		try {
+			const response = await fetch('/api/admin/dictation-levels');
+			if (response.ok) {
+				const dbLevels = await response.json();
+				if (dbLevels && dbLevels.length > 0) {
+					levels = dbLevels.map((l: any) => ({
+						id: l.id,
+						name: l.name,
+						emoji: l.emoji,
+						gridSize: l.gridSize,
+						startPos: { x: l.startX || 0, y: l.startY || 0 },
+						commands: l.commands,
+						description: l.description || ''
+					}));
+				}
+			}
+		} catch (error) {
+			console.log('API недоступен, используем встроенные уровни');
+		}
+
+		loadLevel(levels[0]);
 	});
 </script>
 
@@ -315,7 +284,7 @@
 
 <div class="dictation-game">
 	<header class="game-header">
-		<h1>️ Графический диктант</h1>
+		<h1>✏️ Графический диктант</h1>
 		<p class="subtitle">Рисуй по клеточкам, выполняя команды</p>
 	</header>
 
@@ -327,7 +296,7 @@
 				{#each levels as level (level.id)}
 					<button
 						class="level-card"
-						class:active={currentLevel.id === level.id}
+						class:active={currentLevel && currentLevel.id === level.id}
 						onclick={() => loadLevel(level)}
 					>
 						<span class="level-emoji">{level.emoji}</span>
@@ -347,7 +316,7 @@
 					</div>
 				{/if}
 
-				{#if !isCompleted && currentCommandIndex < currentLevel.commands.length}
+				{#if currentLevel && !isCompleted && currentCommandIndex < currentLevel.commands.length}
 					{@const cmd = currentLevel.commands[currentCommandIndex]}
 					<div class="command-display">
 						<span class="command-arrow">
@@ -357,7 +326,7 @@
 									? '⬇️'
 									: cmd.direction === 'left'
 										? '⬅️'
-										: '➡️'}
+										: '️'}
 						</span>
 						<span class="command-text">
 							{cmd.steps}
@@ -374,7 +343,7 @@
 							({currentStepInCommand}/{cmd.steps})
 						</span>
 					</div>
-				{:else if isCompleted}
+				{:else if currentLevel && isCompleted}
 					<div class="command-display completed">
 						<span class="command-arrow">🎉</span>
 						<span class="command-text">Фигура готова!</span>
@@ -384,23 +353,28 @@
 
 			<!-- Игровое поле -->
 			<section class="game-board" aria-label="Игровое поле">
-				<div class="grid" style="grid-template-columns: repeat({currentLevel.gridSize}, 1fr);">
-					{#each Array(currentLevel.gridSize * currentLevel.gridSize) as _, index}
-						{@const x = index % currentLevel.gridSize}
-						{@const y = Math.floor(index / currentLevel.gridSize)}
-						{@const cellKey = `${x},${y}`}
-						{@const isDrawn = drawnCells.has(cellKey)}
-						{@const isCurrent = position.x === x && position.y === y}
+				{#if currentLevel}
+					<div class="grid" style="grid-template-columns: repeat({currentLevel.gridSize}, 1fr);">
+						{#each Array(currentLevel.gridSize * currentLevel.gridSize) as _, index}
+							{@const x = index % currentLevel.gridSize}
+							{@const y = Math.floor(index / currentLevel.gridSize)}
+							{@const isCurrent = position.x === x && position.y === y}
 
-						<div class="cell" class:drawn={isDrawn} class:current={isCurrent}>
-							{#if isCurrent && !isDrawn}
-								<span class="cursor">●</span>
-							{:else if isCurrent && isDrawn}
-								<span class="cursor">★</span>
-							{/if}
-						</div>
-					{/each}
-				</div>
+							<div
+								class="cell"
+								class:edge-top={drawnEdges.has(`${x},${y},top`)}
+								class:edge-bottom={drawnEdges.has(`${x},${y},bottom`)}
+								class:edge-left={drawnEdges.has(`${x},${y},left`)}
+								class:edge-right={drawnEdges.has(`${x},${y},right`)}
+								class:current={isCurrent}
+							>
+								{#if isCurrent}
+									<span class="cursor">★</span>
+								{/if}
+							</div>
+						{/each}
+					</div>
+				{/if}
 			</section>
 
 			<!-- Управление -->
@@ -437,7 +411,7 @@
 						disabled={isAutoPlaying || isCompleted}
 						aria-label="Вниз"
 					>
-						️⬇️
+						⬇️️
 					</button>
 				</div>
 
@@ -456,7 +430,7 @@
 
 	<!-- Инструкции -->
 	<section class="instructions">
-		<h3>Как играть</h3>
+		<h3>📖 Как играть</h3>
 		<ol>
 			<li>Выбери фигуру, которую хочешь нарисовать</li>
 			<li>Смотри на команду: сколько клеток и в какую сторону</li>
@@ -471,4 +445,426 @@
 </div>
 
 <style>
+	.dictation-game {
+		max-width: 1400px;
+		margin: 0 auto;
+		padding: 1rem;
+	}
+
+	.game-header {
+		text-align: center;
+		margin-bottom: 1.5rem;
+	}
+
+	.game-header h1 {
+		font-size: 2rem;
+		margin-bottom: 0.25rem;
+		color: #2d3748;
+	}
+
+	.subtitle {
+		font-size: 1rem;
+		color: #718096;
+	}
+
+	/* Основной layout: две колонки */
+	.game-layout {
+		display: grid;
+		grid-template-columns: 280px 1fr;
+		gap: 2rem;
+		align-items: start;
+	}
+
+	/* Левая панель: выбор фигур */
+	.level-selector {
+		background: white;
+		padding: 1.5rem;
+		border-radius: 16px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	}
+
+	.level-selector h3 {
+		margin-bottom: 1rem;
+		color: #2d3748;
+		font-size: 1.1rem;
+	}
+
+	.levels-grid {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.level-card {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.75rem 1rem;
+		border: 2px solid #e2e8f0;
+		border-radius: 12px;
+		background: white;
+		cursor: pointer;
+		transition: all 0.2s;
+		width: 100%;
+		text-align: left;
+	}
+
+	.level-card:hover {
+		border-color: #4299e1;
+		background: #ebf8ff;
+		transform: translateX(4px);
+	}
+
+	.level-card.active {
+		border-color: #4299e1;
+		background: #ebf8ff;
+		box-shadow: 0 2px 4px rgba(66, 153, 225, 0.2);
+	}
+
+	.level-emoji {
+		font-size: 1.5rem;
+	}
+
+	.level-name {
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: #4a5568;
+	}
+
+	/* Правая часть: поле и управление */
+	.game-area {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	/* Текущая команда */
+	.current-command {
+		margin-bottom: 0;
+	}
+
+	.command-display {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		padding: 1rem 1.5rem;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		color: white;
+		border-radius: 12px;
+		font-size: 1.25rem;
+		font-weight: 700;
+	}
+
+	.command-display.completed {
+		background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+	}
+
+	.command-arrow {
+		font-size: 2rem;
+	}
+
+	.command-progress {
+		font-size: 0.9rem;
+		opacity: 0.8;
+	}
+
+	/* Игровое поле */
+	.game-board {
+		display: flex;
+		justify-content: center;
+	}
+
+	.grid {
+		display: grid;
+		gap: 2px;
+		max-width: 500px;
+		width: 100%;
+		aspect-ratio: 1;
+		background: #cbd5e0;
+		padding: 2px;
+		border-radius: 8px;
+	}
+
+	.cell {
+		aspect-ratio: 1;
+		background: white;
+		border: 1px solid #e2e8f0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background 0.2s;
+		position: relative;
+	}
+
+	/* Рёбра, которые уже нарисованы */
+	.cell.edge-top {
+		border-top: 4px solid #4299e1;
+	}
+	.cell.edge-bottom {
+		border-bottom: 4px solid #4299e1;
+	}
+	.cell.edge-left {
+		border-left: 4px solid #4299e1;
+	}
+	.cell.edge-right {
+		border-right: 4px solid #4299e1;
+	}
+
+	.cell.current {
+		background: #f6e05e;
+	}
+
+	.cursor {
+		font-size: 1.5rem;
+		color: #2d3748;
+	}
+
+	/* Управление */
+	.controls {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 2rem;
+		padding: 1rem;
+		background: white;
+		border-radius: 16px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	}
+
+	.direction-pad {
+		display: grid;
+		grid-template-columns: repeat(3, 60px);
+		grid-template-rows: repeat(3, 60px);
+		gap: 0.5rem;
+	}
+
+	.dir-button {
+		width: 60px;
+		height: 60px;
+		border: 2px solid #e2e8f0;
+		border-radius: 12px;
+		background: white;
+		font-size: 1.5rem;
+		cursor: pointer;
+		transition: all 0.2s;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.dir-button:hover:not(:disabled) {
+		border-color: #4299e1;
+		background: #ebf8ff;
+		transform: scale(1.05);
+	}
+
+	.dir-button:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	.dir-button.up {
+		grid-column: 2;
+		grid-row: 1;
+	}
+	.dir-button.left {
+		grid-column: 1;
+		grid-row: 2;
+	}
+	.dir-button.center {
+		grid-column: 2;
+		grid-row: 2;
+		background: #f7fafc;
+		font-size: 1.25rem;
+	}
+	.dir-button.right {
+		grid-column: 3;
+		grid-row: 2;
+	}
+	.dir-button.down {
+		grid-column: 2;
+		grid-row: 3;
+	}
+
+	.action-buttons {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.action-button {
+		padding: 0.75rem 1.5rem;
+		border: none;
+		border-radius: 8px;
+		font-size: 0.95rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.2s;
+		white-space: nowrap;
+	}
+
+	.action-button.auto {
+		background: #48bb78;
+		color: white;
+	}
+
+	.action-button.auto:hover:not(:disabled) {
+		background: #38a169;
+	}
+
+	.action-button.stop {
+		background: #f56565;
+		color: white;
+	}
+
+	.action-button.stop:hover {
+		background: #c53030;
+	}
+
+	.action-button:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	/* Инструкции */
+	.instructions {
+		background: #f7fafc;
+		padding: 1.5rem;
+		border-radius: 12px;
+		margin-top: 2rem;
+	}
+
+	.instructions h3 {
+		margin-bottom: 1rem;
+		color: #2d3748;
+	}
+
+	.instructions ol {
+		margin-left: 1.5rem;
+		margin-bottom: 1rem;
+	}
+
+	.instructions li {
+		margin-bottom: 0.5rem;
+		color: #4a5568;
+	}
+
+	.tip {
+		background: #ebf8ff;
+		padding: 1rem;
+		border-radius: 8px;
+		border-left: 4px solid #4299e1;
+		color: #2c5282;
+	}
+
+	/* Ошибка */
+	.error-message {
+		background: #fed7d7;
+		color: #742a2a;
+		padding: 1rem;
+		border-radius: 12px;
+		text-align: center;
+		font-weight: 600;
+		margin-bottom: 1rem;
+		border: 2px solid #f56565;
+		animation: shake 0.5s;
+	}
+
+	@keyframes shake {
+		0%,
+		100% {
+			transform: translateX(0);
+		}
+		25% {
+			transform: translateX(-5px);
+		}
+		75% {
+			transform: translateX(5px);
+		}
+	}
+
+	/* Адаптивность для планшетов */
+	@media (max-width: 1024px) {
+		.game-layout {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+		}
+
+		.level-selector {
+			order: 2;
+		}
+
+		.game-area {
+			order: 1;
+		}
+
+		.levels-grid {
+			flex-direction: row;
+			flex-wrap: wrap;
+		}
+
+		.level-card {
+			width: auto;
+			flex: 1;
+			min-width: 140px;
+		}
+	}
+
+	/* Адаптивность для мобильных */
+	@media (max-width: 768px) {
+		.game-header h1 {
+			font-size: 1.5rem;
+		}
+
+		.command-display {
+			font-size: 1rem;
+			padding: 0.75rem 1rem;
+		}
+
+		.command-arrow {
+			font-size: 1.5rem;
+		}
+
+		.grid {
+			max-width: 100%;
+		}
+
+		.direction-pad {
+			grid-template-columns: repeat(3, 50px);
+			grid-template-rows: repeat(3, 50px);
+		}
+
+		.dir-button {
+			width: 50px;
+			height: 50px;
+			font-size: 1.25rem;
+		}
+
+		.controls {
+			flex-direction: column;
+			gap: 1rem;
+		}
+
+		.action-button {
+			width: 100%;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.dictation-game {
+			padding: 0.5rem;
+		}
+
+		.direction-pad {
+			grid-template-columns: repeat(3, 45px);
+			grid-template-rows: repeat(3, 45px);
+		}
+
+		.dir-button {
+			width: 45px;
+			height: 45px;
+			font-size: 1rem;
+		}
+	}
 </style>
