@@ -39,15 +39,15 @@ export const games: Game[] = [
 	},
 	{
 		id: '4',
-		slug: 'sudoku-kids',
-		title: 'Детское Судоку',
-		description: 'Классическая головоломка для детей. Начни с 4×4 и переходи к 6×6!',
-		ageRange: { min: 6, max: 10 },
-		category: 'logic',
-		icon: '🧩',
-		difficulty: 'medium',
-		estimatedTime: '10-20 минут',
-		isAvailable: false
+		slug: 'memory',
+		title: 'Мемори — Найди пару',
+		description: 'Переворачивай карточки и ищи одинаковые пары. Развивает память и концентрацию.',
+		ageRange: { min: 4, max: 10 },
+		category: 'memory',
+		icon: '🃏',
+		difficulty: 'easy',
+		estimatedTime: '5-10 минут',
+		isAvailable: true
 	},
 	{
 		id: '5',
