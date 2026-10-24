@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import {
+		buildDictationEdges,
+		type DictationDirection,
+		type DictationPathStep
+	} from '#lib/dictation-path';
 
-	type Direction = 'up' | 'down' | 'left' | 'right';
-	type Edge = 'top' | 'bottom' | 'left' | 'right';
+	type Direction = DictationDirection;
 
 	interface Command {
 		direction: Direction;
@@ -13,10 +17,9 @@
 	let edges = $state<Set<string>>(new Set());
 	let isDrawing = $state(false);
 	let lastCell = $state<{ x: number; y: number } | null>(null);
-	let lastDirection = $state<Direction | null>(null);
 
 	// НОВОЕ: запоминаем путь рисования
-	let drawPath = $state<{ x: number; y: number; direction: Direction }[]>([]);
+	let drawPath = $state<DictationPathStep[]>([]);
 
 	let levelName = $state('');
 	let levelEmoji = $state('');
@@ -27,32 +30,17 @@
 	function initCanvas() {
 		edges = new Set();
 		lastCell = null;
-		lastDirection = null;
 		drawPath = [];
 		commands = [];
 	}
 
-	function getEdgeKey(x: number, y: number, edge: Edge): string {
+	function getEdgeKey(x: number, y: number, edge: 'top' | 'bottom' | 'left' | 'right'): string {
 		return `${x},${y},${edge}`;
-	}
-
-	function getEdgeForDirection(dir: Direction): Edge {
-		switch (dir) {
-			case 'right':
-				return 'bottom';
-			case 'left':
-				return 'top';
-			case 'up':
-				return 'right';
-			case 'down':
-				return 'left';
-		}
 	}
 
 	function handleCellInteraction(x: number, y: number) {
 		if (lastCell === null) {
 			lastCell = { x, y };
-			lastDirection = null;
 		} else {
 			const dx = x - lastCell.x;
 			const dy = y - lastCell.y;
@@ -64,75 +52,17 @@
 				else if (dy === 1) currentDirection = 'down';
 				else currentDirection = 'up';
 
-				const edge = getEdgeForDirection(currentDirection);
-				const newEdges = new Set(edges);
-
-				const isTurn = lastDirection !== null && lastDirection !== currentDirection;
-
-				if (isTurn) {
-					// При повороте: рисуем только для угловой клетки (lastCell)
-					newEdges.add(getEdgeKey(lastCell.x, lastCell.y, edge));
-				} else {
-					// При движении прямо: рисуем для обеих клеток
-					newEdges.add(getEdgeKey(lastCell.x, lastCell.y, edge));
-					newEdges.add(getEdgeKey(x, y, edge));
-				}
-
-				edges = newEdges;
 				drawPath = [...drawPath, { x: lastCell.x, y: lastCell.y, direction: currentDirection }];
+				edges = buildDictationEdges(drawPath);
 				lastCell = { x, y };
-				lastDirection = currentDirection;
 			} else {
 				lastCell = { x, y };
-				lastDirection = null;
 			}
 		}
 	}
 
 	function rebuildEdgesFromPath() {
-		const rebuiltEdges = new Set<string>();
-
-		if (drawPath.length === 0) {
-			edges = rebuiltEdges;
-			return;
-		}
-
-		let currentX = drawPath[0].x;
-		let currentY = drawPath[0].y;
-		let previousDirection: Direction | null = null;
-
-		for (const step of drawPath) {
-			const edge = getEdgeForDirection(step.direction);
-			let nextX = currentX;
-			let nextY = currentY;
-
-			switch (step.direction) {
-				case 'right':
-					nextX++;
-					break;
-				case 'left':
-					nextX--;
-					break;
-				case 'down':
-					nextY++;
-					break;
-				case 'up':
-					nextY--;
-					break;
-			}
-
-			const isTurn = previousDirection !== null && previousDirection !== step.direction;
-			rebuiltEdges.add(getEdgeKey(currentX, currentY, edge));
-			if (!isTurn) {
-				rebuiltEdges.add(getEdgeKey(nextX, nextY, edge));
-			}
-
-			currentX = nextX;
-			currentY = nextY;
-			previousDirection = step.direction;
-		}
-
-		edges = rebuiltEdges;
+		edges = buildDictationEdges(drawPath);
 	}
 
 	// Отменить последний шаг
@@ -144,10 +74,8 @@
 
 		if (drawPath.length === 0) {
 			lastCell = null;
-			lastDirection = null;
 		} else {
 			const lastStep = drawPath[drawPath.length - 1];
-			lastDirection = lastStep.direction;
 			let x = lastStep.x;
 			let y = lastStep.y;
 			if (lastStep.direction === 'right') x++;
@@ -326,7 +254,6 @@
 						<button
 							type="button"
 							class="canvas-cell"
-							class:has-top={edges.has(getEdgeKey(x, y, 'top'))}
 							class:has-bottom={edges.has(getEdgeKey(x, y, 'bottom'))}
 							class:has-left={edges.has(getEdgeKey(x, y, 'left'))}
 							class:has-right={edges.has(getEdgeKey(x, y, 'right'))}
@@ -557,9 +484,6 @@
 		background: #f7fafc;
 	}
 
-	.canvas-cell.has-top {
-		border-top: 3px solid #4299e1;
-	}
 	.canvas-cell.has-bottom {
 		border-bottom: 3px solid #4299e1;
 	}

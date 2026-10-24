@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import {
+		buildDictationEdges,
+		type DictationDirection,
+		type DictationPathStep
+	} from '#lib/dictation-path';
 
-	type Direction = 'up' | 'down' | 'left' | 'right';
-	type Edge = 'top' | 'bottom' | 'left' | 'right';
+	type Direction = DictationDirection;
 
 	interface Command {
 		direction: Direction;
@@ -75,6 +79,7 @@
 
 	// НОВОЕ: храним нарисованные рёбра вместо закрашенных клеток
 	let drawnEdges = $state<Set<string>>(new Set());
+	let drawnPath = $state<DictationPathStep[]>([]);
 
 	let currentCommandIndex = $state(0);
 	let currentStepInCommand = $state(0);
@@ -83,29 +88,12 @@
 	let lastError = $state<string | null>(null);
 	let autoPlayTimeout: number | null = null;
 
-	// Определяем, какое ребро рисовать при движении в направлении
-	function getEdgeForDirection(dir: Direction): Edge {
-		switch (dir) {
-			case 'right':
-				return 'bottom';
-			case 'left':
-				return 'top';
-			case 'up':
-				return 'right';
-			case 'down':
-				return 'left';
-		}
-	}
-
-	function getEdgeKey(x: number, y: number, edge: Edge): string {
-		return `${x},${y},${edge}`;
-	}
-
 	// Инициализация уровня
 	function loadLevel(level: Level) {
 		currentLevel = level;
 		position = { ...level.startPos };
 		drawnEdges = new Set();
+		drawnPath = [];
 		currentCommandIndex = 0;
 		currentStepInCommand = 0;
 		isCompleted = false;
@@ -152,13 +140,8 @@
 			return;
 		}
 
-		// Рисуем ребро для ТЕКУЩЕЙ клетки (откуда идём)
-		const edge = getEdgeForDirection(command.direction);
-		drawnEdges = new Set([
-			...drawnEdges,
-			getEdgeKey(position.x, position.y, edge),
-			getEdgeKey(newX, newY, edge)
-		]);
+		drawnPath = [...drawnPath, { x: position.x, y: position.y, direction: command.direction }];
+		drawnEdges = buildDictationEdges(drawnPath);
 
 		position = { x: newX, y: newY };
 		currentStepInCommand++;
@@ -362,7 +345,6 @@
 
 							<div
 								class="cell"
-								class:edge-top={drawnEdges.has(`${x},${y},top`)}
 								class:edge-bottom={drawnEdges.has(`${x},${y},bottom`)}
 								class:edge-left={drawnEdges.has(`${x},${y},left`)}
 								class:edge-right={drawnEdges.has(`${x},${y},right`)}
@@ -598,9 +580,6 @@
 	}
 
 	/* Рёбра, которые уже нарисованы */
-	.cell.edge-top {
-		border-top: 4px solid #4299e1;
-	}
 	.cell.edge-bottom {
 		border-bottom: 4px solid #4299e1;
 	}
