@@ -1,11 +1,14 @@
 /* src/routes/(site)/articles/[slug]/article-detail.css */
 
-.detail-article-full {
+/* =========================================
+   Блок: article-page
+   ========================================= */
+.article-page {
 	margin: 0 auto;
 	padding: 2rem 1rem;
 }
 
-.back-link {
+.article-page__back-link {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.4rem;
@@ -15,35 +18,37 @@
 	margin-bottom: 1.5rem;
 	transition: transform 0.2s;
 }
-.back-link:hover {
+
+.article-page__back-link:hover {
 	transform: translateX(-4px);
 }
 
-.detail-article-header {
+.article-page__header {
 	margin-bottom: 2rem;
 	padding-bottom: 1.5rem;
 	border-bottom: 2px solid #e9ecef;
 }
 
-.detail-article-tag {
+.article-page__tag {
 	display: inline-block;
 	padding: 0.3rem 0.8rem;
 	border-radius: 20px;
 	font-size: 0.85rem;
 	font-weight: 600;
+	margin-right: 0.5rem; /* Добавлено для разделения тегов */
 	margin-bottom: 1rem;
 	background: color-mix(in srgb, var(--tag-color) 12.5%, transparent);
 	color: var(--tag-color);
 }
 
-.detail-article-time {
+.article-page__time {
 	display: block;
 	font-size: 0.9rem;
 	color: #6c757d;
 	margin-bottom: 1rem;
 }
 
-.detail-article-title {
+.article-page__title {
 	font-size: 2.2rem;
 	font-weight: 800;
 	margin: 0 0 0.5rem 0;
@@ -51,20 +56,22 @@
 	line-height: 1.2;
 }
 
-.detail-article-subtitle {
+.article-page__subtitle {
 	font-size: 1.25rem;
 	font-weight: 500;
 	color: #4c97ff;
 	margin: 0;
 }
 
-.detail-article-content {
+/* Контент статьи (стили для сгенерированного marked HTML) */
+.article-page__content {
 	font-size: 1.1rem;
 	line-height: 1.8;
 	color: #495057;
 }
 
-.detail-article-content h2 {
+/* Допустимо в БЭМ: стилизация дочерних элементов стороннего контента через контекст блока */
+.article-page__content :global(h2) {
 	font-size: 1.6rem;
 	font-weight: 700;
 	color: #212529;
@@ -73,34 +80,34 @@
 	border-bottom: 1px solid #e9ecef;
 }
 
-.detail-article-content h3 {
+.article-page__content :global(h3) {
 	font-size: 1.3rem;
 	font-weight: 600;
 	color: #343a40;
 	margin: 1.5rem 0 0.8rem 0;
 }
 
-.detail-article-content p {
+.article-page__content :global(p) {
 	margin: 0 0 1.2rem 0;
 }
 
-.detail-article-content ul,
-.detail-article-content ol {
+.article-page__content :global(ul),
+.article-page__content :global(ol) {
 	margin: 1rem 0 1.5rem 0;
 	padding-left: 1.5rem;
 }
 
-.detail-article-content li {
+.article-page__content :global(li) {
 	margin: 0.5rem 0;
 	line-height: 1.6;
 }
 
-.detail-article-content strong {
+.article-page__content :global(strong) {
 	color: #212529;
 	font-weight: 600;
 }
 
-.detail-article-content blockquote {
+.article-page__content :global(blockquote) {
 	border-left: 4px solid #4c97ff;
 	background: #f8f9fa;
 	padding: 1rem 1.5rem;
@@ -109,7 +116,7 @@
 	font-style: italic;
 }
 
-.detail-article-content pre {
+.article-page__content :global(pre) {
 	overflow-x: auto;
 	padding: 1rem;
 	border-radius: 8px;
@@ -119,54 +126,56 @@
 	line-height: 1.6;
 }
 
-.detail-article-content pre code {
+.article-page__content :global(pre code) {
 	font-family: Consolas, Monaco, monospace;
 }
 
-.detail-article-content pre .hljs-keyword,
-.detail-article-content pre .hljs-selector-tag {
+/* Подсветка синтаксиса внутри блока */
+.article-page__content :global(pre .hljs-keyword),
+.article-page__content :global(pre .hljs-selector-tag) {
 	color: #c084fc;
 }
 
-.detail-article-content pre .hljs-string,
-.detail-article-content pre .hljs-attr {
+.article-page__content :global(pre .hljs-string),
+.article-page__content :global(pre .hljs-attr) {
 	color: #86efac;
 }
 
-.detail-article-content pre .hljs-number,
-.detail-article-content pre .hljs-literal {
+.article-page__content :global(pre .hljs-number),
+.article-page__content :global(pre .hljs-literal) {
 	color: #fcd34d;
 }
 
-.detail-article-content pre .hljs-comment {
+.article-page__content :global(pre .hljs-comment) {
 	color: #94a3b8;
 }
 
-.detail-article-content table {
+.article-page__content :global(table) {
 	width: 100%;
 	margin: 1.5rem 0;
 	border-collapse: collapse;
 }
 
-.detail-article-content th,
-.detail-article-content td {
+.article-page__content :global(th),
+.article-page__content :global(td) {
 	padding: 0.65rem;
 	border: 1px solid #ced4da;
 	text-align: left;
 }
 
-.detail-article-content th {
+.article-page__content :global(th) {
 	background: #f1f3f5;
 	color: #212529;
 }
 
-.detail-article-content img {
+.article-page__content :global(img) {
 	max-width: 100%;
 	height: auto;
 	border-radius: 6px;
 }
 
-.detail-article-nav {
+/* Навигация между статьями */
+.article-page__nav {
 	display: flex;
 	justify-content: space-between;
 	gap: 1.5rem;
@@ -175,7 +184,7 @@
 	border-top: 2px solid #e9ecef;
 }
 
-.nav-link {
+.article-page__nav-link {
 	flex: 1;
 	text-decoration: none;
 	padding: 1.2rem;
@@ -187,23 +196,24 @@
 	flex-direction: column;
 }
 
-.nav-link:hover {
+.article-page__nav-link:hover {
 	background: #f8f9fa;
 	border-color: #4c97ff;
 	transform: translateY(-2px);
 	box-shadow: 0 4px 12px rgba(76, 151, 255, 0.1);
 }
 
-.nav-link.prev {
+/* Модификаторы навигации */
+.article-page__nav-link--prev {
 	text-align: left;
 }
 
-.nav-link.next {
+.article-page__nav-link--next {
 	text-align: right;
 	align-items: flex-end;
 }
 
-.nav-label {
+.article-page__nav-label {
 	font-size: 0.8rem;
 	color: #6c757d;
 	margin-bottom: 0.3rem;
@@ -212,28 +222,31 @@
 	font-weight: 600;
 }
 
-.nav-title {
+.article-page__nav-title {
 	font-size: 1.05rem;
 	font-weight: 600;
 	color: #4c97ff;
 }
 
+/* =========================================
+   Блок: not-found
+   ========================================= */
 .not-found {
 	text-align: center;
 	padding: 4rem 2rem;
 }
 
-.not-found h1 {
+.not-found__title {
 	font-size: 2rem;
 	margin: 0 0 1rem 0;
 }
 
-.not-found p {
+.not-found__description {
 	color: #6c757d;
 	margin-bottom: 2rem;
 }
 
-.back-button {
+.not-found__link {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.5rem;
@@ -246,20 +259,23 @@
 	transition: background 0.2s;
 }
 
-.back-button:hover {
+.not-found__link:hover {
 	background: #3d85e8;
 }
 
+/* =========================================
+   Адаптивность
+   ========================================= */
 @media (max-width: 768px) {
-	.detail-article-title {
+	.article-page__title {
 		font-size: 1.6rem;
 	}
 
-	.detail-article-nav {
+	.article-page__nav {
 		flex-direction: column;
 	}
 
-	.nav-link.next {
+	.article-page__nav-link--next {
 		text-align: left;
 		align-items: flex-start;
 	}

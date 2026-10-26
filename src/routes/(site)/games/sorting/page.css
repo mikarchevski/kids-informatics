@@ -1,0 +1,289 @@
+.sorting-game {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 1rem;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.game-header {
+	text-align: center;
+	margin-bottom: 1.5rem;
+}
+
+.game-header h1 {
+	font-size: 2rem;
+	color: #2d3748;
+	margin-bottom: 0.25rem;
+}
+
+.subtitle {
+	color: #718096;
+	font-size: 1.1rem;
+}
+
+.level-selector {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	margin-bottom: 2rem;
+	flex-wrap: wrap;
+}
+
+.level-btn {
+	padding: 0.5rem 1.25rem;
+	border: 2px solid #e2e8f0;
+	border-radius: 20px;
+	background: white;
+	font-size: 1rem;
+	font-weight: 600;
+	color: #4a5568;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.level-btn:hover {
+	border-color: #4299e1;
+	color: #4299e1;
+}
+
+.level-btn.active {
+	background: #4299e1;
+	color: white;
+	border-color: #4299e1;
+}
+
+.game-area {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
+.drop-zones {
+	display: flex;
+	justify-content: center;
+	gap: 1.5rem;
+	flex-wrap: wrap;
+}
+
+.drop-zone {
+	width: 200px;
+	min-height: 180px;
+	border-radius: 16px;
+	border: 3px dashed rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 1rem;
+	transition:
+		transform 0.2s,
+		border-color 0.2s;
+}
+
+.drop-zone:has(.draggable-item:active) {
+	/* Подсветка при наведении, можно доработать через JS, но CSS :has работает в современных браузерах */
+}
+
+.zone-emoji {
+	font-size: 3rem;
+	margin-bottom: 0.5rem;
+}
+
+.zone-name {
+	font-size: 1.2rem;
+	font-weight: 700;
+	color: #2d3748;
+	margin-bottom: 1rem;
+}
+
+.sorted-items {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.5rem;
+	width: 100%;
+}
+
+.sorted-emoji {
+	font-size: 1.5rem;
+	animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+	0% {
+		transform: scale(0);
+	}
+	80% {
+		transform: scale(1.2);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+.items-pool {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 1rem;
+	padding: 1.5rem;
+	background: #f7fafc;
+	border-radius: 16px;
+	min-height: 120px;
+}
+
+.draggable-item {
+	width: 90px;
+	height: 110px;
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	cursor: grab;
+	transition:
+		transform 0.2s,
+		box-shadow 0.2s;
+	user-select: none;
+	touch-action: none; /* Критично для мобильных! */
+}
+
+.draggable-item:active {
+	cursor: grabbing;
+}
+
+.draggable-item.is-dragging {
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+	transform: scale(1.1);
+}
+
+.item-emoji {
+	font-size: 2.5rem;
+	margin-bottom: 0.25rem;
+}
+
+.item-name {
+	font-size: 0.85rem;
+	color: #4a5568;
+	font-weight: 600;
+	text-align: center;
+}
+
+/* Экран победы */
+.victory-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2000;
+	animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.victory-card {
+	background: white;
+	padding: 2.5rem;
+	border-radius: 20px;
+	text-align: center;
+	max-width: 400px;
+	width: 90%;
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+	animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+	from {
+		transform: translateY(50px);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+.victory-card h2 {
+	font-size: 2rem;
+	color: #48bb78;
+	margin-bottom: 1rem;
+}
+
+.victory-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	margin-top: 2rem;
+}
+
+.btn-primary,
+.btn-secondary {
+	padding: 0.75rem 1.5rem;
+	border-radius: 10px;
+	font-size: 1.1rem;
+	font-weight: 600;
+	cursor: pointer;
+	border: none;
+	transition: transform 0.1s;
+}
+
+.btn-primary {
+	background: #48bb78;
+	color: white;
+}
+
+.btn-primary:hover {
+	background: #38a169;
+}
+
+.btn-secondary {
+	background: #edf2f7;
+	color: #4a5568;
+}
+
+.btn-secondary:hover {
+	background: #e2e8f0;
+}
+
+.btn-primary:active,
+.btn-secondary:active {
+	transform: scale(0.95);
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+	.drop-zone {
+		width: 140px;
+		min-height: 140px;
+	}
+	.zone-emoji {
+		font-size: 2rem;
+	}
+	.zone-name {
+		font-size: 1rem;
+	}
+
+	.draggable-item {
+		width: 75px;
+		height: 95px;
+	}
+	.item-emoji {
+		font-size: 2rem;
+	}
+	.item-name {
+		font-size: 0.75rem;
+	}
+}

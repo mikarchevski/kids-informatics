@@ -15,7 +15,7 @@ export const games: Game[] = [
 	},
 	{
 		id: '2',
-		slug: 'sorting-fruits-vegetables',
+		slug: 'sorting',
 		title: 'Сортировка: Фрукты и овощи',
 		description: 'Помоги разложить продукты по корзинкам. Развиваем логику и классификацию.',
 		ageRange: { min: 3, max: 6 },
@@ -23,7 +23,7 @@ export const games: Game[] = [
 		icon: '🍎',
 		difficulty: 'easy',
 		estimatedTime: '5-7 минут',
-		isAvailable: false // Ещё не реализовано
+		isAvailable: true // Ещё не реализовано
 	},
 	{
 		id: '3',

@@ -3,6 +3,7 @@
 	import Seo from '#lib/components/Seo.svelte';
 	import { marked } from 'marked';
 	import './articles.css';
+
 	let { data }: { data: PageData } = $props();
 
 	// Безопасный рендеринг HTML из базы
@@ -34,47 +35,52 @@
 			inLanguage: 'ru-RU'
 		}}
 	/>
-{/if}
 
-{#if data.article}
-	<article class="detail-article-full">
-		<a href="/articles" class="back-link">← Все статьи</a>
+	<article class="article-page">
+		<a href="/articles" class="article-page__back-link">← Все статьи</a>
 
-		<header class="detail-article-header">
+		<header class="article-page__header">
 			{#each data.article.tags as tag (tag.id)}
-				<span class="detail-article-tag" style:--tag-color={tag.color}>
+				<span class="article-page__tag" style:--tag-color={tag.color}>
 					{tag.name}
 				</span>
 			{/each}
-			<span class="detail-article-time">⏱️ {data.article.readTime}</span>
-			<h1 class="detail-article-title">{data.article.title}</h1>
-			<h2 class="detail-article-subtitle">{data.article.subtitle}</h2>
+
+			<span class="article-page__time">⏱️ {data.article.readTime}</span>
+			<h1 class="article-page__title">{data.article.title}</h1>
+			<h2 class="article-page__subtitle">{data.article.subtitle}</h2>
 		</header>
 
-		<div class="detail-article-content">
+		<div class="article-page__content">
 			{@html htmlContent}
 		</div>
 
-		<nav class="detail-article-nav">
+		<nav class="article-page__nav">
 			{#if prevArticle}
-				<a href="/articles/{prevArticle.slug}" class="nav-link prev">
-					<span class="nav-label">← Предыдущая</span>
-					<span class="nav-title">{prevArticle.title}</span>
+				<a
+					href="/articles/{prevArticle.slug}"
+					class="article-page__nav-link article-page__nav-link--prev"
+				>
+					<span class="article-page__nav-label">← Предыдущая</span>
+					<span class="article-page__nav-title">{prevArticle.title}</span>
 				</a>
 			{/if}
 
 			{#if nextArticle}
-				<a href="/articles/{nextArticle.slug}" class="nav-link next">
-					<span class="nav-label">Следующая →</span>
-					<span class="nav-title">{nextArticle.title}</span>
+				<a
+					href="/articles/{nextArticle.slug}"
+					class="article-page__nav-link article-page__nav-link--next"
+				>
+					<span class="article-page__nav-label">Следующая →</span>
+					<span class="article-page__nav-title">{nextArticle.title}</span>
 				</a>
 			{/if}
 		</nav>
 	</article>
 {:else}
 	<div class="not-found">
-		<h1>🤖 Статья не найдена</h1>
-		<p>Проверьте URL или вернитесь к списку.</p>
-		<a href="/articles" class="back-button">← К статьям</a>
+		<h1 class="not-found__title">🤖 Статья не найдена</h1>
+		<p class="not-found__description">Проверьте URL или вернитесь к списку.</p>
+		<a href="/articles" class="not-found__link">← К статьям</a>
 	</div>
 {/if}
