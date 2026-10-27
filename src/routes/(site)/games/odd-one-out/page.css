@@ -1,0 +1,246 @@
+.odd-game {
+	max-width: 820px;
+	margin: 0 auto;
+	padding: 1rem 1.5rem 3rem;
+	color: #2d3748;
+}
+.game-heading {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	margin: 1rem 0 0.75rem;
+}
+.eyebrow {
+	margin: 0 0 0.25rem;
+	color: #4299e1;
+	font-size: 0.95rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+h1 {
+	margin: 0;
+	font-size: clamp(1.8rem, 5vw, 2.8rem);
+}
+.score {
+	color: #718096;
+	font-size: 0.95rem;
+	line-height: 1.7;
+	text-align: right;
+}
+.level-info {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	margin-bottom: 1.5rem;
+	color: #718096;
+}
+.difficulty {
+	padding: 0.3rem 0.75rem;
+	border-radius: 999px;
+	font-weight: 700;
+}
+.difficulty-easy {
+	background: #c6f6d5;
+	color: #276749;
+}
+.difficulty-medium {
+	background: #feebc8;
+	color: #975a16;
+}
+.difficulty-hard {
+	background: #fed7d7;
+	color: #9b2c2c;
+}
+.items-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1.25rem;
+	max-width: 520px;
+	margin: 0 auto;
+}
+.item-card {
+	aspect-ratio: 1;
+	display: grid;
+	place-items: center;
+	border: 2px solid #e2e8f0;
+	border-radius: 20px;
+	background: white;
+	box-shadow: 0 6px 16px rgb(45 55 72 / 10%);
+	cursor: pointer;
+	font-size: clamp(4rem, 12vw, 6rem);
+	transition:
+		transform 0.2s,
+		opacity 0.2s,
+		border-color 0.2s,
+		background 0.2s;
+}
+.item-card:hover,
+.item-card:focus-visible {
+	border-color: #4299e1;
+	transform: scale(1.05);
+	outline: none;
+}
+.item-card:active {
+	transform: scale(0.97);
+}
+.item-card.correct {
+	border-color: #48bb78;
+	background: #c6f6d5;
+	animation: popIn 0.5s ease-out;
+}
+.item-card.dimmed {
+	opacity: 0.4;
+}
+.item-card.wrong {
+	border-color: #f56565;
+	background: #fed7d7;
+	animation: shake 0.5s ease-in-out;
+}
+.explanation,
+.try-again {
+	max-width: 650px;
+	margin: 1.5rem auto 0;
+	padding: 1rem 1.25rem;
+	border-radius: 14px;
+	text-align: center;
+	font-weight: 600;
+	animation: slideUp 0.4s ease-out;
+}
+.explanation {
+	background: #c6f6d5;
+	color: #276749;
+}
+.try-again {
+	background: #fff5f5;
+	color: #9b2c2c;
+}
+.actions {
+	display: flex;
+	justify-content: center;
+	gap: 0.75rem;
+	margin-top: 2rem;
+}
+button {
+	font: inherit;
+}
+.primary-button,
+.secondary-button {
+	border: 0;
+	border-radius: 12px;
+	padding: 0.75rem 1.2rem;
+	font-weight: 700;
+	cursor: pointer;
+	transition:
+		transform 0.15s,
+		background 0.15s;
+}
+.primary-button {
+	background: #4299e1;
+	color: white;
+}
+.primary-button:hover {
+	background: #3182ce;
+	transform: translateY(-2px);
+}
+.secondary-button {
+	background: #edf2f7;
+	color: #4a5568;
+}
+.secondary-button:hover {
+	background: #e2e8f0;
+	transform: translateY(-2px);
+}
+.secondary-button.skip {
+	color: #9b2c2c;
+}
+.resume-card,
+.finish-card {
+	max-width: 520px;
+	margin: 4rem auto;
+	padding: 2.5rem 2rem;
+	border-radius: 24px;
+	background: white;
+	box-shadow: 0 10px 30px rgb(45 55 72 / 12%);
+	text-align: center;
+	animation: slideUp 0.4s ease-out;
+}
+.resume-icon,
+.finish-icon {
+	font-size: 4rem;
+}
+.resume-card p,
+.finish-card p {
+	color: #718096;
+}
+.resume-actions {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	margin-top: 1.5rem;
+}
+.stats {
+	display: flex;
+	justify-content: center;
+	gap: 1.5rem;
+	margin: 1.5rem 0;
+	color: #4a5568;
+}
+@keyframes shake {
+	25% {
+		transform: translateX(-10px);
+	}
+	75% {
+		transform: translateX(10px);
+	}
+}
+@keyframes popIn {
+	0% {
+		transform: scale(0.8);
+	}
+	70% {
+		transform: scale(1.08);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+@keyframes slideUp {
+	from {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+@media (max-width: 600px) {
+	.odd-game {
+		padding: 0.75rem 1rem 2rem;
+	}
+	.game-heading {
+		align-items: center;
+	}
+	.score {
+		font-size: 0.8rem;
+	}
+	.items-grid {
+		gap: 0.75rem;
+	}
+	.item-card {
+		border-radius: 16px;
+	}
+	.actions {
+		flex-direction: column;
+		align-items: stretch;
+	}
+	.secondary-button {
+		width: 100%;
+	}
+	.stats {
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+}

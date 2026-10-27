@@ -73,5 +73,18 @@ export const games: Game[] = [
 		difficulty: 'easy',
 		estimatedTime: '5-10 минут',
 		isAvailable: true
+	},
+	{
+		id: '7',
+		slug: 'odd-one-out',
+		title: 'Найди лишнее',
+		description:
+			'Сравни предметы и найди тот, который не подходит к остальным. Тренируем внимание и мышление.',
+		ageRange: { min: 4, max: 8 },
+		category: 'logic',
+		icon: '🔍',
+		difficulty: 'easy',
+		estimatedTime: '5-10 минут',
+		isAvailable: true
 	}
 ];
