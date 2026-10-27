@@ -284,3 +284,30 @@
 		font-size: 1.2rem;
 	}
 }
+
+.cell {
+	/* 1. УБИРАЕТ задержку 300мс на мобильных */
+	touch-action: manipulation;
+
+	/* 2. ЗАПРЕЩАЕТ выделение текста при быстром тапании (главная причина лагов!) */
+	user-select: none;
+	-webkit-user-select: none;
+
+	/* 3. УБИРАЕТ синюю/серую вспышку при нажатии на iOS/Android */
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+
+	/* Твои существующие стили (размеры, цвета и т.д.) */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.5rem;
+	font-weight: bold;
+	cursor: pointer;
+	/* ... */
+}
+
+/* Дополнительно: убедись, что у контейнера игры тоже нет скролла */
+.game-board {
+	touch-action: none; /* Запрещает зум и скролл внутри игрового поля */
+}
