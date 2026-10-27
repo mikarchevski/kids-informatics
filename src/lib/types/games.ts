@@ -7,7 +7,7 @@ export interface Game {
 		min: number;
 		max: number;
 	};
-	category: 'logic' | 'math' | 'reading' | 'attention' | 'spatial';
+	category: 'logic' | 'math' | 'reading' | 'attention' | 'spatial' | 'memory';
 	icon: string; // Emoji или путь к иконке
 	difficulty: 'easy' | 'medium' | 'hard';
 	estimatedTime: string; // Например, "5-10 минут"

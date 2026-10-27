@@ -60,5 +60,18 @@ export const games: Game[] = [
 		difficulty: 'easy',
 		estimatedTime: '5-10 минут',
 		isAvailable: false
+	},
+	{
+		id: '6',
+		slug: 'logic-chains',
+		title: 'Логические цепочки',
+		description:
+			'Найди закономерность и выбери, что будет дальше. Развиваем логику и наблюдательность.',
+		ageRange: { min: 4, max: 8 },
+		category: 'logic',
+		icon: '🧩',
+		difficulty: 'easy',
+		estimatedTime: '5-10 минут',
+		isAvailable: true
 	}
 ];
