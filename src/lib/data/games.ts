@@ -136,5 +136,18 @@ export const games: Game[] = [
 		difficulty: 'easy',
 		estimatedTime: '5-10 минут',
 		isAvailable: true
+	},
+	{
+		id: '12',
+		slug: 'compare-numbers',
+		title: 'Больше или меньше',
+		description:
+			'Сравнивай числа и выбирай правильный знак: <, = или >. За правильный ответ — 10 очков, за ошибку −2 секунды. У тебя 60 секунд!',
+		ageRange: { min: 6, max: 12 },
+		category: 'math',
+		icon: '️',
+		difficulty: 'easy',
+		estimatedTime: '1-2 минуты',
+		isAvailable: true
 	}
 ];

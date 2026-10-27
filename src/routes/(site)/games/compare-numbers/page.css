@@ -1,0 +1,478 @@
+.compare-game {
+	max-width: 600px;
+	margin: 0 auto;
+	padding: 1rem;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.game-header {
+	text-align: center;
+	margin-bottom: 2rem;
+}
+
+.game-header h1 {
+	font-size: 2rem;
+	color: #2d3748;
+	margin-bottom: 0.25rem;
+}
+
+.subtitle {
+	color: #718096;
+	font-size: 1.1rem;
+}
+
+/* Стартовый экран */
+.start-screen,
+.end-screen {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.info-card,
+.result-card {
+	background: white;
+	padding: 2rem;
+	border-radius: 20px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	max-width: 450px;
+	width: 100%;
+}
+
+.info-card h2,
+.result-card h2 {
+	color: #2d3748;
+	margin-bottom: 1.5rem;
+	font-size: 1.8rem;
+}
+
+.info-card ul {
+	text-align: left;
+	margin: 1.5rem 0;
+	padding-left: 1.5rem;
+	color: #4a5568;
+	line-height: 1.8;
+}
+
+.info-card li {
+	margin-bottom: 0.5rem;
+}
+
+.difficulty-section {
+	margin: 2rem 0;
+}
+
+.difficulty-section h3 {
+	color: #4a5568;
+	margin-bottom: 1rem;
+	font-size: 1.2rem;
+}
+
+.difficulty-buttons {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.diff-btn {
+	background: #f7fafc;
+	border: 3px solid #e2e8f0;
+	border-radius: 16px;
+	padding: 1.5rem;
+	cursor: pointer;
+	transition: all 0.2s;
+	text-align: center;
+	width: 100%;
+}
+
+.diff-btn:hover {
+	border-color: #4299e1;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(66, 153, 225, 0.2);
+}
+
+.diff-btn.active {
+	background: #ebf8ff;
+	border-color: #4299e1;
+}
+
+.diff-title {
+	font-size: 1.3rem;
+	font-weight: 700;
+	color: #2d3748;
+	margin-bottom: 0.25rem;
+}
+
+.diff-desc {
+	font-size: 0.95rem;
+	color: #718096;
+	margin-bottom: 0.5rem;
+}
+
+.diff-score {
+	font-size: 0.9rem;
+	color: #48bb78;
+	font-weight: 600;
+}
+
+/* Выбор сложности во время игры */
+.difficulty-selector {
+	display: flex;
+	justify-content: center;
+	gap: 0.5rem;
+	margin-bottom: 1.5rem;
+}
+
+.diff-toggle {
+	padding: 0.5rem 1.25rem;
+	border: 2px solid #e2e8f0;
+	border-radius: 20px;
+	background: white;
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: #4a5568;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.diff-toggle:hover {
+	border-color: #4299e1;
+	color: #4299e1;
+}
+
+.diff-toggle.active {
+	background: #4299e1;
+	color: white;
+	border-color: #4299e1;
+}
+
+/* Счёт */
+.score-display {
+	display: none;
+	text-align: center;
+	margin-bottom: 2rem;
+}
+
+.score-label {
+	display: block;
+	font-size: 0.9rem;
+	color: #718096;
+	margin-bottom: 0.25rem;
+}
+
+.score-value {
+	display: block;
+	font-size: 2.5rem;
+	font-weight: 700;
+	color: #4299e1;
+}
+
+/* Числа */
+.numbers-display {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 1.5rem;
+	margin-bottom: 3rem;
+}
+
+.number-box {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	width: 120px;
+	height: 120px;
+	border-radius: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.number {
+	font-size: 3.5rem;
+	font-weight: 800;
+	color: white;
+}
+
+.question-mark {
+	font-size: 3rem;
+	color: #cbd5e0;
+	font-weight: 700;
+}
+
+/* Кнопки знаков */
+.signs-container {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	margin-bottom: 2rem;
+}
+
+.sign-btn {
+	background: white;
+	border: 3px solid #e2e8f0;
+	border-radius: 16px;
+	padding: 1.5rem 2rem;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	min-width: 100px;
+}
+
+.sign {
+	font-size: 2.5rem;
+	font-weight: 700;
+	color: #4a5568;
+}
+
+.sign-label {
+	font-size: 0.85rem;
+	color: #718096;
+}
+
+.sign-btn:hover:not(:disabled) {
+	transform: translateY(-4px);
+	border-color: #4299e1;
+	box-shadow: 0 8px 20px rgba(66, 153, 225, 0.3);
+}
+
+.sign-btn:active:not(:disabled) {
+	transform: translateY(-2px);
+}
+
+.sign-btn:disabled {
+	cursor: default;
+	opacity: 0.7;
+}
+
+.sign-btn.correct {
+	background: #c6f6d5;
+	border-color: #48bb78;
+	animation: correctPulse 0.5s ease-out;
+}
+
+.sign-btn.correct .sign {
+	color: #22543d;
+}
+
+.sign-btn.wrong {
+	background: #fed7d7;
+	border-color: #f56565;
+	animation: shake 0.5s ease-out;
+}
+
+@keyframes correctPulse {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.1);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+@keyframes shake {
+	10%,
+	90% {
+		transform: translate3d(-1px, 0, 0);
+	}
+	20%,
+	80% {
+		transform: translate3d(2px, 0, 0);
+	}
+	30%,
+	50%,
+	70% {
+		transform: translate3d(-4px, 0, 0);
+	}
+	40%,
+	60% {
+		transform: translate3d(4px, 0, 0);
+	}
+}
+
+/* Подсказка */
+.hint-btn {
+	background: #fefcbf;
+	border: 2px solid #f6e05e;
+	color: #975a16;
+	padding: 0.75rem 1.5rem;
+	border-radius: 12px;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.hint-btn:hover {
+	background: #fef08a;
+	transform: translateY(-2px);
+}
+
+/* Результат */
+.result-message {
+	position: fixed;
+	bottom: 2rem;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 1rem 2rem;
+	border-radius: 12px;
+	font-size: 1.2rem;
+	font-weight: 600;
+	animation: slideUp 0.3s ease-out;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+	z-index: 100;
+}
+
+.result-message.correct {
+	background: #c6f6d5;
+	color: #22543d;
+}
+
+.result-message.wrong {
+	background: #fed7d7;
+	color: #742a2a;
+}
+
+@keyframes slideUp {
+	from {
+		opacity: 0;
+		transform: translateX(-50%) translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(-50%) translateY(0);
+	}
+}
+
+/* Финальный экран */
+.final-score {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	padding: 2rem;
+	border-radius: 16px;
+	margin: 1.5rem 0;
+	color: white;
+}
+
+.score-label {
+	display: block;
+	font-size: 1.1rem;
+	margin-bottom: 0.5rem;
+	opacity: 0.9;
+}
+
+.score-value {
+	display: block;
+	font-size: 4rem;
+	font-weight: 800;
+}
+
+.new-record {
+	background: #fefcbf;
+	color: #975a16;
+	padding: 1rem;
+	border-radius: 12px;
+	font-size: 1.3rem;
+	font-weight: 700;
+	margin: 1rem 0;
+	animation: celebrate 1s ease-out;
+}
+
+@keyframes celebrate {
+	0%,
+	100% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.05);
+	}
+}
+
+.stats-summary {
+	color: #4a5568;
+	margin: 1.5rem 0;
+	font-size: 1.1rem;
+}
+
+.buttons {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	margin-top: 2rem;
+}
+
+.btn-primary,
+.btn-secondary {
+	padding: 1rem 2rem;
+	border-radius: 12px;
+	font-size: 1.1rem;
+	font-weight: 600;
+	cursor: pointer;
+	border: none;
+	transition: all 0.2s;
+}
+
+.btn-primary {
+	background: #48bb78;
+	color: white;
+}
+
+.btn-primary:hover {
+	background: #38a169;
+	transform: translateY(-2px);
+}
+
+.btn-secondary {
+	background: #edf2f7;
+	color: #4a5568;
+}
+
+.btn-secondary:hover {
+	background: #e2e8f0;
+}
+
+.btn-large {
+	font-size: 1.3rem;
+	padding: 1.25rem 3rem;
+	margin-top: 1rem;
+}
+
+@media (max-width: 600px) {
+	.numbers-display {
+		gap: 1rem;
+	}
+	.number-box {
+		width: 90px;
+		height: 90px;
+	}
+	.number {
+		font-size: 2.5rem;
+	}
+	.question-mark {
+		font-size: 2rem;
+	}
+	.signs-container {
+		gap: 0.5rem;
+	}
+	.sign-btn {
+		padding: 1rem 1.5rem;
+		min-width: 80px;
+	}
+	.sign {
+		font-size: 2rem;
+	}
+	.difficulty-buttons {
+		gap: 0.75rem;
+	}
+	.diff-btn {
+		padding: 1rem;
+	}
+}
