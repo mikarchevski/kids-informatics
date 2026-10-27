@@ -98,5 +98,17 @@ export const games: Game[] = [
 		difficulty: 'easy',
 		estimatedTime: '5-10 минут',
 		isAvailable: true
+	},
+	{
+		id: '9',
+		slug: 'maze',
+		title: 'Лабиринт',
+		description: 'Проведи героя через лабиринт к финишу, обходя стены и планируя маршрут.',
+		ageRange: { min: 4, max: 8 },
+		category: 'spatial',
+		icon: '🧭',
+		difficulty: 'easy',
+		estimatedTime: '2-5 минут',
+		isAvailable: true
 	}
 ];
