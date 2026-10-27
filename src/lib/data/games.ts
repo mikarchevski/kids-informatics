@@ -86,5 +86,17 @@ export const games: Game[] = [
 		difficulty: 'easy',
 		estimatedTime: '5-10 минут',
 		isAvailable: true
+	},
+	{
+		id: '8',
+		slug: 'math',
+		title: 'Весёлый счёт',
+		description: 'Учимся считать предметы, складывать и вычитать в игровой форме.',
+		ageRange: { min: 4, max: 7 },
+		category: 'math',
+		icon: '🔢',
+		difficulty: 'easy',
+		estimatedTime: '5-10 минут',
+		isAvailable: true
 	}
 ];

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import './layout.css';
 
 	const showBackButton = $derived(page.url.pathname.startsWith('/games/'));
 </script>
@@ -20,59 +21,4 @@
 </div>
 
 <style>
-	.games-layout {
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.games-nav {
-		max-width: 1200px;
-		width: 100%;
-		margin: 0 auto;
-		padding: 1rem 1.5rem;
-	}
-
-	.back-button {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.6rem 1.2rem;
-		background: white;
-		color: #4a5568;
-		border-radius: 12px;
-		text-decoration: none;
-		font-weight: 600;
-		font-size: 0.95rem;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-		transition: all 0.2s ease;
-		border: 2px solid #e2e8f0;
-	}
-
-	.back-button:hover {
-		background: #f7fafc;
-		color: #2d3748;
-		transform: translateX(-4px);
-		border-color: #4299e1;
-	}
-
-	.back-button:active {
-		transform: translateX(-2px) scale(0.98);
-	}
-
-	.games-content {
-		flex: 1;
-		width: 100%;
-	}
-
-	@media (max-width: 600px) {
-		.games-nav {
-			padding: 0.75rem 1rem;
-		}
-
-		.back-button {
-			padding: 0.75rem 1rem;
-			font-size: 1rem;
-		}
-	}
 </style>
