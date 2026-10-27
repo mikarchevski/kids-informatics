@@ -110,5 +110,31 @@ export const games: Game[] = [
 		difficulty: 'easy',
 		estimatedTime: '2-5 минут',
 		isAvailable: true
+	},
+	{
+		id: '10',
+		slug: 'rotate-shape',
+		title: 'Поверни фигуру',
+		description:
+			'Развивай пространственное мышление: учись мысленно вращать фигуры и находить правильные отражения.',
+		ageRange: { min: 14, max: 100 },
+		category: 'spatial',
+		icon: '🔄',
+		difficulty: 'hard',
+		estimatedTime: '5-10 минут',
+		isAvailable: true
+	},
+	{
+		id: '11',
+		slug: 'similar-shape',
+		title: 'Найди похожую фигуру',
+		description:
+			'Учись находить похожие геометрические фигуры по количеству сторон. Развивает геометрическое мышление.',
+		ageRange: { min: 5, max: 10 },
+		category: 'spatial',
+		icon: '🔷',
+		difficulty: 'easy',
+		estimatedTime: '5-10 минут',
+		isAvailable: true
 	}
 ];
